@@ -19,6 +19,8 @@ public class Tile {
 
 	@JsonIgnore
 	private static ObjectMapper mapper = new ObjectMapper(); // Jackson Java Object Serializer, is used to read java objects from a file
+
+	private Unit occupier; // store reference to unit currently on tile.
 	
 	List<String> tileTextures;
 	int xpos;
@@ -93,6 +95,9 @@ public class Tile {
 	}
 	public void setTiley(int tiley) {
 		this.tiley = tiley;
+	}
+	public Unit getOccupier() {
+		return this.occupier;
 	}
 	
 	/**
