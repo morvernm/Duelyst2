@@ -1,6 +1,9 @@
 import structures.basic.Player;
 import org.junit.Test;
 
+import java.util.NoSuchElementException;
+
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 public class PlayerTests {
@@ -14,8 +17,19 @@ public class PlayerTests {
     public void drawCard() {
         Player player = new Player();
         player.drawCard();
-        assertTrue(player.getHandCard(1).getCardname().equals("Comodo Charger"));
-        System.out.println(player.getHandCard(1).getCardname());
+        assertTrue(player.getCard(1).getCardname().equals("Comodo Charger"));
         assertTrue((player.getDeckSize() == 19));
+    }
+
+    @Test
+    public void drawEmptyDeck(){
+        Player player = new Player();
+        int i = 0;
+        while(i < 20) {
+            player.drawCard();
+            player.removeFromHand(1);
+            i++;
+        }
+        assertThrows(NoSuchElementException.class, player::drawCard);
     }
 }
