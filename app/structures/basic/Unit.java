@@ -26,7 +26,15 @@ public class Unit {
 	UnitAnimationSet animations;
 	ImageCorrection correction;
 	
-	public Unit() {}
+	private boolean attacked;
+	private boolean moved;
+	
+	
+	public Unit() {
+		
+		this.attacked = false;
+		this.moved = false;
+	}
 	
 	public Unit(int id, UnitAnimationSet animations, ImageCorrection correction) {
 		super();
@@ -36,6 +44,9 @@ public class Unit {
 		position = new Position(0,0,0,0);
 		this.correction = correction;
 		this.animations = animations;
+		
+		this.attacked = false;
+		this.moved = false;
 	}
 	
 	public Unit(int id, UnitAnimationSet animations, ImageCorrection correction, Tile currentTile) {
@@ -46,10 +57,11 @@ public class Unit {
 		position = new Position(currentTile.getXpos(),currentTile.getYpos(),currentTile.getTilex(),currentTile.getTiley());
 		this.correction = correction;
 		this.animations = animations;
+		
+		this.attacked = false;
+		this.moved = false;
 	}
-	
-	
-	
+		
 	public Unit(int id, UnitAnimationType animation, Position position, UnitAnimationSet animations,
 			ImageCorrection correction) {
 		super();
@@ -58,6 +70,9 @@ public class Unit {
 		this.position = position;
 		this.animations = animations;
 		this.correction = correction;
+		
+		this.attacked = false;
+		this.moved = false;
 	}
 
 	public int getId() {
@@ -95,6 +110,26 @@ public class Unit {
 
 	public void setAnimations(UnitAnimationSet animations) {
 		this.animations = animations;
+	}
+	
+	public void setMoved() {
+		this.moved = true;
+	}	
+	public boolean hasMoved() {
+		return this.moved;
+	}
+	public void clearMoved() {
+		this.moved = false;
+	}
+	
+	public void setAttacked() {
+		this.attacked = true; 
+	}
+	public boolean hasAttacked() {
+		return this.attacked;
+	}
+	public void clearAttacked() {
+		this.attacked = false;
 	}
 	
 	/**
