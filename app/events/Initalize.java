@@ -48,7 +48,7 @@ public class Initalize implements EventProcessor{
 	public Player createHumanPlayer(ActorRef out) {
 		Player player1 = new Player();
 		for (int i = 0; i < 3; i++) {
-			int pos = player1.drawCard();
+			player1.drawCard();
 		}
 		return player1;
 	}

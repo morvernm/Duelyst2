@@ -1,6 +1,7 @@
 package structures.basic;
 
-import utils.OrderedCardLoader;
+import game.logic.Gui;
+
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
@@ -17,45 +18,41 @@ public class Player {
 	int mana;
 	protected Card[] hand;
 	protected int cardsInHand = 0;
-	protected ArrayList<Card> deck;
+	protected Deck deck;
 	protected ArrayList<Unit> units; // store all units currently on board
 	
 	public Player() {
 		super();
-		this.health = 20;
-		this.mana = 0;
+		setHealth(20);
+		setMana(0);
 		hand = new Card[6];
-		createDeck();
+		deck = new Deck(1);
+		this.units = new ArrayList<>();
 	}
 	public Player(int health, int mana) {
 		super();
-		this.health = health;
-		this.mana = mana;
+		setHealth(20);
+		setMana(mana);
 		hand = new Card[6];
-		createDeck();
+		deck = new Deck(1);
+		this.units = new ArrayList<>();
 	}
 
-	private void createDeck() {
-		this.deck = new ArrayList<>(OrderedCardLoader.getPlayer1Cards()); // Get cards and load into ArrayList
-	}
-
-	private void drawFirst3(){ // in first round, load 3 cards into player's hand
-		for(int i = 0; i < 3; i++) {
-			drawCard();
-		}
-	}
 	public int getHealth() {
 		return health;
 	}
 	public void setHealth(int health) {
 		this.health = health;
+		Gui.displayHumanHP(this);
 	}
 	public int getMana() {
 		return mana;
 	}
 	public void setMana(int mana) {
 		this.mana = mana;
+		Gui.displayHumanMana(this);
 	}
+
 	// get a card at a specified position in a player's hand
 	public Card getCard(int position) {
 		if(!(position >= 1 && position <= 6)) throw new IllegalArgumentException("Card position must be between 1 - 6");
@@ -67,28 +64,35 @@ public class Player {
 		cardsInHand--;
 	}
 
-	// draw a card from the deck and place it in the player's hand. Return int position of where card was placed. Return -1 if deck full.
-	public int drawCard() {
-		if (deckIsEmpty()) throw new NoSuchElementException("Deck is empty");
+	public Deck getDeck() {
+		return this.deck;
+	}
+
+	// draw a card from the deck and place it in the player's hand.
+	public void drawCard() {
+		if (deck.isEmpty()) throw new NoSuchElementException("Deck is empty");
 		if (cardsInHand == 6) { // if no space in hand, card is lost
-			deck.remove(0);
-			return - 1;
+			deck.drawTopCard();
 		}
-		// if is space in hand, find first free spot in hand and place card in it.
+		// if is space in hand, find first free spot in hand and place card from deck in it.
 		int i = 0;
 		while(hand[i] != null) {
 			i++;
 		}
-		hand[i] = deck.remove(0);
+		Card current = deck.drawTopCard();
+
+		// show changes on front-end
+		hand[i] = current;
 		cardsInHand++;
-		return i + 1;
+		Gui.displayCard(current, i + 1, 0);
+	}
+	
+	public ArrayList<Unit> getUnits(){
+		return this.units;
+	}
+	
+	public void setUnit(Unit unit) {
+		this.units.add(unit);
 	}
 
-	public int getDeckSize() {
-		return deck.size();
-	}
-
-	public boolean deckIsEmpty() {
-		return deck.isEmpty();
-	}
 }

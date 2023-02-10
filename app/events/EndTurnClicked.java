@@ -21,6 +21,7 @@ public class EndTurnClicked implements EventProcessor{
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
 		gameState.currentPlayer.drawCard();
+		gameState.currentPlayer.setMana(0);
 	}
 
 }

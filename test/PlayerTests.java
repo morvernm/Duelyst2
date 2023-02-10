@@ -11,14 +11,14 @@ public class PlayerTests {
     @Test
     public void deckCreationTest(){
         Player player = new Player();
-        assertTrue(player.getDeckSize() == 20);
+        assertTrue(player.getDeck().getDeckSize() == 20);
     }
     @Test
     public void drawCard() {
         Player player = new Player();
         player.drawCard();
         assertTrue(player.getCard(1).getCardname().equals("Comodo Charger"));
-        assertTrue((player.getDeckSize() == 19));
+        assertTrue((player.getDeck().getDeckSize() == 19));
     }
 
     @Test
