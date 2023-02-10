@@ -14,10 +14,13 @@ public class Player {
 	int health;
 	int mana;
 	
+	protected ArrayList<Unit> units; // store all units currently on board
+	
 	public Player() {
 		super();
 		this.health = 20;
 		this.mana = 0;
+		this.units = new ArrayList<>();
 	}
 	public Player(int health, int mana) {
 		super();
@@ -37,6 +40,14 @@ public class Player {
 		this.mana = mana;
 	}
 	
+	
+	public ArrayList<Unit> getUnits(){
+		return this.units;
+	}
+	
+	public void setUnit(Unit unit) {
+		this.units.add(unit);
+	}
 	
 	
 }
