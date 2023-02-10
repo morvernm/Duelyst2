@@ -18,6 +18,7 @@ import structures.basic.Tile;
  *
  */
 public class GameState {
+	public Player currentPlayer; // store who's round it currently is
 
 	
 	public boolean gameInitalised = false;

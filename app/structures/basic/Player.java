@@ -1,9 +1,7 @@
 package structures.basic;
 
-import org.checkerframework.checker.units.qual.A;
 import utils.OrderedCardLoader;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
@@ -28,7 +26,6 @@ public class Player {
 		this.mana = 0;
 		hand = new Card[6];
 		createDeck();
-		drawFirst3();
 	}
 	public Player(int health, int mana) {
 		super();
@@ -36,7 +33,6 @@ public class Player {
 		this.mana = mana;
 		hand = new Card[6];
 		createDeck();
-		drawFirst3();
 	}
 
 	private void createDeck() {
@@ -71,12 +67,12 @@ public class Player {
 		cardsInHand--;
 	}
 
-	// draw a card from the deck and place it in the player's hand.
-	public void drawCard() {
+	// draw a card from the deck and place it in the player's hand. Return int position of where card was placed. Return -1 if deck full.
+	public int drawCard() {
 		if (deckIsEmpty()) throw new NoSuchElementException("Deck is empty");
 		if (cardsInHand == 6) { // if no space in hand, card is lost
 			deck.remove(0);
-			return;
+			return - 1;
 		}
 		// if is space in hand, find first free spot in hand and place card in it.
 		int i = 0;
@@ -85,6 +81,7 @@ public class Player {
 		}
 		hand[i] = deck.remove(0);
 		cardsInHand++;
+		return i + 1;
 	}
 
 	public int getDeckSize() {

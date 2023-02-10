@@ -34,7 +34,7 @@ public class Initalize implements EventProcessor{
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
 		// hello this is a change
-		
+		gameState.currentPlayer = createHumanPlayer(out);
 		gameState.gameInitalised = true;
 		
 		gameState.something = true;
@@ -44,6 +44,13 @@ public class Initalize implements EventProcessor{
 		//CheckMoveLogic.executeDemo(out);
 		
 		
+	}
+	public Player createHumanPlayer(ActorRef out) {
+		Player player1 = new Player();
+		for (int i = 0; i < 3; i++) {
+			int pos = player1.drawCard();
+		}
+		return player1;
 	}
 }
 
