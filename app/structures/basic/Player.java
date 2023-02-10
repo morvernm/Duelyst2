@@ -26,19 +26,27 @@ public class Player {
 		super();
 		this.health = 20;
 		this.mana = 0;
-		createDeck();
 		hand = new Card[6];
+		createDeck();
+		drawFirst3();
 	}
 	public Player(int health, int mana) {
 		super();
 		this.health = health;
 		this.mana = mana;
-		createDeck();
 		hand = new Card[6];
+		createDeck();
+		drawFirst3();
 	}
 
 	private void createDeck() {
 		this.deck = new ArrayList<>(OrderedCardLoader.getPlayer1Cards()); // Get cards and load into ArrayList
+	}
+
+	private void drawFirst3(){ // in first round, load 3 cards into player's hand
+		for(int i = 0; i < 3; i++) {
+			drawCard();
+		}
 	}
 	public int getHealth() {
 		return health;
