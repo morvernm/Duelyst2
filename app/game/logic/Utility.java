@@ -16,7 +16,7 @@ public class Utility {
 	 * 
 	 */
 	
-	public static Set<Tile> determineTargets(Tile tile, ArrayList<Tile> positions, Player enemy, Tile[][] board){
+	public static Set<Tile> determineTargets(Tile tile, Set<Tile> positions, Player enemy, Tile[][] board){
 		
 		// Using Set so that the Tile Objects do not repeat for the last condition
 		Set<Tile> validAttacks = new HashSet<>();
