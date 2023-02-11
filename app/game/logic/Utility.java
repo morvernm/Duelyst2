@@ -1,6 +1,8 @@
 package game.logic;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import commands.BasicCommands;
 import structures.basic.Player;
@@ -14,9 +16,10 @@ public class Utility {
 	 * 
 	 */
 	
-	public static ArrayList<Tile> determineTargets(Tile tile, ArrayList<Tile> positions, Player enemy, Tile[][] board){
+	public static Set<Tile> determineTargets(Tile tile, ArrayList<Tile> positions, Player enemy, Tile[][] board){
 		
-		ArrayList<Tile> validAttacks = new ArrayList<>();
+		// Using Set so that the Tile Objects do not repeat for the last condition
+		Set<Tile> validAttacks = new HashSet<>();
 		
 		// Has Attacked already
 		if (tile.getOccupier().hasAttacked()) {
@@ -29,17 +32,21 @@ public class Utility {
 		// Has not moved nor attacked - consider all possible movements as well. 
 		} else if (!tile.getOccupier().hasMoved() && !tile.getOccupier().hasAttacked()) {
 			System.out.println("has NOT moved NOR attacked");
+			
 			for (Tile position : positions) {
 				validAttacks.addAll(getValidTargets(position,enemy,board));
 			}
 		}
-		return validAttacks;
+		for (Tile t : validAttacks) {
+			System.out.println(t.getTilex() + " and " + t.getTiley());
+		}
 		
+		return validAttacks;
 	}
 	
-	public static ArrayList<Tile> getValidTargets(Tile tile, Player enemy, Tile[][] board){
+	public static Set<Tile> getValidTargets(Tile tile, Player enemy, Tile[][] board){
 		
-		ArrayList<Tile> validAttacks = new ArrayList<>();
+		Set<Tile> validAttacks = new HashSet<>();
 		
 		for (Unit unit : enemy.getUnits()) {
 			int unitx = unit.getPosition().getTilex();

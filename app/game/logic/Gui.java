@@ -1,6 +1,7 @@
 package game.logic;
 import akka.actor.ActorRef;
 import java.util.ArrayList;
+import java.util.Set;
 
 import commands.BasicCommands;
 import structures.basic.Tile;
@@ -20,7 +21,7 @@ public class Gui {
 	 *  mode 1 = movement and summon 
 	 *  mode 2 = attack 
 	 */
-	public static void highlightTiles(ActorRef out, ArrayList<Tile> tiles, int mode) {
+	public static void highlightTiles(ActorRef out, Set<Tile> tiles, int mode) {
 		
 		for (Tile tile : tiles) {
 			BasicCommands.addPlayer1Notification(out, "drawingAttackTile", 10);
