@@ -36,11 +36,7 @@ public class Utility {
 			for (Tile position : positions) {
 				validAttacks.addAll(getValidTargets(position,enemy,board));
 			}
-		}
-		for (Tile t : validAttacks) {
-			System.out.println(t.getTilex() + " and " + t.getTiley());
-		}
-		
+		}		
 		return validAttacks;
 	}
 	
