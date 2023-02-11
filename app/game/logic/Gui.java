@@ -16,7 +16,7 @@ import utils.BasicObjectBuilders;
 public class Gui {
 	
 	/*
-	 *  to highligh tiles on the screen
+	 *  to highlight tiles on the screen
 	 *  Can be used for both movement and attacks
 	 *  mode 1 = movement and summon 
 	 *  mode 2 = attack 
