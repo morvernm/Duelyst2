@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
 import commands.BasicCommands;
+import game.logic.Gui;
 import game.logic.Utility;
 import structures.GameState;
 import structures.basic.Player;
@@ -45,6 +46,9 @@ public class TileClicked implements EventProcessor{
 		else {
 			System.out.println("");
 			}
+
+		Gui.highlightTiles(out, Utility.highlightMoves(GameState.currentPlayer, gameState.board, gameState.board[tilex][tiley].getOccupier()), 1);
+		Gui.highlightTiles(out, Utility.removeHighlightMoves(gameState.board), 0);
 
 		BasicCommands.drawTile(out,gameState.board[tilex][tiley],2);
 		}
