@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
 import commands.BasicCommands;
+import game.logic.Gui;
+import game.logic.Utility;
 import structures.GameState;
 import utils.BasicObjectBuilders;
 
@@ -30,13 +32,16 @@ public class TileClicked implements EventProcessor{
 		int tilex = message.get("tilex").asInt();
 		int tiley = message.get("tiley").asInt();
 		
-		if (gameState.something == true) {
-			// do some logic
+//		if (gameState.something == true) {
+//			// do some logic
+//		}
+		
+		if (gameState.board[tilex][tiley].getOccupier() != null) {
+			
+			//need more stuff for this unfortunately
 		}
 		
-		
-		BasicCommands.drawTile(out, gameState.board[tilex][tiley], 2);
-		
+			
 	}
 
 }

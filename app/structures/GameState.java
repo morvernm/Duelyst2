@@ -24,9 +24,8 @@ public class GameState {
 	
 	public boolean something = false;
 	
-	//Stack<Integer> myStack = new Array<Integer>();
+	Stack<Object> myStack = new Stack<>();
 	
-	public static Queue<Integer> myQueue = new LinkedList<Integer>();		
 	public Tile[][] board = new Tile[9][5];
 	
 	
