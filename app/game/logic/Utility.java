@@ -8,6 +8,7 @@ import java.util.Set;
 import akka.actor.ActorRef;
 import commands.BasicCommands;
 import structures.GameState;
+
 import structures.basic.Player;
 import structures.basic.Tile;
 import structures.basic.Unit;
@@ -17,8 +18,7 @@ public class Utility {
 	/*
 	 * This class is the utility class where methods with some main logic of the game will be provided
 	 * 
-	 */
-	
+	 */	
 	public static Set<Tile> determineTargets(Tile tile, Set<Tile> positions, Player enemy, Tile[][] board){
 		
 		// Using Set so that the Tile Objects do not repeat for the last condition
@@ -128,31 +128,6 @@ public class Utility {
 			return validTiles;
 		}
 		return validTiles;
-	}
-
-	
-	public static void determineMove(ActorRef out, Player player, Unit unitSelected,int x, int y) {
-		for(Unit unit: player.getUnits()) {
-			if(unit.equals(unitSelected) && unit.hasMoved() == false) {
-//				will need to remove unit from original tile position
-//				occupier.getPosition();
-				
-				if(validMove(x,y) == true) {
-//				highlightTiles();
-			}
-//				BasicCommands.moveUnitToTile(out,occupier,destinationTile);
-			}
-		}
-	}
-
-
-
-//	to check if unit can legally move to selected tiles
-	public static boolean validMove(int x, int y) {
-//		Set<Tile> moveRange = new HashSet<>();
-		return false; 
-	}
-	
-	
+	}	
 	
 }

@@ -8,7 +8,9 @@ import java.util.Set;
 import java.util.Stack;
 
 import structures.basic.Player;
+import structures.basic.Position;
 import structures.basic.Tile;
+import structures.basic.Unit;
 
 
 /**
@@ -19,12 +21,14 @@ import structures.basic.Tile;
  *
  */
 public class GameState {
-	public static Player currentPlayer; // store who's round it currently is
+
+	private static Player currentPlayer; // store who's round it currently is
+	private Player humanPlayer;
+
 	public boolean gameInitalised = false;
 	
 	public boolean something = false;
-	
-	
+
 	public Set<Tile> validMoves = new HashSet<>();
 	public Set<Tile> validAttacks = new HashSet<>();
 	
@@ -35,12 +39,22 @@ public class GameState {
 	
 	public static Object getPreviousAction() {
 		return previousAction.peek();
-	}
+	}	
 	
-	
-	
-	public static Player getPlayer() {
+	public static Player getCurrentPlayer() {
 		return currentPlayer;
+	}
+	public void setCurrentPlayer(Player player) {
+		this.currentPlayer = player;
+	}
+
+	public void setHumanPlayer(Player player) {
+		this.humanPlayer = player;
+	}
+
+	public Player getHumanPlayer() {
+		return this.humanPlayer;
 	}
 
 }
+

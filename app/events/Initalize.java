@@ -10,6 +10,7 @@ import akka.actor.ActorRef;
 import commands.BasicCommands;
 import demo.CheckMoveLogic;
 import demo.CommandDemo;
+import game.logic.Gui;
 import play.shaded.ahc.io.netty.util.internal.SystemPropertyUtil;
 import play.twirl.api.TemplateMagic;
 import structures.GameState;
@@ -42,7 +43,9 @@ public class Initalize implements EventProcessor{
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
 		// hello this is a change
-		
+		Player humanPlayer = createHumanPlayer(out);
+		gameState.setCurrentPlayer(humanPlayer);
+		gameState.setHumanPlayer(humanPlayer);
 		gameState.gameInitalised = true;
 		
 		gameState.something = true;
@@ -148,6 +151,14 @@ public class Initalize implements EventProcessor{
 		
 		Gui.removeHighlightTiles(out, gameState.board);
 		
+	}
+	public Player createHumanPlayer(ActorRef out) {
+		Player player1 = new Player();
+		for (int i = 0; i < 3; i++) {
+			player1.drawCard();
+		}
+
+		return player1;
 	}
 }
 

@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import structures.basic.Card;
+import structures.basic.spellcards.EntropicDecay;
+import structures.basic.spellcards.Staff;
+import structures.basic.spellcards.Sundrop;
+import structures.basic.spellcards.Truestrike;
 
 /**
  * This is a utility class that provides methods for loading the decks for each

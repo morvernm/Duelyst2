@@ -1,14 +1,18 @@
 package game.logic;
+
 import actors.GameActor;
 import akka.actor.ActorRef;
-import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
 import commands.BasicCommands;
 import structures.basic.Player;
 import structures.basic.Tile;
+import akka.actor.CoordinatedShutdown;
+import structures.basic.Card;
+import structures.basic.Unit;
+
 import utils.BasicObjectBuilders;
 
 /*
@@ -18,19 +22,27 @@ import utils.BasicObjectBuilders;
  */
 
 public class Gui {
+
+
+	private static ActorRef out;
+
+	public Gui(ActorRef out) {
+		Gui.out = out;
+	}
 	
 	/*
-	 *  to highlight tiles on the screen
+	 *  to highligh tiles on the screen
 	 *  Can be used for both movement and attacks
 	 *  mode 1 = movement and summon 
 	 *  mode 2 = attack 
 	 */
 	public static void highlightTiles(ActorRef out, Set<Tile> tiles, int mode) {
-		
+	
 		for (Tile tile : tiles) {
 			BasicCommands.addPlayer1Notification(out, "drawingAttackTile", 10);
 			
 			BasicCommands.drawTile(out, tile, mode);
+
 			try {Thread.sleep(20);} catch (InterruptedException e) {e.printStackTrace();}
 		}
 	}
@@ -44,5 +56,30 @@ public class Gui {
 		}
 		highlightTiles(out, unhighlightedTiles, 0);
 	}
+		
+	/*
+	 To update cards in hand.
+	 */
+	public static void displayCard(Card card, int position) {
+		BasicCommands.drawCard(out, card, position, 0);
+	}
+
+	public static void displayHumanHP(Player player){
+		BasicCommands.setPlayer1Health(out, player);
+	}
+
+	public static void displayHumanMana(Player player) {
+		BasicCommands.setPlayer1Mana(out, player);
+	}
+
+	// draw unit on board
+	public static void drawUnit(Unit unit, Tile tile) {
+		BasicCommands.drawUnit(out, unit, tile);
+	}
+
+	public static void highlightCard(Card card, int position) {
+		BasicCommands.drawCard(out, card, position,1);
+	}
 
 }
+

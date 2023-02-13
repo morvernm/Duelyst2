@@ -102,7 +102,7 @@ public class Tile {
 	public void setOccupier(Unit occupier) {
 		this.occupier = occupier;
 	}
-	
+
 	/**
 	 * Loads a tile from a configuration file
 	 * parameters.

@@ -19,6 +19,7 @@ import events.OtherClicked;
 import events.TileClicked;
 import events.UnitMoving;
 import events.UnitStopped;
+import game.logic.Gui;
 import play.libs.Json;
 import structures.GameState;
 import utils.ImageListForPreLoad;
@@ -64,6 +65,9 @@ public class GameActor extends AbstractActor {
 		
 		// Initalize a new game state object
 		gameState = new GameState();
+
+		// Initialize GUI object
+		Gui gui = new Gui(out);
 		
 		// Get the list of image files to pre-load the UI with
 		Set<String> images = ImageListForPreLoad.getImageListForPreLoad();
