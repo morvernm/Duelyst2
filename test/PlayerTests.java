@@ -3,8 +3,7 @@ import org.junit.Test;
 
 import java.util.NoSuchElementException;
 
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class PlayerTests {
 
@@ -31,5 +30,16 @@ public class PlayerTests {
             i++;
         }
         assertThrows(NoSuchElementException.class, player::drawCard);
+    }
+
+    @Test
+    public void overDraw() {
+        Player player = new Player();
+        int i = 0;
+        while(i < 6) {
+            player.drawCard();
+            i++;
+        }
+        assertEquals("Ironcliff Guardian", player.getDeck().drawTopCard().getCardname());
     }
 }

@@ -7,7 +7,9 @@ import java.util.Queue;
 import java.util.Stack;
 
 import structures.basic.Player;
+import structures.basic.Position;
 import structures.basic.Tile;
+import structures.basic.Unit;
 
 
 /**
@@ -18,7 +20,8 @@ import structures.basic.Tile;
  *
  */
 public class GameState {
-	public Player currentPlayer; // store who's round it currently is
+	private Player currentPlayer; // store who's round it currently is
+	private Player humanPlayer;
 
 	
 	public boolean gameInitalised = false;
@@ -29,9 +32,20 @@ public class GameState {
 	
 	public static Queue<Integer> myQueue = new LinkedList<Integer>();		
 	public Tile[][] board = new Tile[9][5];
-	
-	
-	
-	
-	
-}
+
+	public Player getCurrentPlayer() {
+		return  currentPlayer;
+	}
+
+	public void setCurrentPlayer(Player player) {
+		this.currentPlayer = player;
+	}
+
+	public void setHumanPlayer(Player player) {
+		this.humanPlayer = player;
+	}
+
+	public Player getHumanPlayer() {
+		return this.humanPlayer;
+	}
+	}

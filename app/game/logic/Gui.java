@@ -7,6 +7,7 @@ import commands.BasicCommands;
 import structures.basic.Card;
 import structures.basic.Player;
 import structures.basic.Tile;
+import structures.basic.Unit;
 import utils.BasicObjectBuilders;
 
 /*
@@ -40,8 +41,8 @@ public class Gui {
 	/*
 	 To update cards in hand.
 	 */
-	public static void displayCard(Card card, int position, int mode) {
-		BasicCommands.drawCard(out, card, position, mode);
+	public static void displayCard(Card card, int position) {
+		BasicCommands.drawCard(out, card, position, 0);
 	}
 
 	public static void displayHumanHP(Player player){
@@ -50,6 +51,15 @@ public class Gui {
 
 	public static void displayHumanMana(Player player) {
 		BasicCommands.setPlayer1Mana(out, player);
+	}
+
+	// draw unit on board
+	public static void drawUnit(Unit unit, Tile tile) {
+		BasicCommands.drawUnit(out, unit, tile);
+	}
+
+	public static void highlightCard(Card card, int position) {
+		BasicCommands.drawCard(out, card, position,1);
 	}
 
 }

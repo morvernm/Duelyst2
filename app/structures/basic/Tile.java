@@ -99,7 +99,10 @@ public class Tile {
 	public Unit getOccupier() {
 		return this.occupier;
 	}
-	
+	public void setOccupier(Unit occupier) {
+		this.occupier = occupier;
+	}
+
 	/**
 	 * Loads a tile from a configuration file
 	 * parameters.

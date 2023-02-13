@@ -31,7 +31,7 @@ public class Player {
 	}
 	public Player(int health, int mana) {
 		super();
-		setHealth(20);
+		setHealth(health);
 		setMana(mana);
 		hand = new Card[6];
 		deck = new Deck(1);
@@ -73,10 +73,11 @@ public class Player {
 		if (deck.isEmpty()) throw new NoSuchElementException("Deck is empty");
 		if (cardsInHand == 6) { // if no space in hand, card is lost
 			deck.drawTopCard();
+			return;
 		}
 		// if is space in hand, find first free spot in hand and place card from deck in it.
 		int i = 0;
-		while(hand[i] != null) {
+		while(hand[i] != null && i < hand.length - 1) {
 			i++;
 		}
 		Card current = deck.drawTopCard();
@@ -84,7 +85,7 @@ public class Player {
 		// show changes on front-end
 		hand[i] = current;
 		cardsInHand++;
-		Gui.displayCard(current, i + 1, 0);
+		Gui.displayCard(current, i + 1);
 	}
 	
 	public ArrayList<Unit> getUnits(){
