@@ -26,9 +26,9 @@ public class GameState {
 	private Player humanPlayer;
 
 	public boolean gameInitalised = false;
-	
 	public boolean something = false;
-
+	
+//	storing validMoves and valid Attacks
 	public Set<Tile> validMoves = new HashSet<>();
 	public Set<Tile> validAttacks = new HashSet<>();
 	
