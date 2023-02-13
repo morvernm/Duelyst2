@@ -27,7 +27,6 @@ public class Utility {
 		// Has Attacked already
 		if (tile.getOccupier().hasAttacked()) {
 			return null;
-		
 		// Has moved but has not attacked - consider only the current position
 		} else if (tile.getOccupier().hasMoved() && !tile.getOccupier().hasAttacked()) {
 			return getValidTargets(tile, enemy, board);
@@ -38,8 +37,8 @@ public class Utility {
 			
 			for (Tile position : positions) {
 				validAttacks.addAll(getValidTargets(position,enemy,board));
-			}
-		}		
+			}		
+		}
 		return validAttacks;
 	}
 	

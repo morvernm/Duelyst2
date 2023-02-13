@@ -24,6 +24,8 @@ public class GameState {
 
 	private static Player currentPlayer; // store who's round it currently is
 	private Player humanPlayer;
+	
+	public static Player enemy;
 
 	public boolean gameInitalised = false;
 	public boolean something = false;
@@ -38,8 +40,12 @@ public class GameState {
 	public Tile[][] board = new Tile[9][5];
 	
 	public static Object getPreviousAction() {
-		return previousAction.peek();
+		return previousAction.pop();
 	}	
+	
+	public static void setPreviousAction(Object action) {
+		previousAction.push(action);
+	}
 	
 	public static Player getCurrentPlayer() {
 		return currentPlayer;
