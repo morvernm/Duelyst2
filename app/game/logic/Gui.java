@@ -31,12 +31,10 @@ public class Gui {
 			BasicCommands.addPlayer1Notification(out, "drawingAttackTile", 10);
 			
 			BasicCommands.drawTile(out, tile, mode);
-			//try {Thread.sleep(200);} catch (InterruptedException e) {e.printStackTrace();}
+			try {Thread.sleep(20);} catch (InterruptedException e) {e.printStackTrace();}
 		}
 	}
 	
-	
-
 	public static void removeHighlightTiles(ActorRef out, Tile[][] board) {
 
 		Set<Tile> unhighlightedTiles = new HashSet<>();

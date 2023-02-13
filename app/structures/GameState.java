@@ -2,7 +2,9 @@ package structures;
 
 import java.awt.datatransfer.Clipboard;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.Stack;
 
 import structures.basic.Player;
@@ -22,14 +24,21 @@ public class GameState {
 	
 	public boolean something = false;
 	
+	
+	public Set<Tile> validMoves = new HashSet<>();
+	public Set<Tile> validAttacks = new HashSet<>();
+	
 //	stack of actions taken by the player
-	public static Stack<Object> playerAction = new Stack<Object>();	
+	public static Stack<Object> previousAction = new Stack<Object>();	
 	
 	public Tile[][] board = new Tile[9][5];
 	
 	public static Object getPreviousAction() {
-		return playerAction.peek();
+		return previousAction.peek();
 	}
+	
+	
+	
 	public static Player getPlayer() {
 		return currentPlayer;
 	}

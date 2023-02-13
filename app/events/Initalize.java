@@ -17,6 +17,7 @@ import structures.basic.Card;
 import structures.basic.Player;
 import structures.basic.Tile;
 import structures.basic.Unit;
+import structures.basic.UnitAnimationType;
 import utils.BasicObjectBuilders;
 import utils.StaticConfFiles;
 
@@ -116,20 +117,36 @@ public class Initalize implements EventProcessor{
 		//gameState.board[0][4].setOccupier(enemyUnit9);
 		BasicCommands.drawUnit(out, enemyUnit9, gameState.board[0][4]);
 		enemy.setUnit(enemyUnit9);
+	
+		
+		Set<Tile> validMoves= Utility.determineValidMoves(gameState.board, gameState.board[3][2].getOccupier());
+		
+		Gui.highlightTiles(out, validMoves, 1);
 		
 		
-		Set<Tile> positions = new HashSet<Tile>();
-		positions.add(gameState.board[3][3]);
-		positions.add(gameState.board[2][2]);
-		positions.add(gameState.board[4][3]);
-		positions.add(gameState.board[1][2]);
-		positions.add(gameState.board[2][1]);
-		positions.add(gameState.board[4][2]);
-		positions.add(gameState.board[4][1]);
-		//System.out.println(gameState.board[3][2].getOccupier().hasAttacked());
+		Gui.highlightTiles(out, Utility.determineTargets(gameState.board[3][2], validMoves, enemy, gameState.board), 2);
+		
+		/*
+		 * moving units
+		 */
+		
+		// update reference to null 
+		gameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()].setOccupier(null);
 		
 		
-		Gui.highlightTiles(out, Utility.determineTargets(gameState.board[3][2], positions, enemy, gameState.board), 2);
+		BasicCommands.moveUnitToTile(out, unit, gameState.board[5][1], true);
+		
+		unit.setPositionByTile(gameState.board[5][1]); 
+		//BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.move);
+		
+		gameState.board[5][1].setOccupier(unit);
+		
+		
+		
+		try {Thread.sleep(4000);} catch (InterruptedException e) {e.printStackTrace();}
+		
+		
+		Gui.removeHighlightTiles(out, gameState.board);
 		
 	}
 }
