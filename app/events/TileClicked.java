@@ -7,6 +7,7 @@ import akka.actor.ActorRef;
 import commands.BasicCommands;
 import structures.GameState;
 import utils.BasicObjectBuilders;
+import structures.Utility;
 
 /**
  * Indicates that the user has clicked an object on the game canvas, in this case a tile.
@@ -30,10 +31,29 @@ public class TileClicked implements EventProcessor{
 		int tilex = message.get("tilex").asInt();
 		int tiley = message.get("tiley").asInt();
 		
-		if (gameState.something == true) {
-			// do some logic
+		int status = gameState.getStatus();
+
+		switch (status){
+			/* Stack empty */
+			case 0:
+				break;
+			/* Unit in stack */
+			case 1:
+				break;
+			/* Unit card in stack */
+			case 2:
+				Card card = gameState.peekStack();
+				Tile[][] board = gameState.getBoard();
+				Tile tile = board[tilex][tiley];
+				Player player = gameState.getPlayer(true);
+				Player enemy = gameState.getPlayer(false);
+
+				Utility.validMove(card, player, enemy,tile, board);
+				break;
+			/* Spell card in stack */
+			case 3:
+				break;
 		}
-		
 		
 		BasicCommands.drawTile(out, gameState.board[tilex][tiley], 2);
 		

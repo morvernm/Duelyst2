@@ -70,6 +70,10 @@ public class Tile {
 	public void setYpos(int ypos) {
 		this.ypos = ypos;
 	}
+	public int[] getCoordinate(){
+		int[] array = {tilex, tiley};
+		return array;
+	}
 	public int getWidth() {
 		return width;
 	}

@@ -11,6 +11,7 @@ package structures.basic;
  *
  */
 public class Card {
+	private boolean moveModifier;
 	
 	int id;
 	
@@ -29,6 +30,23 @@ public class Card {
 		this.manacost = manacost;
 		this.miniCard = miniCard;
 		this.bigCard = bigCard;
+
+		moveModifier = setModifier(cardname);
+	}
+
+	private void setModifier(String cardname){
+		switch(cardname){
+			case "Ironcliff Guardian":
+				moveModifier = true;
+				return;
+			case "Planar Scout":
+				moveModifier = true;
+				return;
+		}
+		moveModifier = false;
+	}
+	public boolean getMoveModifier(){
+		return moveModifier;
 	}
 	
 	public int getId() {
