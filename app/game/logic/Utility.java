@@ -1,10 +1,13 @@
 package game.logic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import akka.actor.ActorRef;
 import commands.BasicCommands;
+import structures.GameState;
 import structures.basic.Player;
 import structures.basic.Tile;
 import structures.basic.Unit;
@@ -53,6 +56,101 @@ public class Utility {
 			}
 		}
 		return validAttacks;
+	}
+
+	public static Set<Tile> determineValidMoves(Tile[][] board, Unit unit) {
+
+		Set<Tile> validTiles = new HashSet<>();
+
+		if (!unit.hasMoved() && !unit.hasAttacked()) {
+			int x = unit.getPosition().getTilex();
+			int y = unit.getPosition().getTiley();
+			// check one behind
+			int newX = x - 1;
+			if (newX > -1 && newX < board.length && board[newX][y].getOccupier() == null) {
+				validTiles.add(board[newX][y]);
+				// if one behind empty, check two behind
+				newX = x - 2;
+				if (newX > -1 && newX < board.length && board[newX][y].getOccupier() == null) {
+					validTiles.add(board[newX][y]);
+				}
+			}
+			// check one ahead
+			newX = x + 1;
+			if (newX > -1 && newX < board.length && board[newX][y].getOccupier() == null) {
+				validTiles.add(board[newX][y]);
+				// if one ahead empty, check two ahead
+				newX = x + 2;
+				if (newX > -1 && newX < board.length && board[newX][y].getOccupier() == null) {
+					validTiles.add(board[newX][y]);
+				}
+			}
+			// check one up
+			int newY = y - 1;
+			if (newY > -1 && newY < board[0].length && board[x][newY].getOccupier() == null) {
+				validTiles.add(board[x][newY]);
+				// if one up empty, check two up
+				newY = y - 2;
+				if (newY > -1 && newY < board[0].length && board[x][newY].getOccupier() == null) {
+					validTiles.add(board[x][newY]);
+				}
+			}
+			// check one down
+			newY = y + 1;
+			if (newY > -1 && newY < board[0].length && board[x][newY].getOccupier() == null) {
+				validTiles.add(board[x][newY]);
+				// if one up empty, check two up
+				newY = y + 2;
+				if (newY > -1 && newY < board[0].length && board[x][newY].getOccupier() == null) {
+					validTiles.add(board[x][newY]);
+				}
+			}
+
+			// diagonal tiles
+			if (x + 1 < board.length && y + 1 < board[0].length && board[x + 1][y + 1].getOccupier() == null) {
+				validTiles.add(board[x + 1][y + 1]);
+			}
+
+			if (x - 1 >= 0 && y - 1 >= 0 && board[x - 1][y - 1].getOccupier() == null) {
+				validTiles.add(board[x - 1][y - 1]);
+			}
+
+			if (x + 1 < board.length && y - 1 >= 0 && board[x + 1][y - 1].getOccupier() == null) {
+				validTiles.add(board[x + 1][y - 1]);
+			}
+
+			if (x - 1 >= 0 && y + 1 < board[0].length && board[x - 1][y + 1].getOccupier() == null) {
+				validTiles.add(board[x - 1][y + 1]);
+			}
+
+		} else {
+			// cannot move, so what happens? just return empty set?
+			return validTiles;
+		}
+		return validTiles;
+	}
+
+	
+	public static void determineMove(ActorRef out, Player player, Unit unitSelected,int x, int y) {
+		for(Unit unit: player.getUnits()) {
+			if(unit.equals(unitSelected) && unit.hasMoved() == false) {
+//				will need to remove unit from original tile position
+//				occupier.getPosition();
+				
+				if(validMove(x,y) == true) {
+//				highlightTiles();
+			}
+//				BasicCommands.moveUnitToTile(out,occupier,destinationTile);
+			}
+		}
+	}
+
+
+
+//	to check if unit can legally move to selected tiles
+	public static boolean validMove(int x, int y) {
+//		Set<Tile> moveRange = new HashSet<>();
+		return false; 
 	}
 	
 	

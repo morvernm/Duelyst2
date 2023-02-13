@@ -15,6 +15,7 @@ public class Player {
 	int mana;
 	
 	protected ArrayList<Unit> units; // store all units currently on board
+
 	
 	public Player() {
 		super();
@@ -40,7 +41,6 @@ public class Player {
 		this.mana = mana;
 	}
 	
-	
 	public ArrayList<Unit> getUnits(){
 		return this.units;
 	}
@@ -48,6 +48,7 @@ public class Player {
 	public void setUnit(Unit unit) {
 		this.units.add(unit);
 	}
+	
 	
 	
 }

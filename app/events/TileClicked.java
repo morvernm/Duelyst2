@@ -8,6 +8,9 @@ import commands.BasicCommands;
 import game.logic.Gui;
 import game.logic.Utility;
 import structures.GameState;
+import structures.basic.Player;
+import structures.basic.Tile;
+import structures.basic.Unit;
 import utils.BasicObjectBuilders;
 
 /**
@@ -28,20 +31,30 @@ public class TileClicked implements EventProcessor{
 
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
-
 		int tilex = message.get("tilex").asInt();
 		int tiley = message.get("tiley").asInt();
-		
-//		if (gameState.something == true) {
-//			// do some logic
-//		}
-		
-		if (gameState.board[tilex][tiley].getOccupier() != null) {
-			
-			//need more stuff for this unfortunately
-		}
-		
-			
-	}
 
+		if (gameState.board[tilex][tiley].getOccupier() != null) {  // check if selected tile has a unit on it
+				Unit occupier = gameState.board[tilex][tiley].getOccupier(); //	get the selected unit
+//				check stack for previous move somehow. 
+//				if(GameState.getPreviousAction() instanceof TileClicked) {
+//					occupier.getPosition();
+//				if no previous selection
+					Utility.determineMove(out,GameState.getPlayer(),occupier,tilex,tiley);	
+//					add this action to stack - not confident that this is how we would do it. 
+					GameState.playerAction.push(this);
+				}
+		else {
+			System.out.println("");
+			}
+
+		Gui.highlightTiles(out, Utility.determineValidMoves(gameState.board, gameState.board[tilex][tiley].getOccupier()), 1);
+		Gui.removeHighlightTiles(out, gameState.board);
+
+
+		BasicCommands.drawTile(out,gameState.board[tilex][tiley],2);
+		}
 }
+			
+
+
