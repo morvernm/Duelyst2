@@ -42,6 +42,22 @@ public class Utility {
 		return validAttacks;
 	}
 	
+	public static void adjacentAttack(Unit attacker, Unit defender) {
+		System.out.println("Adjacent Attack Activated");
+		Gui.performAttack(attacker);
+
+				
+	}
+	
+	
+	public static void distancedAttack() {
+		System.out.println("Distanced Attack Activated");
+		
+	}
+	
+	
+	
+	
 	public static Set<Tile> getValidTargets(Tile tile, Player enemy, Tile[][] board){
 		
 		Set<Tile> validAttacks = new HashSet<>();

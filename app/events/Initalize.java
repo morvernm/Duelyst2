@@ -68,18 +68,29 @@ public class Initalize implements EventProcessor{
 		unit.setPositionByTile(gameState.board[3][2]); 
 		gameState.board[3][2].setOccupier(unit);
 		BasicCommands.drawUnit(out, unit, gameState.board[3][2]);
+		gameState.getHumanPlayer().setUnit(unit);
 		
+		/*
+		 *  Set the stats of the avatar
+		 */
+		Gui.setUnitStats(unit, gameState.getHumanPlayer().getHealth(), 2);
+		unit.setHealth(gameState.getHumanPlayer().getHealth());
+		unit.setAttack(2);
 		
-				
-		
+	
 		
 		GameState.enemy = new Player();
 		
 		Unit enemyUnit = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 1, Unit.class);
 		
 		enemyUnit.setPositionByTile(gameState.board[5][2]); 
-		//gameState.board[5][2].setOccupier(enemyUnit);
+		gameState.board[5][2].setOccupier(enemyUnit);
 		BasicCommands.drawUnit(out, enemyUnit, gameState.board[5][2]);
+		
+		Gui.setUnitStats(enemyUnit, 20, 2);
+		enemyUnit.setHealth(20);
+		enemyUnit.setAttack(2);
+		
 		
 		GameState.enemy.setUnit(enemyUnit);
 		
