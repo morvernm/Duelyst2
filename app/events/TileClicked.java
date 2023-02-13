@@ -47,8 +47,8 @@ public class TileClicked implements EventProcessor{
 			System.out.println("");
 			}
 
-		Gui.highlightTiles(out, Utility.highlightMoves(GameState.currentPlayer, gameState.board, gameState.board[tilex][tiley].getOccupier()), 1);
-		Gui.highlightTiles(out, Utility.removeHighlightMoves(gameState.board), 0);
+		Gui.highlightTiles(out, Utility.showValidMoves(GameState.currentPlayer, gameState.board, gameState.board[tilex][tiley].getOccupier()), 1);
+		Gui.removeHighlightTiles(out, gameState.board);
 
 		BasicCommands.drawTile(out,gameState.board[tilex][tiley],2);
 		}

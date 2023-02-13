@@ -58,14 +58,14 @@ public class Utility {
 		return validAttacks;
 	}
 
-	public static Set<Tile> highlightMoves(Player player, Tile[][] board, Unit unit) {
+	public static Set<Tile> showValidMoves(Player player, Tile[][] board, Unit unit) {
 
 		Set<Tile> highlightedTiles = new HashSet<>();
 
-		if (GameState.currentPlayer == player && !unit.hasMoved()) {
+		if (GameState.currentPlayer == player && !unit.hasMoved() && !unit.hasAttacked()) {
 			int x = unit.getPosition().getTilex();
 			int y = unit.getPosition().getTiley();
-			// up and down tiles
+			// up, down, left, right tiles
 			for (int i = -2; i < 3; i++) {
 				if (i != 0) {
 					int newX = y + i;
@@ -99,16 +99,6 @@ public class Utility {
 			return highlightedTiles;
 		}
 		return highlightedTiles;
-	}
-
-	public static Set<Tile> removeHighlightMoves(Tile[][] board) {
-
-		Set<Tile> unhighlightedTiles = new HashSet<>();
-
-		for (Tile[] tiles : board) {
-			unhighlightedTiles.addAll(Arrays.asList(tiles).subList(0, board[0].length));
-		}
-		return unhighlightedTiles;
 	}
 
 	

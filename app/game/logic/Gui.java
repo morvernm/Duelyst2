@@ -1,9 +1,13 @@
 package game.logic;
+import actors.GameActor;
 import akka.actor.ActorRef;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 import commands.BasicCommands;
+import structures.basic.Player;
 import structures.basic.Tile;
 import utils.BasicObjectBuilders;
 
@@ -29,6 +33,16 @@ public class Gui {
 			BasicCommands.drawTile(out, tile, mode);
 			//try {Thread.sleep(200);} catch (InterruptedException e) {e.printStackTrace();}
 		}
+	}
+
+	public static void removeHighlightTiles(ActorRef out, Tile[][] board) {
+
+		Set<Tile> unhighlightedTiles = new HashSet<>();
+
+		for (Tile[] tiles : board) {
+			unhighlightedTiles.addAll(Arrays.asList(tiles).subList(0, board[0].length));
+		}
+		highlightTiles(out, unhighlightedTiles, 0);
 	}
 
 }
