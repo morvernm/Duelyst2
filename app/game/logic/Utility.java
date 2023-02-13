@@ -58,47 +58,76 @@ public class Utility {
 		return validAttacks;
 	}
 
-	public static Set<Tile> showValidMoves(Player player, Tile[][] board, Unit unit) {
+	public static Set<Tile> determineValidMoves(Tile[][] board, Unit unit) {
 
-		Set<Tile> highlightedTiles = new HashSet<>();
+		Set<Tile> validTiles = new HashSet<>();
 
-		if (GameState.currentPlayer == player && !unit.hasMoved() && !unit.hasAttacked()) {
+		if (!unit.hasMoved() && !unit.hasAttacked()) {
 			int x = unit.getPosition().getTilex();
 			int y = unit.getPosition().getTiley();
-			// up, down, left, right tiles
-			for (int i = -2; i < 3; i++) {
-				if (i != 0) {
-					int newX = y + i;
-					int newY = x + i;
-					if (newX > -1 && newX < board.length && board[newX][y].getOccupier() == null) {
-						highlightedTiles.add(board[newX][y]);
-					} else if (newY > -1 && newY < board[0].length && board[x][newY].getOccupier() == null) {
-						highlightedTiles.add(board[x][newY]);
-					}
+			// check one behind
+			int newX = x - 1;
+			if (newX > -1 && newX < board.length && board[newX][y].getOccupier() == null) {
+				validTiles.add(board[newX][y]);
+				// if one behind empty, check two behind
+				newX = x - 2;
+				if (newX > -1 && newX < board.length && board[newX][y].getOccupier() == null) {
+					validTiles.add(board[newX][y]);
 				}
 			}
+			// check one ahead
+			newX = x + 1;
+			if (newX > -1 && newX < board.length && board[newX][y].getOccupier() == null) {
+				validTiles.add(board[newX][y]);
+				// if one ahead empty, check two ahead
+				newX = x + 2;
+				if (newX > -1 && newX < board.length && board[newX][y].getOccupier() == null) {
+					validTiles.add(board[newX][y]);
+				}
+			}
+			// check one up
+			int newY = y - 1;
+			if (newY > -1 && newY < board[0].length && board[x][newY].getOccupier() == null) {
+				validTiles.add(board[x][newY]);
+				// if one up empty, check two up
+				newY = y - 2;
+				if (newY > -1 && newY < board[0].length && board[x][newY].getOccupier() == null) {
+					validTiles.add(board[x][newY]);
+				}
+			}
+			// check one down
+			newY = y + 1;
+			if (newY > -1 && newY < board[0].length && board[x][newY].getOccupier() == null) {
+				validTiles.add(board[x][newY]);
+				// if one up empty, check two up
+				newY = y + 2;
+				if (newY > -1 && newY < board[0].length && board[x][newY].getOccupier() == null) {
+					validTiles.add(board[x][newY]);
+				}
+			}
+
 			// diagonal tiles
 			if (x + 1 < board.length && y + 1 < board[0].length && board[x + 1][y + 1].getOccupier() == null) {
-				highlightedTiles.add(board[x + 1][y + 1]);
+				validTiles.add(board[x + 1][y + 1]);
 			}
 
 			if (x - 1 >= 0 && y - 1 >= 0 && board[x - 1][y - 1].getOccupier() == null) {
-				highlightedTiles.add(board[x - 1][y - 1]);
+				validTiles.add(board[x - 1][y - 1]);
 			}
 
 			if (x + 1 < board.length && y - 1 >= 0 && board[x + 1][y - 1].getOccupier() == null) {
-				highlightedTiles.add(board[x + 1][y - 1]);
+				validTiles.add(board[x + 1][y - 1]);
 			}
 
 			if (x - 1 >= 0 && y + 1 < board[0].length && board[x - 1][y + 1].getOccupier() == null) {
-				highlightedTiles.add(board[x - 1][y + 1]);
+				validTiles.add(board[x - 1][y + 1]);
 			}
 
 		} else {
 			// cannot move, so what happens? just return empty set?
-			return highlightedTiles;
+			return validTiles;
 		}
-		return highlightedTiles;
+		return validTiles;
 	}
 
 	
