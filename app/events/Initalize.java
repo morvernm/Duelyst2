@@ -24,7 +24,7 @@ import commands.BasicCommands;
 import game.logic.Utility;
 import game.logic.Gui;
 
-/**
+/*
  * Indicates that both the core game loop in the browser is starting, meaning
  * that it is ready to recieve commands from the back-end.
  * 
@@ -33,8 +33,9 @@ import game.logic.Gui;
  * }
  * 
  * @author Dr. Richard McCreadie
- *
+ * 
  */
+
 public class Initalize implements EventProcessor{
 
 	@Override

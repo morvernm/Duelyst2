@@ -29,7 +29,4 @@ public class GameState {
 	public Tile[][] board = new Tile[9][5];
 	
 	
-	
-	
-	
 }
