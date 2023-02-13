@@ -130,28 +130,13 @@ public class Utility {
 		return validTiles;
 	}
 
-	
+//	to move tileClicked stuff here
 	public static void determineMove(ActorRef out, Player player, Unit unitSelected,int x, int y) {
 		for(Unit unit: player.getUnits()) {
-			if(unit.equals(unitSelected) && unit.hasMoved() == false) {
-//				will need to remove unit from original tile position
-//				occupier.getPosition();
-				
-				if(validMove(x,y) == true) {
-//				highlightTiles();
+			if(unit.equals(unitSelected)) {
 			}
-//				BasicCommands.moveUnitToTile(out,occupier,destinationTile);
 			}
 		}
-	}
-
-
-
-//	to check if unit can legally move to selected tiles
-	public static boolean validMove(int x, int y) {
-//		Set<Tile> moveRange = new HashSet<>();
-		return false; 
-	}
 	
 	
 	
