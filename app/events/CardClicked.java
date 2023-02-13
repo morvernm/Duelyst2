@@ -25,27 +25,31 @@ import java.util.HashSet;
  *
  */
 public class CardClicked implements EventProcessor{
-	private HashMap<Card, Integer> currentlyHighlighted = new HashMap<>();
+	private static HashMap<Card, Integer> currentlyHighlighted = new HashMap<>();
 
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
 		int handPosition = message.get("position").asInt();
-		cardHighlighting(handPosition, gameState);
+		highlightCard(handPosition, gameState);
 	}
 
 
-	public void cardHighlighting(int handPosition, GameState gameState) {
+	public void highlightCard(int handPosition, GameState gameState) {
+		clearHighlighted();
+		// highlighted the selected card
+		Card highlightedCard = gameState.getHumanPlayer().getCard(handPosition);
+		Gui.highlightCard(highlightedCard, handPosition);
+		currentlyHighlighted.put(highlightedCard, handPosition);
+	}
+
+	public static void clearHighlighted(){
 		// Unhighlight currently highlighted cards
 		if (!currentlyHighlighted.isEmpty()) {
 			currentlyHighlighted.forEach((key, value) -> {
 				Gui.displayCard(key, value);
 			});
+			currentlyHighlighted.clear();
 		}
-
-		// highlighted the selected card
-		Card highlightedCard = gameState.getHumanPlayer().getCard(handPosition);
-		Gui.highlightCard(highlightedCard, handPosition);
-		currentlyHighlighted.put(highlightedCard, handPosition);
 	}
 }
 
