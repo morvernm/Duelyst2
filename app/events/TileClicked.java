@@ -37,37 +37,19 @@ public class TileClicked implements EventProcessor{
 		if (gameState.board[tilex][tiley].getOccupier() != null) {  // check if selected tile has a unit on it
 			
 			
-			if (gameState.previousAction.isEmpty() && gameState.getHumanPlayer().getUnits().contains(gameState.board[tilex][tiley].getOccupier())) {
+			if (gameState.previousAction.isEmpty()) {
 				Unit unit = gameState.board[tilex][tiley].getOccupier();
 				
 				gameState.validMoves = Utility.determineValidMoves(gameState.board, unit);
 				Gui.highlightTiles(out, gameState.validMoves, 1);
 				
-				gameState.validAttacks = Utility.determineTargets(gameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()], gameState.validMoves, GameState.enemy, gameState.board);
+				Gui.highlightTiles(out, Utility.determineTargets(gameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()], gameState.validMoves, GameState.enemy, gameState.board), 2);
 				
-				Gui.highlightTiles(out, gameState.validAttacks, 2);
+				GameState.previousAction.push(unit);
 				
-				gameState.previousAction.push(unit);
+				System.err.println("Added to the Stack " + GameState.previousAction.peek());
 				
-				System.err.println("Added to the Stack " + gameState.previousAction.peek());
 				
-			} else {
-				
-				if (gameState.previousAction.peek() instanceof Unit) {
-					
-					//get unit from stack
-					Unit unit = (Unit) GameState.getPreviousAction();
-					Gui.removeHighlightTiles(out, GameState.board); //clearing board 
-					// Determine if Adjacent or Distanced Attack aka. move and attack
-					if (Utility.getValidTargets(GameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()], GameState.enemy, GameState.board).contains(gameState.board[tilex][tiley])) {
-						
-						Utility.adjacentAttack(unit, GameState.board[tilex][tiley].getOccupier());
-					} else if (gameState.validAttacks.contains(GameState.board[tilex][tiley])) {
-						
-						Utility.distancedAttack();
-					}
-				}
-
 			}
 		
 			
@@ -97,9 +79,6 @@ public class TileClicked implements EventProcessor{
 		}
 
 	}
-	
-	
-	
 
 	
 }			

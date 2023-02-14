@@ -12,7 +12,7 @@ import structures.basic.Tile;
 import akka.actor.CoordinatedShutdown;
 import structures.basic.Card;
 import structures.basic.Unit;
-import structures.basic.UnitAnimationType;
+
 import utils.BasicObjectBuilders;
 
 /*
@@ -43,7 +43,7 @@ public class Gui {
 			
 			BasicCommands.drawTile(out, tile, mode);
 
-			try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+			try {Thread.sleep(20);} catch (InterruptedException e) {e.printStackTrace();}
 		}
 	}
 	
@@ -55,30 +55,6 @@ public class Gui {
 			unhighlightedTiles.addAll(Arrays.asList(tiles).subList(0, board[0].length));
 		}
 		highlightTiles(out, unhighlightedTiles, 0);
-	}
-	
-	
-	public static void performAttack(Unit unit) {
-		BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.attack);
-		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-	}
-	
-	public static void setUnitStats(Unit unit, int health, int attack) {
-		// setUnitHealth
-		BasicCommands.setUnitHealth(out, unit, health);
-		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-		
-		// setUnitAttack
-		BasicCommands.setUnitAttack(out, unit, attack);
-		try {Thread.sleep(3000);} catch (InterruptedException e) {e.printStackTrace();}
-	}
-	
-	public static void setUnitStats(Unit unit, int health) {
-		
-		// setUnitHealth
-		BasicCommands.setUnitHealth(out, unit, health);
-		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-
 	}
 		
 	/*
