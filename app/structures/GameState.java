@@ -2,12 +2,15 @@ package structures;
 
 import java.awt.datatransfer.Clipboard;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Queue;
+import java.util.Set;
 import java.util.Stack;
 
 import structures.basic.Player;
+import structures.basic.Position;
 import structures.basic.Tile;
+import structures.basic.Unit;
 
 
 /**
@@ -19,18 +22,45 @@ import structures.basic.Tile;
  */
 public class GameState {
 
+	private static Player currentPlayer; // store who's round it currently is
+	private Player humanPlayer;
 	
+	public static Player enemy;
+
 	public boolean gameInitalised = false;
-	
 	public boolean something = false;
 	
-	//Stack<Integer> myStack = new Array<Integer>();
+//	storing validMoves and valid Attacks
+	public Set<Tile> validMoves = new HashSet<>();
+	public Set<Tile> validAttacks = new HashSet<>();
 	
-	public static Queue<Integer> myQueue = new LinkedList<Integer>();		
+//	stack of actions taken by the player
+	public static Stack<Object> previousAction = new Stack<Object>();	
+	
 	public Tile[][] board = new Tile[9][5];
 	
+	public static Object getPreviousAction() {
+		return previousAction.pop();
+	}	
 	
+	public static void setPreviousAction(Object action) {
+		previousAction.push(action);
+	}
 	
-	
-	
+	public static Player getCurrentPlayer() {
+		return currentPlayer;
+	}
+	public void setCurrentPlayer(Player player) {
+		this.currentPlayer = player;
+	}
+
+	public void setHumanPlayer(Player player) {
+		this.humanPlayer = player;
+	}
+
+	public Player getHumanPlayer() {
+		return this.humanPlayer;
+	}
+
 }
+
