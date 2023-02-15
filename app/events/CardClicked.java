@@ -31,6 +31,8 @@ public class CardClicked implements EventProcessor{
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
 		int handPosition = message.get("position").asInt();
 		highlightCard(handPosition, gameState);
+
+
 	}
 
 
@@ -38,6 +40,8 @@ public class CardClicked implements EventProcessor{
 		clearHighlighted();
 		// highlighted the selected card
 		Card highlightedCard = gameState.getHumanPlayer().getCard(handPosition);
+		highlightedCard.setPositionInHand(handPosition);
+		pushToPreviousAction(highlightedCard);
 		Gui.highlightCard(highlightedCard, handPosition);
 		currentlyHighlighted.put(highlightedCard, handPosition);
 	}
@@ -50,6 +54,10 @@ public class CardClicked implements EventProcessor{
 			});
 			currentlyHighlighted.clear();
 		}
+	}
+
+	public static void pushToPreviousAction(Card card){
+		GameState.setPreviousAction(card);
 	}
 }
 

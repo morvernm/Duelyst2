@@ -69,5 +69,76 @@ public class StaticConfFiles {
 	public final static String f1_martyrdom = "conf/gameconfs/effects/f1_martyrdom.json";
 	public final static String f1_projectiles = "conf/gameconfs/effects/f1_projectiles.json";
 	public final static String f1_summon = "conf/gameconfs/effects/f1_summon.json";
-	
+
+	public static String getUnitConf(String name){
+		switch(name){
+			case "Comodo Charger":
+				return u_comodo_charger;
+			case "Azure Herald":
+				return u_azure_herald;
+			case "Azurite Lion":
+				return u_azurite_lion;
+			case "Fire Spitter":
+				return u_fire_spitter;
+			case "Hailstone Golem":
+				return u_hailstone_golem;
+			case "Ironcliff Guardian":
+				return u_ironcliff_guardian;
+			case "Pureblade Enforcer":
+				return u_pureblade_enforcer;
+			case "Silverguard Knight":
+				return u_silverguard_knight;
+			case "Blaze Hound":
+				return u_blaze_hound;
+			case "Bloodshard Golem":
+				return u_bloodshard_golem;
+			case "Planar Scout":
+				return u_planar_scout;
+			case "Pyromancer":
+				return u_pyromancer;
+			case "Rock Pulveriser":
+				return u_rock_pulveriser;
+			case "Serpenti":
+				return u_serpenti;
+			case "Windshrike":
+				return u_windshrike;
+		}
+		return null;
+	}
+
+	public static String getCardConf(String name){		
+		switch(name){
+			case "Comodo Charger":
+				return c_comodo_charger;
+			case "Azure Herald":
+				return c_azure_herald;
+			case "Azurite Lion":
+				return c_azurite_lion;
+			case "Fire Spitter":
+				return c_fire_spitter;
+			case "Hailstone Golem":
+				return c_hailstone_golem;
+			case "Ironcliff Guardian":
+				return c_ironcliff_guardian;
+			case "Pureblade Enforcer":
+				return c_pureblade_enforcer;
+			case "Silverguard Knight":
+				return c_silverguard_knight;
+			case "Blaze Hound":
+				return c_blaze_hound;
+			case "Bloodshard Golem":
+				return c_bloodshard_golem;
+			case "Planar Scout":
+				return c_planar_scout;
+			case "Pyromancer":
+				return c_pyromancer;
+			case "Rock Pulveriser":
+				return c_rock_pulveriser;
+			case "Serpenti":
+				return c_serpenti;
+			case "Windshrike":
+				return c_windshrike;
+		}
+		return null;
+	}
 }

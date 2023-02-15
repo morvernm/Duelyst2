@@ -11,6 +11,8 @@ import structures.GameState;
 import structures.basic.Player;
 import structures.basic.Tile;
 import structures.basic.Unit;
+import structures.basic.Card;
+import structures.basic.Playable;
 import utils.BasicObjectBuilders;
 
 /**
@@ -34,28 +36,69 @@ public class TileClicked implements EventProcessor{
 		int tilex = message.get("tilex").asInt();
 		int tiley = message.get("tiley").asInt();
 
+		int status = gameState.getStatus();
+		System.out.println(status);
+
 		if (gameState.board[tilex][tiley].getOccupier() != null) {  // check if selected tile has a unit on it
 			
 			
-			if (gameState.previousAction.isEmpty()) {
+			if (gameState.previousAction.isEmpty() && gameState.getHumanPlayer().getUnits().contains(gameState.board[tilex][tiley].getOccupier())) {
 				Unit unit = gameState.board[tilex][tiley].getOccupier();
 				
 				gameState.validMoves = Utility.determineValidMoves(gameState.board, unit);
 				Gui.highlightTiles(out, gameState.validMoves, 1);
 				
-				Gui.highlightTiles(out, Utility.determineTargets(gameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()], gameState.validMoves, GameState.enemy, gameState.board), 2);
+				gameState.validAttacks = Utility.determineTargets(gameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()], gameState.validMoves, GameState.enemy, gameState.board);
 				
-				GameState.previousAction.push(unit);
+				Gui.highlightTiles(out, gameState.validAttacks, 2);
 				
-				System.err.println("Added to the Stack " + GameState.previousAction.peek());
+				gameState.previousAction.push(unit);
 				
+				System.err.println("Added to the Stack " + gameState.previousAction.peek());
 				
-			}
-		
-			
+			} 
+			else {
+				if (gameState.previousAction.peek() instanceof Unit) {		
+					//get unit from stack
+					Unit unit = (Unit) GameState.getPreviousAction();
+					Gui.removeHighlightTiles(out, GameState.board); //clearing board 
+					// Determine if Adjacent or Distanced Attack aka. move and attack
+					if (Utility.getValidTargets(GameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()], GameState.enemy, GameState.board).contains(gameState.board[tilex][tiley])) {
+						
+						Utility.adjacentAttack(unit, GameState.board[tilex][tiley].getOccupier());
+					} else if (gameState.validAttacks.contains(GameState.board[tilex][tiley])) {
+						
+						Utility.distancedAttack();
+					}
+				}
+			}		
 		}
 		
 		// check if tile is free - can only move to an empty place 
+		switch(status){
+			/* Stack empty */
+			case 0:
+				break;
+			/* Unit in stack */
+			case 1:
+				break;
+			/* Unit card in stack */
+			case 2:
+				Card card = (Card)gameState.previousAction.peek();
+				Tile tile = gameState.board[tilex][tiley];
+				Player player = gameState.getCurrentPlayer();
+				Player enemy = gameState.getEnemyPlayer();
+
+				if (Utility.validMove(out, card, player, enemy, tile, gameState.board)){
+					Utility.placeUnit(out, card, player, tile);
+					gameState.emptyPreviousAction();
+				}
+				break;
+			/* Spell card in stack */
+			case 3:
+				break;
+		}
+
 		if (gameState.board[tilex][tiley].getOccupier() == null && !gameState.previousAction.isEmpty()) {  
 			
 			if(gameState.validMoves.contains(gameState.board[tilex][tiley])) { // check if unit can move to selected tile
@@ -79,6 +122,9 @@ public class TileClicked implements EventProcessor{
 		}
 
 	}
+	
+	
+	
 
 	
 }			

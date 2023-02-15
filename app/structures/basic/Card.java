@@ -10,9 +10,12 @@ package structures.basic;
  * @author Dr. Richard McCreadie
  *
  */
-public class Card {
+public class Card implements Playable{
 	
 	int id;
+	public static int type;
+	public int positionInHand;
+	private boolean moveModifier;
 	
 	String cardname;
 	int manacost;
@@ -29,6 +32,21 @@ public class Card {
 		this.manacost = manacost;
 		this.miniCard = miniCard;
 		this.bigCard = bigCard;
+		setModifier(cardname);
+		System.out.println(cardname);
+		type = 2;
+	}
+	private void setModifier(String cardname){
+		moveModifier = false;
+		switch(cardname){
+			case "Ironcliff Guardian":
+				moveModifier = true;
+				return;
+			case "Planar Scout":
+				moveModifier = true;
+				return;
+		}
+
 	}
 	
 	public int getId() {
@@ -60,6 +78,15 @@ public class Card {
 	}
 	public void setBigCard(BigCard bigCard) {
 		this.bigCard = bigCard;
+	}
+	public void setPositionInHand(int pos){
+		positionInHand = pos;
+	}
+	public int getPositionInHand(){
+		return positionInHand;
+	}
+	public boolean getMoveModifier(){
+		return moveModifier;
 	}
 
 	

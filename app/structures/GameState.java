@@ -11,7 +11,9 @@ import structures.basic.Player;
 import structures.basic.Position;
 import structures.basic.Tile;
 import structures.basic.Unit;
-
+import structures.basic.SpellCard;
+import structures.basic.Card;
+import structures.basic.Playable;
 
 /**
  * This class can be used to hold information about the on-going game.
@@ -23,7 +25,15 @@ import structures.basic.Unit;
 public class GameState {
 
 	private static Player currentPlayer; // store who's round it currently is
+	private static Player enemyPlayer;
+
 	private Player humanPlayer;
+
+	private static int status;
+	private static final int PreviousActionEmpty = 0;
+	private static final int PreviousActionContainsUnit = 1;
+	private static final int PreviousActionContainsUnitCard = 2;
+	private static final int PreviousActionContainsSpellCard = 3;
 	
 	public static Player enemy;
 
@@ -35,16 +45,44 @@ public class GameState {
 	public Set<Tile> validAttacks = new HashSet<>();
 	
 //	stack of actions taken by the player
-	public static Stack<Object> previousAction = new Stack<Object>();	
+	public static Stack<Playable> previousAction = new Stack<Playable>();	
 	
-	public Tile[][] board = new Tile[9][5];
+	public static Tile[][] board = new Tile[9][5];
 	
 	public static Object getPreviousAction() {
 		return previousAction.pop();
 	}	
 	
-	public static void setPreviousAction(Object action) {
+	public static void setPreviousAction(Playable action) {
 		previousAction.push(action);
+		System.out.println(action.type);
+		if (action instanceof Unit){
+			status = PreviousActionContainsUnit;
+			return;
+		}
+		if (action instanceof SpellCard){
+			status = PreviousActionContainsSpellCard;
+			return;
+		}
+		if (action instanceof Card){
+			status = PreviousActionContainsUnitCard;
+			return;
+		}
+		return;
+	}
+
+	public static void emptyPreviousAction(){
+		previousAction.clear();
+		status = PreviousActionEmpty;
+		System.out.println("emptyprev");
+	}
+
+	public static int getStatus(){
+		return status;
+	}
+
+	public static Playable peekPreviousAction(){
+		return previousAction.peek();
 	}
 	
 	public static Player getCurrentPlayer() {
@@ -60,6 +98,10 @@ public class GameState {
 
 	public Player getHumanPlayer() {
 		return this.humanPlayer;
+	}
+
+	public static Player getEnemyPlayer() {
+		return enemyPlayer;
 	}
 
 }

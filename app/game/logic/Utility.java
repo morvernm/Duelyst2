@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Collections;
 
 import akka.actor.ActorRef;
 import commands.BasicCommands;
@@ -12,6 +13,13 @@ import structures.GameState;
 import structures.basic.Player;
 import structures.basic.Tile;
 import structures.basic.Unit;
+import structures.basic.BigCard;
+import structures.basic.Card;
+import structures.basic.UnitAnimationSet;
+import structures.basic.EffectAnimation;
+import structures.basic.Playable;
+import utils.BasicObjectBuilders;
+import utils.StaticConfFiles;
 
 
 public class Utility {
@@ -19,6 +27,96 @@ public class Utility {
 	 * This class is the utility class where methods with some main logic of the game will be provided
 	 * 
 	 */	
+	public static void placeUnit(ActorRef out, Card card, Player player, Tile tile){
+        EffectAnimation effect = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_summon);
+        BasicCommands.playEffectAnimation(out, effect, tile);
+
+        String unit_conf = StaticConfFiles.getUnitConf(card.getCardname());
+        int unit_id = card.getId();
+        Unit unit = BasicObjectBuilders.loadUnit(unit_conf, unit_id, Unit.class);
+        unit.setPositionByTile(tile);
+		BigCard bigCard = card.getBigCard();
+        unit.setAttack(bigCard.getAttack());
+        unit.setHealth(bigCard.getHealth());
+
+
+        tile.setOccupier(unit);
+        BasicCommands.drawUnit(out, unit, tile);
+		int positionInHand = card.getPositionInHand();
+		player.removeFromHand(positionInHand);
+		
+
+        player.updateMana(-card.getManacost());
+    }
+
+    public static Set<Tile> cardPlacements(Card card, Player player, Player enemy, Tile[][] board){
+        if (card.getManacost() > player.getMana()){
+             return null;
+        }
+
+        Set<Tile> validTiles = new HashSet<Tile>();
+
+
+        Set<Tile> playerUnits = getPlayerUnitPositions(player, board);
+        Set<Tile> enemyUnits = getEnemyUnitPositions(enemy, board);
+        /* if card can be played on all squares, return the board - occupied squares */
+        if (card.getMoveModifier()){
+            validTiles.removeAll(playerUnits);
+            validTiles.removeAll(enemyUnits);
+            return validTiles;
+        }
+
+        int x, y;
+        Set<Tile> validPlacements =  new HashSet<Tile>();
+
+        /* Add squares around player units to set. Return this minus occupied squares */
+        for (Tile tile : playerUnits){
+            x = tile.getTilex();
+            y = tile.getTiley();
+            for (int i = -1 ; i <= 1 ; i++){
+                for (int j = -1 ; j <= 1 ; j++){
+                    validPlacements.add(board[x + i][y + j]);
+                }
+            }
+        }
+        validPlacements.removeAll(playerUnits);
+        validPlacements.removeAll(enemyUnits);
+        return validPlacements;
+    }
+    public static Set<Tile> getPlayerUnitPositions(Player player, Tile[][] board){
+        Set<Tile> s = new HashSet<Tile>();
+        for (Unit unit : player.getUnits()){
+            /* Add unit to set of player positions */
+            s.add(board[unit.getPosition().getTilex()][unit.getPosition().getTiley()]);
+        }
+        return s;
+
+    }
+    public static Set<Tile> getEnemyUnitPositions(Player enemy, Tile[][] board){
+        Set<Tile> s = new HashSet<Tile>();
+        for (Unit unit : enemy.getUnits()){
+            /* Add unit to set of enemy positions */
+            s.add(board[unit.getPosition().getTilex()][unit.getPosition().getTiley()]);
+        }
+        return s;
+    }
+
+    public static boolean validMove(ActorRef out, Card card, Player player, Player enemy, Tile tile, Tile[][] board){
+        if (card.getManacost() > player.getMana()){
+            return false;
+        }
+        Set<Tile> s = cardPlacements(card, player, enemy, board);
+        if (s.contains(tile)){
+            return true;
+        }
+        return false;
+    }
+
+    public static Set<Tile> showValidMoves(Card card, Player player, Player enemy, Tile[][] board){
+        Set<Tile> s = cardPlacements(card, player, enemy, board);
+        return s;
+    }
+
 	public static Set<Tile> determineTargets(Tile tile, Set<Tile> positions, Player enemy, Tile[][] board){
 		
 		// Using Set so that the Tile Objects do not repeat for the last condition
@@ -41,6 +139,22 @@ public class Utility {
 		}
 		return validAttacks;
 	}
+	
+	public static void adjacentAttack(Unit attacker, Unit defender) {
+		System.out.println("Adjacent Attack Activated");
+		Gui.performAttack(attacker);
+
+				
+	}
+	
+	
+	public static void distancedAttack() {
+		System.out.println("Distanced Attack Activated");
+		
+	}
+	
+	
+	
 	
 	public static Set<Tile> getValidTargets(Tile tile, Player enemy, Tile[][] board){
 		
@@ -128,6 +242,14 @@ public class Utility {
 		}
 		return validTiles;
 	}	
+
+	public static Set<Tile> boardToSet(Tile[][] board){
+		Set<Tile> s = new HashSet<Tile>();
+		for (Tile[] a : board){
+			s.addAll(Arrays.asList(a));
+		}
+		return s;
+	}
 	
 	
 }
