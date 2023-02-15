@@ -56,6 +56,33 @@ public class Utility {
 		}
 		return validAttacks;
 	}
+	/*
+	 * Attacking logic
+	 */
+	public static void adjacentAttack(Unit attacker, Unit defender) {
+		
+		if (!attacker.hasAttacked()) {
+			Gui.performAttack(attacker);
+			
+			attacker.setAttacked();
+			
+			int newHealth = defender.getHealth()-attacker.getAttack();
+			defender.setHealth(newHealth);
+			Gui.setUnitStats(defender, defender.getHealth(), defender.getAttack());
+		} 
+	}
+	
+	
+	public static void distancedAttack() {
+		System.out.println("Distanced Attack Activated");
+		
+	}
+	
+	
+	
+	
+	
+	
 
 	public static Set<Tile> determineValidMoves(Tile[][] board, Unit unit) {
 

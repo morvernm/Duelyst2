@@ -33,24 +33,56 @@ public class TileClicked implements EventProcessor{
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
 		int tilex = message.get("tilex").asInt();
 		int tiley = message.get("tiley").asInt();
-
+		
+		// if there is a unit on the tile and the unit is not an enemy unit
 		if (gameState.board[tilex][tiley].getOccupier() != null) {  // check if selected tile has a unit on it
 			
-			
 			if (gameState.previousAction.isEmpty()) {
-				Unit unit = gameState.board[tilex][tiley].getOccupier();
 				
-				gameState.validMoves = Utility.determineValidMoves(gameState.board, unit);
-				Gui.highlightTiles(out, gameState.validMoves, 1);
+				if (!gameState.enemy.getUnits().contains(gameState.board[tilex][tiley].getOccupier())) {
+					
+					Unit unit = gameState.board[tilex][tiley].getOccupier();
+					
+					if (!unit.hasMoved() && !unit.hasAttacked()) {
+						gameState.validMoves = Utility.determineValidMoves(gameState.board, unit);
+						Gui.highlightTiles(out, gameState.validMoves, 1);
+						gameState.validAttacks = Utility.determineTargets(gameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()], gameState.validMoves, GameState.enemy, gameState.board);
+						Gui.highlightTiles(out, gameState.validAttacks, 2);
+						gameState.previousAction.push(unit);
+						
+					} else if (unit.hasMoved() && !unit.hasAttacked()) {
+						gameState.validAttacks = Utility.getValidTargets(gameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()], gameState.enemy, gameState.board);
+						Gui.highlightTiles(out, gameState.validAttacks, 2);
+						gameState.previousAction.push(unit);
+						
+					} else {
+						BasicCommands.addPlayer1Notification(out, "Unit can no longer move or attack", 5);
+					}
+				} else {
+					
+					BasicCommands.addPlayer1Notification(out, "Cannot select enemy units", 5);
+				}
 				
-				Gui.highlightTiles(out, Utility.determineTargets(gameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()], gameState.validMoves, GameState.enemy, gameState.board), 2);
+			} else {
 				
-				GameState.previousAction.push(unit);
-				
-				System.err.println("Added to the Stack " + GameState.previousAction.peek());
-				
-				
+				if (gameState.previousAction.peek() instanceof Unit) {
+
+					//get unit from stack
+					Unit unit = (Unit) GameState.getPreviousAction();
+					Gui.removeHighlightTiles(out, GameState.board); //clearing board 
+					
+					// Determine if Adjacent or Distanced Attack aka. move and attack
+					if (Utility.getValidTargets(GameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()], GameState.enemy, GameState.board).contains(gameState.board[tilex][tiley])) {
+						Utility.adjacentAttack(unit, GameState.board[tilex][tiley].getOccupier());
+						
+					} else if (gameState.validAttacks.contains(GameState.board[tilex][tiley])) {
+						Utility.distancedAttack();
+					} 
+					
+				}
+
 			}
+			
 		
 			
 		}
@@ -62,8 +94,7 @@ public class TileClicked implements EventProcessor{
 								
 				Unit unit = (Unit) GameState.getPreviousAction(); //get unit from stack 
 				
-				System.out.println("Can move " + unit.hasMoved());
-				
+									
 				gameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()].setOccupier(null); //clear unit from tile
 				
 				BasicCommands.moveUnitToTile(out, unit,gameState.board[tilex][tiley]); //move unit to chosen tiles
@@ -71,14 +102,18 @@ public class TileClicked implements EventProcessor{
 				
 				gameState.board[tilex][tiley].setOccupier(unit); //set unit as occupier of tiles
 				
-				
+				unit.setMoved();
 				Gui.removeHighlightTiles(out, gameState.board); //clearing board 
+				
 				
 			}
 //			need to do y movement too
 		}
 
 	}
+	
+	
+	
 
 	
 }			

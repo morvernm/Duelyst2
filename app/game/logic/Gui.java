@@ -12,7 +12,7 @@ import structures.basic.Tile;
 import akka.actor.CoordinatedShutdown;
 import structures.basic.Card;
 import structures.basic.Unit;
-
+import structures.basic.UnitAnimationType;
 import utils.BasicObjectBuilders;
 
 /*
@@ -36,14 +36,19 @@ public class Gui {
 	 *  mode 1 = movement and summon 
 	 *  mode 2 = attack 
 	 */
+	
+	/*
+	 * Highlighting moves and targers
+	 */
+	
 	public static void highlightTiles(ActorRef out, Set<Tile> tiles, int mode) {
 	
 		for (Tile tile : tiles) {
-			BasicCommands.addPlayer1Notification(out, "drawingAttackTile", 10);
+			//BasicCommands.addPlayer1Notification(out, "drawingAttackTile", 10);
 			
 			BasicCommands.drawTile(out, tile, mode);
 
-			try {Thread.sleep(20);} catch (InterruptedException e) {e.printStackTrace();}
+			try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 		}
 	}
 	
@@ -56,6 +61,37 @@ public class Gui {
 		}
 		highlightTiles(out, unhighlightedTiles, 0);
 	}
+	
+	
+	
+	/*
+	 * To perform attacks
+	 */
+	
+	public static void performAttack(Unit unit) {
+		BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.attack);
+		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+	}
+	/*
+	 * Update unit stats
+	 */
+	
+	public static void setUnitStats(Unit unit, int health, int attack) {
+		// setUnitHealth
+		try {Thread.sleep(200);} catch (InterruptedException e) {e.printStackTrace();}
+		BasicCommands.setUnitHealth(out, unit, health);
+		
+		try {Thread.sleep(200);} catch (InterruptedException e) {e.printStackTrace();}
+		BasicCommands.setUnitAttack(out, unit, attack);
+		
+	}
+	
+	
+	public static void printPlayerMessage(String message) {
+		BasicCommands.addPlayer1Notification(out, message, 5);
+	}
+	
+	
 		
 	/*
 	 To update cards in hand.
@@ -67,7 +103,7 @@ public class Gui {
 	public static void displayHumanHP(Player player){
 		BasicCommands.setPlayer1Health(out, player);
 	}
-
+	
 	public static void displayHumanMana(Player player) {
 		BasicCommands.setPlayer1Mana(out, player);
 	}

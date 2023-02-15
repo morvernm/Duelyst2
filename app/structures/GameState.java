@@ -23,7 +23,7 @@ import structures.basic.Unit;
 public class GameState {
 
 	private static Player currentPlayer; // store who's round it currently is
-	private Player humanPlayer;
+	private static Player humanPlayer;
 	
 	public static Player enemy;
 
@@ -37,7 +37,7 @@ public class GameState {
 //	stack of actions taken by the player
 	public static Stack<Object> previousAction = new Stack<Object>();	
 	
-	public Tile[][] board = new Tile[9][5];
+	public static Tile[][] board = new Tile[9][5];
 	
 	public static Object getPreviousAction() {
 		return previousAction.pop();
@@ -57,10 +57,22 @@ public class GameState {
 	public void setHumanPlayer(Player player) {
 		this.humanPlayer = player;
 	}
-
-	public Player getHumanPlayer() {
-		return this.humanPlayer;
+	
+	public static Player getHumanPlayer() {
+		return humanPlayer;
 	}
-
+	public static Player getAiPlayer() {
+		return enemy;
+	}
+	
+	public static Player getOtherPlayer() {
+		if (getCurrentPlayer().equals(humanPlayer)) {
+			return getAiPlayer();
+		} else {
+			return getHumanPlayer();
+		}
+	}
+	
+	
 }
 
