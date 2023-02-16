@@ -101,19 +101,21 @@ public class Initalize implements EventProcessor{
 		
 //		Unit enemyUnitTwo = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 2, Unit.class);
 //		enemyUnitTwo.setPositionByTile(gameState.board[4][1]); 
+//		gameState.board[4][1].setOccupier(enemyUnitTwo);
 //		BasicCommands.drawUnit(out, enemyUnitTwo, gameState.board[4][1]);
-//		enemy.setUnit(enemyUnitTwo);
+//		GameState.enemy.setUnit(enemyUnitTwo);
 //		
 //		Unit enemyUnit3 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 3, Unit.class);
-//		enemyUnit3.setPositionByTile(gameState.board[2][3]); 
-//		BasicCommands.drawUnit(out, enemyUnit3, gameState.board[2][3]);
-//		enemy.setUnit(enemyUnit3);
-		
+//		enemyUnit3.setPositionByTile(gameState.board[4][2]); 
+//		gameState.board[4][2].setOccupier(enemyUnit3);
+//		BasicCommands.drawUnit(out, enemyUnit3, gameState.board[4][2]);
+//		GameState.enemy.setUnit(enemyUnit3);
+//		
 //		Unit enemyUnit4 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 4, Unit.class);
-//		enemyUnit4.setPositionByTile(gameState.board[4][4]); 
-//		//gameState.board[4][4].setOccupier(enemyUnit4);
-//		BasicCommands.drawUnit(out, enemyUnit4, gameState.board[4][4]);
-//		enemy.setUnit(enemyUnit4);
+//		enemyUnit4.setPositionByTile(gameState.board[4][3]); 
+//		gameState.board[4][3].setOccupier(enemyUnit4);
+//		BasicCommands.drawUnit(out, enemyUnit4, gameState.board[4][3]);
+//		GameState.enemy.setUnit(enemyUnit4);
 		
 //		Unit enemyUnit5 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 5, Unit.class);
 //		enemyUnit5.setPositionByTile(gameState.board[4][3]); 

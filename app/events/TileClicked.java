@@ -76,7 +76,7 @@ public class TileClicked implements EventProcessor{
 						Utility.adjacentAttack(unit, GameState.board[tilex][tiley].getOccupier());
 						
 					} else if (gameState.validAttacks.contains(GameState.board[tilex][tiley])) {
-						Utility.distancedAttack();
+						Utility.distancedAttack(unit, GameState.board[tilex][tiley].getOccupier(), gameState.enemy);
 					} 
 					
 				}
@@ -93,17 +93,18 @@ public class TileClicked implements EventProcessor{
 			if(gameState.validMoves.contains(gameState.board[tilex][tiley])) { // check if unit can move to selected tile
 								
 				Unit unit = (Unit) GameState.getPreviousAction(); //get unit from stack 
-				
+
+				Utility.moveUnit(unit, gameState.board[tilex][tiley]);
 									
-				gameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()].setOccupier(null); //clear unit from tile
-				
-				BasicCommands.moveUnitToTile(out, unit,gameState.board[tilex][tiley]); //move unit to chosen tiles
-				unit.setPositionByTile(gameState.board[tilex][tiley]); //change position of unit to new tiles
-				
-				gameState.board[tilex][tiley].setOccupier(unit); //set unit as occupier of tiles
-				
-				unit.setMoved();
-				Gui.removeHighlightTiles(out, gameState.board); //clearing board 
+//				gameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()].setOccupier(null); //clear unit from tile
+//				
+//				BasicCommands.moveUnitToTile(out, unit,gameState.board[tilex][tiley]); //move unit to chosen tiles
+//				unit.setPositionByTile(gameState.board[tilex][tiley]); //change position of unit to new tiles
+//				
+//				gameState.board[tilex][tiley].setOccupier(unit); //set unit as occupier of tiles
+//				
+//				unit.setMoved();
+//				Gui.removeHighlightTiles(out, gameState.board); //clearing board 
 				
 				
 			}

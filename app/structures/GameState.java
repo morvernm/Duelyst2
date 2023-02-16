@@ -31,8 +31,8 @@ public class GameState {
 	public boolean something = false;
 	
 //	storing validMoves and valid Attacks
-	public Set<Tile> validMoves = new HashSet<>();
-	public Set<Tile> validAttacks = new HashSet<>();
+	public static Set<Tile> validMoves = new HashSet<>();
+	public static Set<Tile> validAttacks = new HashSet<>();
 	
 //	stack of actions taken by the player
 	public static Stack<Object> previousAction = new Stack<Object>();	

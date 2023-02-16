@@ -19,6 +19,14 @@ public class Utility {
 	 * This class is the utility class where methods with some main logic of the game will be provided
 	 * 
 	 */	
+	private static ActorRef out;
+
+	public Utility(ActorRef out) {
+		Utility.out = out;
+	}
+	
+	
+	
 	public static Set<Tile> determineTargets(Tile tile, Set<Tile> positions, Player enemy, Tile[][] board){
 		
 		// Using Set so that the Tile Objects do not repeat for the last condition
@@ -64,7 +72,7 @@ public class Utility {
 		if (!attacker.hasAttacked()) {
 			Gui.performAttack(attacker);
 			
-			attacker.setAttacked();
+			//attacker.setAttacked();
 			
 			int newHealth = defender.getHealth()-attacker.getAttack();
 			defender.setHealth(newHealth);
@@ -73,17 +81,83 @@ public class Utility {
 	}
 	
 	
-	public static void distancedAttack() {
+	public static void distancedAttack(Unit attacker, Unit defender, Player enemy) {
 		System.out.println("Distanced Attack Activated");
+		if (!attacker.hasAttacked() && !attacker.hasMoved()) {
+			
+			// Get the valid tiles from which the unit can attack
+			ArrayList<Tile> validTiles = getValidAttackTiles(defender);
+			
+			int minScore = Integer.MAX_VALUE;
+			Tile closestTile = null;
+			
+			// Find the closest/optimal position to attack from by scoring each option
+			for (Tile tile : validTiles) {
+				int score = 0;
+				score += Math.abs(tile.getTilex() - attacker.getPosition().getTilex());
+				score += Math.abs(tile.getTiley() - attacker.getPosition().getTiley());
+				if (score < minScore) {
+					minScore = score;
+					closestTile = tile;
+				}
+				
+			}
+			
+			// move unit to the closest tile
+			if (closestTile != null) {
+				System.out.println("The closest tile is: x = " + closestTile.getTilex() + " and y = " + closestTile.getTiley() + " score " + minScore);
+				moveUnit(attacker, closestTile);
+				if (minScore < 2) {
+					try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+				} else {
+					try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+				}
+				adjacentAttack(attacker, defender);
+			
+			}
+		}
+	}
+	
+	
+	/*
+	 * Gets the valid attack positions for distanced attacks (move first and then attack)
+	 */
+	
+	public static ArrayList<Tile> getValidAttackTiles(Unit unit) {
+		ArrayList<Tile> validTiles = new ArrayList<>();
 		
+		for (Tile tile : GameState.validMoves) {
+			int unitx = unit.getPosition().getTilex();
+			int unity = unit.getPosition().getTiley();
+			if (Math.abs(unitx - tile.getTilex()) < 2 && Math.abs(unity- tile.getTiley()) < 2 ) {
+				validTiles.add(tile);
+			}
+				
+		}
+		
+		for (Tile tile : validTiles) {
+			System.out.println("tile: x = " + tile.getTilex() + " and y = " + tile.getTiley());
+		}
+		
+		return validTiles;
 	}
 	
 	
 	
+	public static void moveUnit(Unit unit, Tile tile) {
+		GameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()].setOccupier(null); //clear unit from tile
+		
+		BasicCommands.moveUnitToTile(out, unit,tile); //move unit to chosen tiles
+		unit.setPositionByTile(tile); //change position of unit to new tiles
+		
+		tile.setOccupier(unit); //set unit as occupier of tiles
+		
+		//unit.setMoved();
+		Gui.removeHighlightTiles(out, GameState.board); //clearing board 
+	}
 	
 	
 	
-
 	public static Set<Tile> determineValidMoves(Tile[][] board, Unit unit) {
 
 		Set<Tile> validTiles = new HashSet<>();
