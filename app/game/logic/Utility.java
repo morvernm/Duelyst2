@@ -105,7 +105,9 @@ public class Utility {
 			
 			// move unit to the closest tile
 			if (closestTile != null) {
+				
 				System.out.println("The closest tile is: x = " + closestTile.getTilex() + " and y = " + closestTile.getTiley() + " score " + minScore);
+				
 				moveUnit(attacker, closestTile);
 				if (minScore < 2) {
 					try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
