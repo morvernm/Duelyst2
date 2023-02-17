@@ -14,11 +14,7 @@ import game.logic.Gui;
 import play.shaded.ahc.io.netty.util.internal.SystemPropertyUtil;
 import play.twirl.api.TemplateMagic;
 import structures.GameState;
-import structures.basic.Card;
-import structures.basic.Player;
-import structures.basic.Tile;
-import structures.basic.Unit;
-import structures.basic.UnitAnimationType;
+import structures.basic.*;
 import utils.BasicObjectBuilders;
 import utils.StaticConfFiles;
 
@@ -44,8 +40,8 @@ public class Initalize implements EventProcessor{
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
 		// hello this is a change
 		Player humanPlayer = createHumanPlayer(out);
-		gameState.setCurrentPlayer(humanPlayer);
 		gameState.setHumanPlayer(humanPlayer);
+		gameState.setCurrentPlayer(gameState.getHumanPlayer());
 		gameState.gameInitalised = true;
 		
 		gameState.something = true;
@@ -73,7 +69,7 @@ public class Initalize implements EventProcessor{
 				
 		
 		
-		GameState.enemy = new Player();
+		GameState.enemy = new AIPlayer();
 		
 		Unit enemyUnit = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 1, Unit.class);
 		

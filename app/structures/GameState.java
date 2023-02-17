@@ -49,7 +49,7 @@ public class GameState {
 	}
 	
 	public Player getCurrentPlayer() {
-		return currentPlayer;
+		return this.currentPlayer;
 	}
 	public void setCurrentPlayer(Player player) {
 		this.currentPlayer = player;
@@ -77,12 +77,13 @@ public class GameState {
 
 	// Hand control over between players
 	public void handOverControl() {
+		System.out.println(getCurrentPlayer() == getHumanPlayer());
 		if(getCurrentPlayer() == getHumanPlayer()){
 			setCurrentPlayer(getAIPlayer());
-			incrementTurn();
 		}
 		else {
 			setCurrentPlayer(getHumanPlayer());
+			incrementTurn();
 		}
 
 		// give new current player appropriate mana at beginning of their turn

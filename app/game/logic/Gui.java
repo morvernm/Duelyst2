@@ -72,6 +72,10 @@ public class Gui {
 		BasicCommands.setPlayer1Mana(out, player);
 	}
 
+	public static void displayAIMana(Player player) {
+		BasicCommands.setPlayer2Mana(out, player);
+	}
+
 	// draw unit on board
 	public static void drawUnit(Unit unit, Tile tile) {
 		BasicCommands.drawUnit(out, unit, tile);
