@@ -24,9 +24,8 @@ public class Player {
 	
 	public Player() {
 		super();
-
 		setHealth(20);
-		setMana(0);
+		setMana(2);
 		hand = new Card[6];
 		deck = new Deck(1);
 		this.units = new ArrayList<>();

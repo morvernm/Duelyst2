@@ -20,9 +20,15 @@ public class EndTurnClicked implements EventProcessor{
 
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
+
+		// Current player draws card, and loses all their unspent mana
 		gameState.getCurrentPlayer().drawCard();
 		gameState.getCurrentPlayer().setMana(0);
 		CardClicked.clearHighlighted();
+
+		gameState.handOverControl(); // give control to the other player once go is complete.
+
 	}
+
 
 }
