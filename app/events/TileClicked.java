@@ -1,6 +1,8 @@
 package events;
 
 
+import java.util.Set;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
@@ -34,18 +36,25 @@ public class TileClicked implements EventProcessor{
 		int tilex = message.get("tilex").asInt();
 		int tiley = message.get("tiley").asInt();
 		
-//		if tile has a unit on it and previously selected their unit. 
-
-		if (gameState.board[tilex][tiley].getOccupier() != null) {  // check if selected tile has a unit on it
-			if(gameState.validMoves.contains(gameState.board[tilex][tiley])) { // check if unit can move to selected tile
-				Unit unit = (Unit) GameState.getPreviousAction(); //get unit from stack 
-				gameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()].setOccupier(null); //clear unit from tile
-				BasicCommands.moveUnitToTile(out, unit,gameState.board[tilex][tiley]); //move unit to chosen tiles
-				unit.setPositionByTile(gameState.board[tilex][tiley]); //change position of unit to new tiles
-				gameState.board[tilex][tiley].setOccupier(unit); //set unit as occupier of tiles
-				Gui.removeHighlightTiles(out, gameState.board); //clearing board 
-			}
+//		if tile has a unit on it
+		if (gameState.getBoard()[tilex][tiley].getOccupier() != null) {  
+				Unit unit = gameState.getBoard()[tilex][tiley].getOccupier();
+				Set<Tile> validMoves = Utility.determineValidMoves(gameState.getBoard(), unit); //get valid tiles the unit can move to
+				Gui.highlightTiles(out, validMoves, 1); //highlight tiles
+//				gameState.getBoard()[unit.getPosition().getTilex()][unit.getPosition().getTiley()].setOccupier(null); //clear unit from tile
+				gameState.setPreviousAction(unit);
+				
+//			}
 //			need to do y movement too
+		}else if(gameState.getBoard()[tilex][tiley].getOccupier() == null && gameState.getPreviousAction() instanceof Unit) { 
+			Unit unit = (Unit) gameState.getPreviousAction(); //get unit from stack 
+				BasicCommands.moveUnitToTile(out, unit,gameState.getBoard()[tilex][tiley]); //move unit to chosen tiles
+				gameState.getBoard()[unit.getPosition().getTilex()][unit.getPosition().getTiley()].setOccupier(null); //clear unit from previous position
+				unit.setPositionByTile(gameState.getBoard()[tilex][tiley]); //change position of unit to new tiles
+				gameState.getBoard()[tilex][tiley].setOccupier(unit); //set unit as occupier of tiles
+				Gui.removeHighlightTiles(out, gameState.getBoard()); //clearing board 
+				unit.setMoved();
+//			}
 		}
 }
 }			

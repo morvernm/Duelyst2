@@ -30,15 +30,25 @@ public class GameState {
 	public Set<Tile> validAttacks = new HashSet<>();
 	
 //	stack of actions taken by the player
-	public static Stack<Object> previousAction = new Stack<Object>();	
+	protected static Stack<Object> previousAction = new Stack<Object>();	
 	
-	public Tile[][] board = new Tile[9][5];
+	private Tile[][] board = new Tile[9][5];
 	
-	public static Object getPreviousAction() {
+	public Object getPreviousAction() {
 		return previousAction.peek();
+	}
+	public void setPreviousAction(Object action) {
+		previousAction.add(action);
 	}
 	public static Player getPlayer() {
 		return currentPlayer;
 	}
+	public void setValidMoves(Set<Tile> validMoves) {
+		validMoves.add((Tile) validMoves);
+	}
+	public Tile[][] getBoard() {
+		return board;
+	}
+	
 
 }
