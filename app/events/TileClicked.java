@@ -83,14 +83,22 @@ public class TileClicked implements EventProcessor{
 		}
 
 	}
+
+	// Spell card helper function
 	private void handleSpellCasting(Unit target, Tile targetTile) {
+		// if player does not have enough mana, skip.
+		// if(!(GameState.getCurrentPlayer().getMana() >= GameState.getCurrentPlayer().getCard(CardClicked.getHandPosition()).getManacost())) return;
+
 		SpellCard spellCard = (SpellCard) GameState.previousAction.peek();
-		Boolean successfulSpell = spellCard.castSpell(target, targetTile);
+		boolean successfulSpell = spellCard.castSpell(target, targetTile);
 
 		if(successfulSpell) {
 			CardClicked.clearHighlighted();
 			GameState.previousAction.pop();
-			GameState.getCurrentPlayer().removeFromHand(CardClicked.getHandPosition());
+			GameState.getCurrentPlayer().removeFromHand(CardClicked.getHandPosition()); // remove card from hand
+			// decrement mana from player
+		//	GameState.getCurrentPlayer().setMana(GameState.getCurrentPlayer().getMana()
+		//			- GameState.getCurrentPlayer().getCard(CardClicked.getHandPosition()).getManacost());
 		}
 
 	}
