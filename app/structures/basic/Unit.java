@@ -2,6 +2,7 @@ package structures.basic;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import game.logic.Gui;
 
 /**
  * This is a representation of a Unit on the game board.
@@ -27,6 +28,8 @@ public class Unit {
 	ImageCorrection correction;
 
 	private int health;
+	//TODO 5 IS A TEST VALUE. MUST BE CHANGED ONCE UNITCARDS ARE IMPLEMENTED
+	private int maxHealth = 5; // This health value must never be exceeded when using healing spells
 	
 	private boolean attacked;
 	private boolean moved;
@@ -139,7 +142,12 @@ public class Unit {
 	}
 
 	public void setHealth(int health) {
+		Gui.setUnitHealth(this, health);
 		this.health = health;
+	}
+
+	public int getMaxHealth() {
+		return this.maxHealth;
 	}
 	
 	/**

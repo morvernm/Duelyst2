@@ -8,6 +8,7 @@ import commands.BasicCommands;
 import game.logic.Gui;
 import structures.GameState;
 import structures.basic.Card;
+import structures.basic.spellcards.Sundrop;
 import structures.basic.spellcards.Truestrike;
 
 import java.util.HashMap;
@@ -44,6 +45,9 @@ public class CardClicked implements EventProcessor{
 			if(gameState.getHumanPlayer().getCard(handPosition).getCardname().equals("Truestrike")){
 				GameState.setPreviousAction(new Truestrike());
 			}
+			else if(gameState.getHumanPlayer().getCard(handPosition).getCardname().equals("Sundrop Elixir")) {
+				GameState.setPreviousAction((new Sundrop()));
+			}
 		}
 	}
 
@@ -68,6 +72,7 @@ public class CardClicked implements EventProcessor{
 
 	public void initaliseSpellcards(){
 		spellcards.add("Truestrike");
+		spellcards.add("Sundrop Elixir");
 	}
 
 	public static int getHandPosition() {

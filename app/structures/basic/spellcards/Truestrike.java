@@ -15,8 +15,7 @@ public class Truestrike extends SpellCard {
             return false; // return false for friendly fire.
         }
 
-        target.setHealth(target.getHealth() - 2); // else, perform spell and return true.
-        Gui.setUnitHealth(target, target.getHealth() - 2);
+        target.setHealth(Math.max(target.getHealth() - 2, 0)); // else, perform spell and return true. Capped so doesn't go below 0.
         Gui.playEffectAnimation(BasicObjectBuilders.loadEffect(StaticConfFiles.f1_inmolation), targetTile);
         return true;
     }

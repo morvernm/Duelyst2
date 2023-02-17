@@ -39,6 +39,7 @@ public class TileClicked implements EventProcessor{
 
 			if(GameState.previousAction.peek() instanceof SpellCard && !(GameState.previousAction.isEmpty())) {
 				handleSpellCasting(gameState.board[tilex][tiley].getOccupier(),gameState.board[tilex][tiley]);
+				return;
 			}
 
 			if (gameState.previousAction.isEmpty()) {
