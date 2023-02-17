@@ -6,12 +6,11 @@ import akka.actor.ActorRef;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
+import akka.japi.Effect;
 import commands.BasicCommands;
-import structures.basic.Player;
-import structures.basic.Tile;
+import structures.basic.*;
 import akka.actor.CoordinatedShutdown;
-import structures.basic.Card;
-import structures.basic.Unit;
 
 import utils.BasicObjectBuilders;
 
@@ -79,6 +78,18 @@ public class Gui {
 
 	public static void highlightCard(Card card, int position) {
 		BasicCommands.drawCard(out, card, position,1);
+	}
+
+	public static void setUnitHealth(Unit unit, int health) {
+		BasicCommands.setUnitHealth(out, unit, health);
+	}
+
+	public static void playEffectAnimation(EffectAnimation effect, Tile tile) {
+		BasicCommands.playEffectAnimation(out, effect, tile);
+	}
+
+	public static void deleteCard(int position) {
+		BasicCommands.deleteCard(out, position);
 	}
 
 }

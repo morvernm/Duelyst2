@@ -68,6 +68,7 @@ public class Initalize implements EventProcessor{
 		unit.setPositionByTile(gameState.board[3][2]); 
 		gameState.board[3][2].setOccupier(unit);
 		BasicCommands.drawUnit(out, unit, gameState.board[3][2]);
+		humanPlayer.setUnit(unit);
 		
 		
 				
@@ -76,9 +77,10 @@ public class Initalize implements EventProcessor{
 		GameState.enemy = new Player();
 		
 		Unit enemyUnit = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 1, Unit.class);
+		GameState.enemy.equals(enemyUnit);
 		
 		enemyUnit.setPositionByTile(gameState.board[5][2]); 
-		//gameState.board[5][2].setOccupier(enemyUnit);
+		gameState.board[5][2].setOccupier(enemyUnit);
 		BasicCommands.drawUnit(out, enemyUnit, gameState.board[5][2]);
 		
 		GameState.enemy.setUnit(enemyUnit);

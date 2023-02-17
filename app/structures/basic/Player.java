@@ -65,6 +65,7 @@ public class Player {
 	public void removeFromHand(int position) { // remove a card from the hand at a given position
 		hand[position-1] = null; // Set position to null to remove card. Use range 1 - 6 to reflect front-end display logic.
 		cardsInHand--;
+		Gui.deleteCard(position);
 	}
 
 	public Deck getDeck() {

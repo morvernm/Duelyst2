@@ -25,6 +25,8 @@ public class Unit {
 	Position position;
 	UnitAnimationSet animations;
 	ImageCorrection correction;
+
+	private int health;
 	
 	private boolean attacked;
 	private boolean moved;
@@ -130,6 +132,14 @@ public class Unit {
 	}
 	public void clearAttacked() {
 		this.attacked = false;
+	}
+
+	public int getHealth() {
+		return this.health;
+	}
+
+	public void setHealth(int health) {
+		this.health = health;
 	}
 	
 	/**

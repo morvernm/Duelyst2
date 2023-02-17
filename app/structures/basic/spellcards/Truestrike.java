@@ -1,12 +1,23 @@
 package structures.basic.spellcards;
 
-import structures.basic.BigCard;
-import structures.basic.Card;
-import structures.basic.MiniCard;
+import game.logic.Gui;
+import structures.GameState;
+import structures.basic.*;
+import utils.BasicObjectBuilders;
+import utils.StaticConfFiles;
 
 public class Truestrike extends SpellCard {
 
-    public Truestrike(int id, String cardname, int manacost, MiniCard miniCard, BigCard bigCard) {
-        super(id, cardname, manacost, miniCard, bigCard);
+
+    @Override
+    public boolean castSpell(Unit target, Tile targetTile) {
+        if (GameState.getCurrentPlayer().getUnits().contains(target)) {
+            return false; // return false for friendly fire.
+        }
+
+        target.setHealth(target.getHealth() - 2); // else, perform spell and return true.
+        Gui.setUnitHealth(target, target.getHealth() - 2);
+        Gui.playEffectAnimation(BasicObjectBuilders.loadEffect(StaticConfFiles.f1_inmolation), targetTile);
+        return true;
     }
 }

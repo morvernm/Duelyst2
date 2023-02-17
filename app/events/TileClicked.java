@@ -11,6 +11,7 @@ import structures.GameState;
 import structures.basic.Player;
 import structures.basic.Tile;
 import structures.basic.Unit;
+import structures.basic.spellcards.SpellCard;
 import utils.BasicObjectBuilders;
 
 /**
@@ -35,8 +36,11 @@ public class TileClicked implements EventProcessor{
 		int tiley = message.get("tiley").asInt();
 
 		if (gameState.board[tilex][tiley].getOccupier() != null) {  // check if selected tile has a unit on it
-			
-			
+
+			if(GameState.previousAction.peek() instanceof SpellCard && !(GameState.previousAction.isEmpty())) {
+				handleSpellCasting(gameState.board[tilex][tiley].getOccupier(),gameState.board[tilex][tiley]);
+			}
+
 			if (gameState.previousAction.isEmpty()) {
 				Unit unit = gameState.board[tilex][tiley].getOccupier();
 				
@@ -76,6 +80,17 @@ public class TileClicked implements EventProcessor{
 				
 			}
 //			need to do y movement too
+		}
+
+	}
+	private void handleSpellCasting(Unit target, Tile targetTile) {
+		SpellCard spellCard = (SpellCard) GameState.previousAction.peek();
+		Boolean successfulSpell = spellCard.castSpell(target, targetTile);
+
+		if(successfulSpell) {
+			CardClicked.clearHighlighted();
+			GameState.previousAction.pop();
+			GameState.getCurrentPlayer().removeFromHand(CardClicked.getHandPosition());
 		}
 
 	}

@@ -8,6 +8,7 @@ import commands.BasicCommands;
 import game.logic.Gui;
 import structures.GameState;
 import structures.basic.Card;
+import structures.basic.spellcards.Truestrike;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,11 +27,24 @@ import java.util.HashSet;
  */
 public class CardClicked implements EventProcessor{
 	private static HashMap<Card, Integer> currentlyHighlighted = new HashMap<>();
+	private HashSet<String> spellcards = new HashSet<>();
+	private static int handPosition;
+
+	public CardClicked() {
+		initaliseSpellcards();
+	}
 
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
-		int handPosition = message.get("position").asInt();
+		this.handPosition = message.get("position").asInt();
 		highlightCard(handPosition, gameState);
+
+		if(spellcards.contains(gameState.getHumanPlayer().getCard(handPosition).getCardname())) { // if currently selected card is a spellcard
+			// Create an instance of the spellcard:
+			if(gameState.getHumanPlayer().getCard(handPosition).getCardname().equals("Truestrike")){
+				GameState.setPreviousAction(new Truestrike());
+			}
+		}
 	}
 
 
@@ -50,6 +64,14 @@ public class CardClicked implements EventProcessor{
 			});
 			currentlyHighlighted.clear();
 		}
+	}
+
+	public void initaliseSpellcards(){
+		spellcards.add("Truestrike");
+	}
+
+	public static int getHandPosition() {
+		return handPosition;
 	}
 }
 
