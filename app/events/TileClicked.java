@@ -42,7 +42,7 @@ public class TileClicked implements EventProcessor{
 		 */
 			if(!(GameState.previousAction.isEmpty())) {
 				if (GameState.previousAction.peek() instanceof SpellCard) {
-					handleSpellCasting(gameState.board[tilex][tiley].getOccupier(), gameState.board[tilex][tiley]);
+					handleSpellCasting(gameState.board[tilex][tiley].getOccupier(), gameState.board[tilex][tiley], out);
 					return;
 				}
 			}
@@ -91,22 +91,23 @@ public class TileClicked implements EventProcessor{
 	}
 
 	// Spell card helper function
-	private void handleSpellCasting(Unit target, Tile targetTile) {
+	private void handleSpellCasting(Unit target, Tile targetTile, ActorRef out) {
 		// if player does not have enough mana, skip.
 		// if(!(GameState.getCurrentPlayer().getMana() >= GameState.getCurrentPlayer().getCard(CardClicked.getHandPosition()).getManacost())) return;
 
-		SpellCard spellCard = (SpellCard) GameState.previousAction.peek();
+		SpellCard spellCard = (SpellCard) GameState.previousAction.pop();
+		spellCard.highlightTargets(out);
 		boolean successfulSpell = spellCard.castSpell(target, targetTile);
 
 		if(successfulSpell) {
 			CardClicked.clearHighlighted();
-			GameState.previousAction.pop();
 			GameState.getCurrentPlayer().removeFromHand(CardClicked.getHandPosition()); // remove card from hand
 			// decrement mana from player
 		//	GameState.getCurrentPlayer().setMana(GameState.getCurrentPlayer().getMana()
 		//			- GameState.getCurrentPlayer().getCard(CardClicked.getHandPosition()).getManacost());
 		}
-
+		CardClicked.clearHighlighted();
+		Gui.removeHighlightTiles(out, GameState.getBoard());
 	}
 
 	

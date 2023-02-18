@@ -8,6 +8,7 @@ import commands.BasicCommands;
 import game.logic.Gui;
 import structures.GameState;
 import structures.basic.Card;
+import structures.basic.spellcards.SpellCard;
 import structures.basic.spellcards.Sundrop;
 import structures.basic.spellcards.Truestrike;
 
@@ -46,7 +47,9 @@ public class CardClicked implements EventProcessor{
 				GameState.setPreviousAction(new Truestrike());
 			}
 			else if(gameState.getHumanPlayer().getCard(handPosition).getCardname().equals("Sundrop Elixir")) {
-				GameState.setPreviousAction((new Sundrop()));
+				SpellCard sundrop = new Sundrop();
+				GameState.setPreviousAction(sundrop);
+				sundrop.highlightTargets(out);
 			}
 		}
 	}

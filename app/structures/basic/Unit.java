@@ -30,7 +30,7 @@ public class Unit {
 
 	private int health;
 	//TODO 5 IS A TEST VALUE. MUST BE CHANGED ONCE UNITCARDS ARE IMPLEMENTED
-	private int maxHealth = 5; // This health value must never be exceeded when using healing spells
+	private int maxHealth = 20; // This health value must never be exceeded when using healing spells
 	
 	private boolean attacked;
 	private boolean moved;
@@ -151,8 +151,8 @@ public class Unit {
 			GameState.getAIPlayer().setHealth(health);
 		}
 
-		Gui.setUnitHealth(this, health);
 		this.health = health;
+		Gui.setUnitHealth(this, health);
 	}
 
 	public int getMaxHealth() {

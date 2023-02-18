@@ -1,10 +1,15 @@
 package structures.basic.spellcards;
 
+import akka.actor.ActorRef;
 import game.logic.Gui;
+import game.logic.Utility;
 import structures.GameState;
 import structures.basic.*;
 import utils.BasicObjectBuilders;
 import utils.StaticConfFiles;
+
+import java.util.ArrayList;
+import java.util.Set;
 
 public class Truestrike extends SpellCard {
 
@@ -19,5 +24,12 @@ public class Truestrike extends SpellCard {
         target.setHealth(Math.max(target.getHealth() - 2, 0)); // else, perform spell and return true. Capped so doesn't go below 0.
         Gui.playEffectAnimation(BasicObjectBuilders.loadEffect(StaticConfFiles.f1_inmolation), targetTile);
         return true;
+    }
+
+    @Override
+    public void highlightTargets(ActorRef out) {
+        ArrayList<Unit> units = GameState.getCurrentPlayer().getUnits();
+        Set<Tile> positions = Utility.getSpellTargetPositions(units);
+        Gui.highlightTiles(out,positions,2);
     }
 }

@@ -1,17 +1,24 @@
 package structures.basic.spellcards;
 
+import akka.actor.ActorRef;
 import game.logic.Gui;
+import game.logic.Utility;
 import structures.GameState;
-import structures.basic.BigCard;
-import structures.basic.MiniCard;
-import structures.basic.Tile;
-import structures.basic.Unit;
+import structures.basic.*;
 import utils.BasicObjectBuilders;
 import utils.StaticConfFiles;
 
+import java.util.ArrayList;
+import java.util.Set;
+
 public class Sundrop extends SpellCard {
 
-
+    // highlight valid targets for this particular spell
+    public void highlightTargets(ActorRef out) {
+        ArrayList<Unit> units = GameState.getCurrentPlayer().getUnits();
+        Set<Tile> positions = Utility.getSpellTargetPositions(units);
+        Gui.highlightTiles(out,positions,2);
+    }
     @Override
     public boolean castSpell(Unit target, Tile targetTile) {
         // Check the player owns this unit. This spell card can only be applied to friendlies

@@ -25,6 +25,7 @@ public class OtherClicked implements EventProcessor{
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
 		CardClicked.clearHighlighted();
+		Gui.removeHighlightTiles(out, GameState.getBoard());
 		
 	}
 

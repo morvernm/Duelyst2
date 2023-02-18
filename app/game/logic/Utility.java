@@ -57,6 +57,18 @@ public class Utility {
 		return validAttacks;
 	}
 
+	// Get positions of potential targets of a spell.
+	public static Set<Tile> getSpellTargetPositions(ArrayList<Unit> targets) {
+		HashSet<Tile> positions = new HashSet<>();
+
+		for (Unit unit : targets) {
+			int unitx = unit.getPosition().getTilex();
+			int unity = unit.getPosition().getTiley();
+			positions.add(GameState.getBoard()[unitx][unity]);
+		}
+		return positions;
+	}
+
 	public static Set<Tile> determineValidMoves(Tile[][] board, Unit unit) {
 
 		Set<Tile> validTiles = new HashSet<>();

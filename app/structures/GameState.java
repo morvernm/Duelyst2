@@ -39,7 +39,7 @@ public class GameState {
 //	stack of actions taken by the player
 	public static Stack<Object> previousAction = new Stack<Object>();	
 	
-	public Tile[][] board = new Tile[9][5];
+	public static Tile[][] board = new Tile[9][5];
 	
 	public static Object getPreviousAction() {
 		return previousAction.pop();
@@ -67,6 +67,10 @@ public class GameState {
 
 	public static Player getAIPlayer() {
 		return enemy;
+	}
+
+	public static Tile[][] getBoard() {
+		return board;
 	}
 
 
