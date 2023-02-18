@@ -36,10 +36,15 @@ public class TileClicked implements EventProcessor{
 		int tiley = message.get("tiley").asInt();
 
 		if (gameState.board[tilex][tiley].getOccupier() != null) {  // check if selected tile has a unit on it
-
-			if(GameState.previousAction.peek() instanceof SpellCard && !(GameState.previousAction.isEmpty())) {
-				handleSpellCasting(gameState.board[tilex][tiley].getOccupier(),gameState.board[tilex][tiley]);
-				return;
+		/*
+		if there are previous actions, and the last action was drawing a spell card,
+		play the spellcard
+		 */
+			if(!(GameState.previousAction.isEmpty())) {
+				if (GameState.previousAction.peek() instanceof SpellCard) {
+					handleSpellCasting(gameState.board[tilex][tiley].getOccupier(), gameState.board[tilex][tiley]);
+					return;
+				}
 			}
 
 			if (gameState.previousAction.isEmpty()) {
