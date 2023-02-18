@@ -12,6 +12,7 @@ import structures.GameState;
 import structures.basic.Player;
 import structures.basic.Tile;
 import structures.basic.Unit;
+import structures.basic.UnitAnimationType;
 
 
 public class Utility {
@@ -72,12 +73,29 @@ public class Utility {
 		if (!attacker.hasAttacked()) {
 			Gui.performAttack(attacker);
 			
-			//attacker.setAttacked();
+			attacker.setAttacked();
 			
 			int newHealth = defender.getHealth()-attacker.getAttack();
 			defender.setHealth(newHealth);
 			Gui.setUnitStats(defender, defender.getHealth(), defender.getAttack());
-			attacker.setAttacked();
+//			attacker.setAttacked();
+			
+			//unit death
+			if(defender.getHealth() <= 0) {
+				BasicCommands.addPlayer1Notification(out, "playUnitAnimation [Death]", 3);
+				BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.death);
+				try {Thread.sleep(3000);} catch (InterruptedException e) {e.printStackTrace();}
+				GameState.board[defender.getPosition().getTilex()][defender.getPosition().getTiley()].setOccupier(null); //remove unit from board
+				GameState.getAiPlayer().removeUnit(defender); //need to change this so that we check whose unit it is. remove unit from player units
+				//to do:  get hand position
+				//remove from hand
+				
+//				to do: if unit is an avatar
+//				if(Initalize.unit.equals(defender)) {
+//					
+//				}
+				
+			}
 		} 
 	}
 	

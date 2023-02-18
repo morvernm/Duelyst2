@@ -98,5 +98,8 @@ public class Player {
 	public void setUnit(Unit unit) {
 		this.units.add(unit);
 	}
+	public void removeUnit(Unit unit) {
+		this.units.remove(unit);
+	}
 
 }
