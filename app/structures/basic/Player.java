@@ -31,12 +31,12 @@ public class Player {
 		this.units = new ArrayList<>();
 	}
 	
-	public Player(int health, int mana) {
+	public Player(int health, int mana, int deckNum) {
 		super();
 		setHealth(health);
 		setMana(mana);
 		hand = new Card[6];
-		deck = new Deck(1);
+		deck = new Deck(deckNum);
 		this.units = new ArrayList<>();
 	}
 
