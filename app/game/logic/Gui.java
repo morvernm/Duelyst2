@@ -71,6 +71,10 @@ public class Gui {
 		BasicCommands.setPlayer1Mana(out, player);
 	}
 
+	public static void displayAIHP(Player player) {
+		BasicCommands.setPlayer2Health(out, player);
+	}
+
 	public static void displayAIMana(Player player) {
 		BasicCommands.setPlayer2Mana(out, player);
 	}
