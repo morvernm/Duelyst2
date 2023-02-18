@@ -77,6 +77,7 @@ public class Utility {
 			int newHealth = defender.getHealth()-attacker.getAttack();
 			defender.setHealth(newHealth);
 			Gui.setUnitStats(defender, defender.getHealth(), defender.getAttack());
+			attacker.setAttacked();
 		} 
 	}
 	
@@ -148,13 +149,10 @@ public class Utility {
 	
 	public static void moveUnit(Unit unit, Tile tile) {
 		GameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()].setOccupier(null); //clear unit from tile
-		
 		BasicCommands.moveUnitToTile(out, unit,tile); //move unit to chosen tiles
 		unit.setPositionByTile(tile); //change position of unit to new tiles
-		
 		tile.setOccupier(unit); //set unit as occupier of tiles
-		
-		//unit.setMoved();
+		unit.setMoved();
 		Gui.removeHighlightTiles(out, GameState.board); //clearing board 
 	}
 	
