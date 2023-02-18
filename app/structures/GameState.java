@@ -22,9 +22,11 @@ import structures.basic.Unit;
  */
 public class GameState {
 
+
 	private static Player currentPlayer; // store who's round it currently is
 	private static Player humanPlayer;
-	
+	private int turnNumber = 1;
+
 	public static Player enemy;
 
 	public boolean gameInitalised = false;
@@ -51,8 +53,8 @@ public class GameState {
 		return currentPlayer;
 	}
 
-	public void setCurrentPlayer(Player player) {
-		this.currentPlayer = player;
+	public static void setCurrentPlayer(Player player) {
+		currentPlayer = player;
 	}
 
 	public void setHumanPlayer(Player player) {
@@ -65,6 +67,30 @@ public class GameState {
 
 	public static Player getAIPlayer() {
 		return enemy;
+	}
+
+
+	public int getTurnNumber() {
+		return turnNumber;
+	}
+
+	public void incrementTurn(){
+		turnNumber++;
+	}
+
+	// Hand control over between players
+	public void handOverControl() {
+		System.out.println(getCurrentPlayer() == getHumanPlayer());
+		if(getCurrentPlayer() == getHumanPlayer()){
+			setCurrentPlayer(getAIPlayer());
+		}
+		else {
+			setCurrentPlayer(getHumanPlayer());
+			incrementTurn();
+		}
+
+		// give new current player appropriate mana at beginning of their turn
+		getCurrentPlayer().setMana(getTurnNumber() + 1);
 	}
 
 }
