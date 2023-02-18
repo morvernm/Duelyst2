@@ -23,7 +23,7 @@ import structures.basic.Unit;
 public class GameState {
 
 	private static Player currentPlayer; // store who's round it currently is
-	private Player humanPlayer;
+	private static Player humanPlayer;
 	
 	public static Player enemy;
 
@@ -50,6 +50,7 @@ public class GameState {
 	public static Player getCurrentPlayer() {
 		return currentPlayer;
 	}
+
 	public void setCurrentPlayer(Player player) {
 		this.currentPlayer = player;
 	}
@@ -58,8 +59,12 @@ public class GameState {
 		this.humanPlayer = player;
 	}
 
-	public Player getHumanPlayer() {
-		return this.humanPlayer;
+	public static Player getHumanPlayer() {
+		return humanPlayer;
+	}
+
+	public static Player getAIPlayer() {
+		return enemy;
 	}
 
 }
