@@ -106,8 +106,6 @@ public class TileClicked implements EventProcessor{
 		//	GameState.getCurrentPlayer().setMana(GameState.getCurrentPlayer().getMana()
 		//			- GameState.getCurrentPlayer().getCard(CardClicked.getHandPosition()).getManacost());
 		}
-		CardClicked.clearHighlighted();
-		Gui.removeHighlightTiles(out, GameState.getBoard());
 	}
 
 	

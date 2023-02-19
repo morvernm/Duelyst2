@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import akka.actor.ActorRef;
 import commands.BasicCommands;
 import game.logic.Gui;
+import game.logic.Utility;
 import structures.GameState;
 import structures.basic.Card;
 import structures.basic.spellcards.SpellCard;
@@ -29,7 +30,8 @@ import java.util.HashSet;
  */
 public class CardClicked implements EventProcessor{
 	private static HashMap<Card, Integer> currentlyHighlighted = new HashMap<>();
-	private HashSet<String> spellcards = new HashSet<>();
+	private HashMap<String, SpellCard> spellcards = new HashMap<String,SpellCard>();
+	private SpellCard currentSpellcard;
 	private static int handPosition;
 
 	public CardClicked() {
@@ -40,17 +42,19 @@ public class CardClicked implements EventProcessor{
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
 		this.handPosition = message.get("position").asInt();
 		highlightCard(handPosition, gameState);
+		Gui.removeHighlightTiles(out, GameState.getBoard());
+		// ensure there aren't duplicate spellcards already in the previousActions waiting to be played
+		if(GameState.previousAction.contains(currentSpellcard)) GameState.previousAction.remove(currentSpellcard);
 
-		if(spellcards.contains(gameState.getHumanPlayer().getCard(handPosition).getCardname())) { // if currently selected card is a spellcard
+		if(spellcards.get(gameState.getHumanPlayer().getCard(handPosition).getCardname()) != null) { // if currently selected card is a spellcard
 			// Create an instance of the spellcard:
-			if(gameState.getHumanPlayer().getCard(handPosition).getCardname().equals("Truestrike")){
-				GameState.setPreviousAction(new Truestrike());
-			}
-			else if(gameState.getHumanPlayer().getCard(handPosition).getCardname().equals("Sundrop Elixir")) {
-				SpellCard sundrop = new Sundrop();
-				GameState.setPreviousAction(sundrop);
-				sundrop.highlightTargets(out);
-			}
+			currentSpellcard = spellcards.get(gameState.getHumanPlayer().getCard(handPosition).getCardname()) ;
+
+			// Highlight tiles
+			currentSpellcard.highlightTargets(out);
+
+			GameState.setPreviousAction(currentSpellcard);
+
 		}
 	}
 
@@ -74,8 +78,8 @@ public class CardClicked implements EventProcessor{
 	}
 
 	public void initaliseSpellcards(){
-		spellcards.add("Truestrike");
-		spellcards.add("Sundrop Elixir");
+		spellcards.put("Truestrike", new Truestrike());
+		spellcards.put("Sundrop Elixir", new Sundrop());
 	}
 
 	public static int getHandPosition() {
