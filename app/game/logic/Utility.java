@@ -78,7 +78,9 @@ public class Utility {
             int newHealth = defender.getHealth() - attacker.getAttack();
             defender.setHealth(newHealth);
             Gui.setUnitStats(defender, defender.getHealth(), defender.getAttack());
+            
             counterAttack(attacker, defender);
+            
         }
     }
 
@@ -174,6 +176,8 @@ public class Utility {
 
         if (unit.getClass().equals(Windshrike.class) && !unit.hasMoved() && !unit.hasAttacked()) {
             return ((Windshrike) unit).specialAbility(board);
+            
+            
         } else if (!unit.hasMoved() && !unit.hasAttacked()) {
             int x = unit.getPosition().getTilex();
             int y = unit.getPosition().getTiley();
@@ -254,7 +258,15 @@ public class Utility {
                     if (i == x && j == y) {
                         continue; // this is where the unit (countAttacker) is
                     } else if (attacker.getPosition().getTilex() == i & attacker.getPosition().getTiley() == j) {
-                        adjacentAttack(countAttacker, attacker);
+                        //adjacentAttack(countAttacker, attacker);
+                    	Gui.performAttack(countAttacker);
+
+                        attacker.setAttacked();
+
+                        int newHealth = attacker.getHealth() - countAttacker.getAttack();
+                        attacker.setHealth(newHealth);
+                        Gui.setUnitStats(attacker, attacker.getHealth(), attacker.getAttack());
+                    	
                     }
                 }
             }
