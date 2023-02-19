@@ -93,7 +93,7 @@ public class TileClicked implements EventProcessor{
 					Utility.placeUnit(out, card, player, tile);
 					gameState.emptyPreviousAction();
 				}
-				break;
+				return;
 			/* Spell card in stack */
 			case 3:
 				break;
