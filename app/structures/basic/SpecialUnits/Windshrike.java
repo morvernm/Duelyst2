@@ -24,11 +24,4 @@ public class Windshrike extends Unit {
         }
         return validTiles;
     }
-
-    //    public Windshrike(int id, UnitAnimationType animation, Position position, UnitAnimationSet animations,
-//                      ImageCorrection correction) {
-//        super(id, animation, position, animations, correction);
-//        name = "Windshrike";
-//    }
-
 }
