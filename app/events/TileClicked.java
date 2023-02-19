@@ -86,8 +86,8 @@ public class TileClicked implements EventProcessor{
 			case 2:
 				Card card = (Card)gameState.previousAction.peek();
 				Tile tile = gameState.board[tilex][tiley];
-				Player player = gameState.getCurrentPlayer();
-				Player enemy = gameState.getEnemyPlayer();
+				Player player = gameState.currentPlayer;
+				Player enemy = gameState.enemy;
 
 				if (Utility.validMove(out, card, player, enemy, tile, gameState.board)){
 					Utility.placeUnit(out, card, player, tile);

@@ -24,10 +24,10 @@ import structures.basic.Playable;
  */
 public class GameState {
 
-	private static Player currentPlayer; // store who's round it currently is
-	private static Player enemyPlayer;
+	public static Player currentPlayer; // store who's round it currently is
+	public static Player enemyPlayer;
 
-	private Player humanPlayer;
+	public static Player humanPlayer;
 
 	private static int status;
 	private static final int PreviousActionEmpty = 0;
@@ -93,11 +93,11 @@ public class GameState {
 	}
 
 	public void setHumanPlayer(Player player) {
-		this.humanPlayer = player;
+		humanPlayer = player;
 	}
 
-	public Player getHumanPlayer() {
-		return this.humanPlayer;
+	public static Player getHumanPlayer() {
+		return humanPlayer;
 	}
 
 	public static Player getEnemyPlayer() {

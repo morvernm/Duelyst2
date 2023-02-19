@@ -94,7 +94,8 @@ public class Utility {
     }
     public static Set<Tile> getEnemyUnitPositions(Player enemy, Tile[][] board){
         Set<Tile> s = new HashSet<Tile>();
-        for (Unit unit : enemy.getUnits()){
+		ArrayList<Unit> uList = enemy.getUnits();
+        for (Unit unit : uList){
             /* Add unit to set of enemy positions */
             s.add(board[unit.getPosition().getTilex()][unit.getPosition().getTiley()]);
         }

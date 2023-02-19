@@ -94,7 +94,6 @@ public class Initalize implements EventProcessor{
 		enemyUnit.setHealth(20);
 		enemyUnit.setAttack(2);
 		
-		
 		GameState.enemy.setUnit(enemyUnit);
 		
 		
