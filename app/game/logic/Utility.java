@@ -13,6 +13,7 @@ import structures.basic.Player;
 import structures.basic.SpecialUnits.Windshrike;
 import structures.basic.Tile;
 import structures.basic.Unit;
+import structures.basic.UnitAnimationType;
 
 
 public class Utility {
@@ -72,12 +73,14 @@ public class Utility {
 
         if (!attacker.hasAttacked()) {
             Gui.performAttack(attacker);
-
+            BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.idle);
+            
             attacker.setAttacked();
 
             int newHealth = defender.getHealth() - attacker.getAttack();
             defender.setHealth(newHealth);
             Gui.setUnitStats(defender, defender.getHealth(), defender.getAttack());
+            
             
             counterAttack(attacker, defender);
             
@@ -166,6 +169,7 @@ public class Utility {
         tile.setOccupier(unit); //set unit as occupier of tiles
 
         //unit.setMoved();
+        
         Gui.removeHighlightTiles(out, GameState.board); //clearing board
     }
 
@@ -260,8 +264,8 @@ public class Utility {
                     } else if (attacker.getPosition().getTilex() == i & attacker.getPosition().getTiley() == j) {
                         //adjacentAttack(countAttacker, attacker);
                     	Gui.performAttack(countAttacker);
-
-                        attacker.setAttacked();
+                    	BasicCommands.playUnitAnimation(out, countAttacker, UnitAnimationType.idle);
+                        //attacker.setAttacked(); // - believe we dont need this
 
                         int newHealth = attacker.getHealth() - countAttacker.getAttack();
                         attacker.setHealth(newHealth);
