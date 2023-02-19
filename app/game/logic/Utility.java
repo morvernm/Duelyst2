@@ -10,6 +10,7 @@ import commands.BasicCommands;
 import structures.GameState;
 
 import structures.basic.Player;
+import structures.basic.SpecialUnits.Windshrike;
 import structures.basic.Tile;
 import structures.basic.Unit;
 
@@ -171,7 +172,9 @@ public class Utility {
 
         Set<Tile> validTiles = new HashSet<>();
 
-        if (!unit.hasMoved() && !unit.hasAttacked()) {
+        if (unit.getClass().equals(Windshrike.class) && !unit.hasMoved() && !unit.hasAttacked()) {
+            return ((Windshrike) unit).specialAbility(board);
+        } else if (!unit.hasMoved() && !unit.hasAttacked()) {
             int x = unit.getPosition().getTilex();
             int y = unit.getPosition().getTiley();
             // check one behind
