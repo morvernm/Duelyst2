@@ -42,7 +42,7 @@ public class Gui {
 			
 			BasicCommands.drawTile(out, tile, mode);
 
-			try {Thread.sleep(20);} catch (InterruptedException e) {e.printStackTrace();}
+			 try {Thread.sleep(1);} catch (InterruptedException e) {e.printStackTrace();}
 		}
 	}
 	

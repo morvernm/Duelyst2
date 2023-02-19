@@ -100,11 +100,12 @@ public class TileClicked implements EventProcessor{
 		boolean successfulSpell = spellCard.castSpell(target, targetTile);
 
 		if(successfulSpell) {
+			//decrement mana from player
+			GameState.getCurrentPlayer().setMana(GameState.getCurrentPlayer().getMana()
+					- GameState.getCurrentPlayer().getCard(CardClicked.getHandPosition()).getManacost());
 			CardClicked.clearHighlighted();
+			Gui.removeHighlightTiles(out, GameState.getBoard());
 			GameState.getCurrentPlayer().removeFromHand(CardClicked.getHandPosition()); // remove card from hand
-			// decrement mana from player
-		//	GameState.getCurrentPlayer().setMana(GameState.getCurrentPlayer().getMana()
-		//			- GameState.getCurrentPlayer().getCard(CardClicked.getHandPosition()).getManacost());
 		}
 	}
 
