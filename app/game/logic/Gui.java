@@ -65,12 +65,12 @@ public class Gui {
 	
 	public static void setUnitStats(Unit unit, int health, int attack) {
 		// setUnitHealth
-		BasicCommands.setUnitHealth(out, unit, health);
 		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+		BasicCommands.setUnitHealth(out, unit, health);
 		
 		// setUnitAttack
-		BasicCommands.setUnitAttack(out, unit, attack);
 		try {Thread.sleep(3000);} catch (InterruptedException e) {e.printStackTrace();}
+		BasicCommands.setUnitAttack(out, unit, attack);
 	}
 	
 	public static void setUnitStats(Unit unit, int health) {
