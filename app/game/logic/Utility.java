@@ -83,39 +83,13 @@ public class Utility {
 			
 			attacker.setAttacked(); // commented out to test that unit dies
 			
+			checkEndGame(defender);
 			counterAttack(attacker, defender);
-			checkEndGame(attacker, defender);
 			
-//			//unit death
-//			if(defender.getHealth() <= 0) {
-//				BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.death);
-//				try {Thread.sleep(3000);} catch (InterruptedException e) {e.printStackTrace();}
-//				GameState.board[defender.getPosition().getTilex()][defender.getPosition().getTiley()].setOccupier(null); //remove unit from tiles
-//				BasicCommands.deleteUnit(out, defender); //delete unit from board
-//				
-//	//		AI unit
-//				if(GameState.getAiPlayer().getUnits().contains(defender)) {
-//					GameState.getAiPlayer().removeUnit(defender); 
-//					
-//					GameState.getAiPlayer().setHealth(0); //for testing purposes
-//					
-//					if(GameState.getAiPlayer().getHealth() <= 0) {
-//						BasicCommands.addPlayer1Notification(out, "Player 1 wins!", 20);
-//						//game over:
-//					}
-//					
-//	//		Human unit
-//				}else if(GameState.getHumanPlayer().getUnits().contains(defender)) {
-//					GameState.getHumanPlayer().removeUnit(defender);
-//					if(GameState.getHumanPlayer().getHealth() <= 0) {
-//						BasicCommands.addPlayer1Notification(out, "You lose!", 20);
-//					}
-//				}	
-//			}
 		}
 	}
 	
-	public static void checkEndGame(Unit attacker, Unit defender) {
+	public static void checkEndGame(Unit defender) {
 	
 		//unit death
 		if(defender.getHealth() <= 0) {
@@ -331,7 +305,7 @@ public class Utility {
                         attacker.setHealth(newHealth);
                         Gui.setUnitStats(attacker, attacker.getHealth(), attacker.getAttack());
                         
-                        checkEndGame(countAttacker, attacker);
+                        checkEndGame(attacker);
                     	
                     }
                 }
