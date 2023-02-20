@@ -17,11 +17,11 @@ import structures.GameState;
  * @author Dr. Richard McCreadie
  *
  */
-public class Unit {
+public class Unit implements Playable{
 
 	@JsonIgnore
 	protected static ObjectMapper mapper = new ObjectMapper(); // Jackson Java Object Serializer, is used to read java objects from a file
-	
+	public static int type;
 	int id;
 	UnitAnimationType animation;
 	Position position;
@@ -37,11 +37,11 @@ public class Unit {
 
 	private int attack;	
 	
-	
 	public Unit() {
 		
 		this.attacked = false;
 		this.moved = false;
+		type = 1;
 	}
 	
 	public Unit(int id, UnitAnimationSet animations, ImageCorrection correction) {
@@ -55,6 +55,7 @@ public class Unit {
 		
 		this.attacked = false;
 		this.moved = false;
+		type = 1;
 	}
 	
 	public Unit(int id, UnitAnimationSet animations, ImageCorrection correction, Tile currentTile) {
@@ -68,6 +69,7 @@ public class Unit {
 		
 		this.attacked = false;
 		this.moved = false;
+		type = 1;
 	}
 		
 	public Unit(int id, UnitAnimationType animation, Position position, UnitAnimationSet animations,
@@ -81,6 +83,7 @@ public class Unit {
 		
 		this.attacked = false;
 		this.moved = false;
+		type = 1;
 	}
 
 	public int getId() {
@@ -169,6 +172,7 @@ public class Unit {
 	public int getAttack() {
 		return this.attack;
 	}
+	
 	
 	/**
 	 * This command sets the position of the Unit to a specified

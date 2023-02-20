@@ -45,11 +45,16 @@ public class Initalize implements EventProcessor{
 
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
-		// hello this is a change
+		
 		Player humanPlayer = createHumanPlayer(out);
+
+		GameState.setTotalUnits(); 
+
 		gameState.setHumanPlayer(humanPlayer);
 		gameState.setCurrentPlayer(gameState.getHumanPlayer());
 		gameState.gameInitalised = true;
+		gameState.emptyPreviousAction();
+
 		
 		gameState.something = true;
 		
@@ -74,15 +79,12 @@ public class Initalize implements EventProcessor{
 
 		gameState.getHumanPlayer().setUnit(unit);
 
+		GameState.modifiyTotalUnits(1);
 		
-		/*
-		 *  Set the stats of the avatar
-		 */
-		
-		Gui.setUnitStats(unit, 20, 2);
-		
+		Gui.setUnitStats(unit, gameState.getHumanPlayer().getHealth(), 2);
 		unit.setHealth(gameState.getHumanPlayer().getHealth());
 		unit.setAttack(2);
+		
 		
 		/*
 		 * TEST
@@ -127,75 +129,7 @@ public class Initalize implements EventProcessor{
 		unit.setHealth(humanPlayer.getHealth());
 		enemyUnit.setHealth(GameState.enemy.getHealth());
 
-		
-		
-//		Unit enemyUnitTwo = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 2, Unit.class);
-//		enemyUnitTwo.setPositionByTile(gameState.board[4][1]); 
-//		gameState.board[4][1].setOccupier(enemyUnitTwo);
-//		BasicCommands.drawUnit(out, enemyUnitTwo, gameState.board[4][1]);
-//		GameState.enemy.setUnit(enemyUnitTwo);
-//		
-//		Unit enemyUnit3 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 3, Unit.class);
-//		enemyUnit3.setPositionByTile(gameState.board[4][2]); 
-//		gameState.board[4][2].setOccupier(enemyUnit3);
-//		BasicCommands.drawUnit(out, enemyUnit3, gameState.board[4][2]);
-//		GameState.enemy.setUnit(enemyUnit3);
-//		
-//		Unit enemyUnit4 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 4, Unit.class);
-//		enemyUnit4.setPositionByTile(gameState.board[4][3]); 
-//		gameState.board[4][3].setOccupier(enemyUnit4);
-//		BasicCommands.drawUnit(out, enemyUnit4, gameState.board[4][3]);
-//		GameState.enemy.setUnit(enemyUnit4);
-		
-//		Unit enemyUnit5 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 5, Unit.class);
-//		enemyUnit5.setPositionByTile(gameState.board[4][3]); 
-//		BasicCommands.drawUnit(out, enemyUnit5, gameState.board[4][3]);
-//		enemy.setUnit(enemyUnit5);
-//		
-//		Unit enemyUnit6 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 6, Unit.class);
-//		enemyUnit6.setPositionByTile(gameState.board[2][2]); 
-//		BasicCommands.drawUnit(out, enemyUnit6, gameState.board[2][2]);
-//		enemy.setUnit(enemyUnit6);
-//		
-//		Unit enemyUnit7 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 6, Unit.class);
-//		enemyUnit7.setPositionByTile(gameState.board[2][1]); 
-//		BasicCommands.drawUnit(out, enemyUnit7, gameState.board[2][1]);
-//		enemy.setUnit(enemyUnit7);
-		
-//		Unit enemyUnit8 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 7, Unit.class);
-//		enemyUnit8.setPositionByTile(gameState.board[1][1]); 
-//		gameState.board[1][1].setOccupier(enemyUnit8);
-//		BasicCommands.drawUnit(out, enemyUnit8, gameState.board[1][1]);
-//		enemy.setUnit(enemyUnit8);
-//		
-//		Unit enemyUnit9 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 6, Unit.class);
-//		enemyUnit9.setPositionByTile(gameState.board[0][4]); 
-//		//gameState.board[0][4].setOccupier(enemyUnit9);
-//		BasicCommands.drawUnit(out, enemyUnit9, gameState.board[0][4]);
-//		enemy.setUnit(enemyUnit9);
-		
-		
-	
-		
-//		Set<Tile> validMoves= Utility.determineValidMoves(gameState.board, gameState.board[3][2].getOccupier());
-//		
-//		Gui.highlightTiles(out, validMoves, 1);
-//		
-//		
-//		Gui.highlightTiles(out, Utility.determineTargets(gameState.board[3][2], validMoves, enemy, gameState.board), 2);
-		
-//		/*
-//		 * moving units
-//		 */
-//		// update reference to null 
-//		gameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()].setOccupier(null);
-//		BasicCommands.moveUnitToTile(out, unit, gameState.board[5][1], true);
-//		unit.setPositionByTile(gameState.board[5][1]); 
-//		//BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.move);
-//		gameState.board[5][1].setOccupier(unit);
-//		try {Thread.sleep(4000);} catch (InterruptedException e) {e.printStackTrace();}
-//		Gui.removeHighlightTiles(out, gameState.board);
-		
+
 	}
 	
 	

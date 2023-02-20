@@ -48,6 +48,7 @@ public class Gui {
 	
 		for (Tile tile : tiles) {			
 			BasicCommands.drawTile(out, tile, mode);
+
 			try {Thread.sleep(1);} catch (InterruptedException e) {e.printStackTrace();}
 		}
 		
@@ -62,21 +63,21 @@ public class Gui {
 		}
 		highlightTiles(out, unhighlightedTiles, 0);
 	}
-	
-	
+
 	
 	/*
 	 * To perform attacks
 	 */
 	
+
 	public static void performAttack(Unit unit) {
 		BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.attack);
 		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 	}
+
 	/*
 	 * Update unit stats
 	 */
-	
 	public static void setUnitStats(Unit unit, int health, int attack) {
 		// setUnitHealth
 		try {Thread.sleep(200);} catch (InterruptedException e) {e.printStackTrace();}
@@ -93,6 +94,14 @@ public class Gui {
 	}
 	
 	
+	public static void setUnitStats(Unit unit, int health) {
+		
+		// setUnitHealth
+		BasicCommands.setUnitHealth(out, unit, health);
+		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+
+	}
+
 		
 	/*
 	 To update cards in hand.

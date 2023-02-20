@@ -55,6 +55,9 @@ public class Player {
 		this.mana = Math.min(mana, 9); // cap the max amount of mana a player can have at 9, as per GUI.
 		Gui.displayHumanMana(this);
 	}
+	public void updateMana(int mana){
+		setMana(this.mana + mana);
+	}
 
 	// get a card at a specified position in a player's hand
 	public Card getCard(int position) {

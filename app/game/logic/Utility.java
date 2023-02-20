@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Collections;
 
 import akka.actor.ActorRef;
 import commands.BasicCommands;
@@ -13,8 +14,16 @@ import structures.basic.Player;
 import structures.basic.SpecialUnits.Windshrike;
 import structures.basic.Tile;
 import structures.basic.Unit;
+
 import structures.basic.UnitAnimationType;
 
+import structures.basic.BigCard;
+import structures.basic.Card;
+import structures.basic.UnitAnimationSet;
+import structures.basic.EffectAnimation;
+import structures.basic.Playable;
+import utils.BasicObjectBuilders;
+import utils.StaticConfFiles;
 
 public class Utility {
 	
@@ -70,7 +79,6 @@ public class Utility {
     /*
      * Attacking logic
      */
-        
 	public static void adjacentAttack(Unit attacker, Unit defender) {
 			
 		if (!attacker.hasAttacked()) {
@@ -85,44 +93,10 @@ public class Utility {
 			
 			checkEndGame(defender);
 			counterAttack(attacker, defender);
-			
 		}
 	}
 	
-	public static void checkEndGame(Unit defender) {
-	
-		//unit death
-		if(defender.getHealth() <= 0) {
-			BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.death);
-			try {Thread.sleep(3000);} catch (InterruptedException e) {e.printStackTrace();}
-			GameState.board[defender.getPosition().getTilex()][defender.getPosition().getTiley()].setOccupier(null); //remove unit from tiles
-			BasicCommands.deleteUnit(out, defender); //delete unit from board
-			
-//		AI unit
-			if(GameState.getAiPlayer().getUnits().contains(defender)) {
-				GameState.getAiPlayer().removeUnit(defender); 
-				
-				GameState.getAiPlayer().setHealth(0); //for testing purposes
-				
-				if(GameState.getAiPlayer().getHealth() <= 0) {
-					BasicCommands.addPlayer1Notification(out, "Player 1 wins!", 20);
-					//game over:
-				}
-				
-//		Human unit
-			}else if(GameState.getHumanPlayer().getUnits().contains(defender)) {
-				GameState.getHumanPlayer().removeUnit(defender);
-				if(GameState.getHumanPlayer().getHealth() <= 0) {
-					BasicCommands.addPlayer1Notification(out, "You lose!", 20);
-				}
-			}	
-		}
-		
-	}
-	
-	
-	
-    public static void distancedAttack(Unit attacker, Unit defender, Player enemy) {
+	public static void distancedAttack(Unit attacker, Unit defender, Player enemy) {
         System.out.println("Distanced Attack Activated");
         if (!attacker.hasAttacked() && !attacker.hasMoved()) {
 
@@ -168,9 +142,8 @@ public class Utility {
             }
         }
     }
-
-
-    /*
+	
+	 /*
      * Gets the valid attack positions for distanced attacks (move first and then attack)
      */
 
@@ -193,6 +166,156 @@ public class Utility {
         return validTiles;
     }
 
+	
+	public static void placeUnit(ActorRef out, Card card, Player player, Tile tile){
+		
+		/* Set unit id to number of total units on board + 1 */
+        String unit_conf = StaticConfFiles.getUnitConf(card.getCardname());
+        int unit_id = GameState.getTotalUnits();
+        Unit unit = BasicObjectBuilders.loadUnit(unit_conf, unit_id, Unit.class);
+        unit.setPositionByTile(tile);
+
+		GameState.modifiyTotalUnits(1);
+		
+		player.setUnit(unit);
+
+		EffectAnimation effect = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_summon);
+        BasicCommands.playEffectAnimation(out, effect, tile);
+		BasicCommands.drawUnit(out, unit, tile);
+
+
+		BigCard bigCard = card.getBigCard();
+		int attack = bigCard.getAttack();
+		int health = bigCard.getHealth();
+		Gui.setUnitStats(unit, health, attack);
+        unit.setAttack(attack);
+        unit.setHealth(health);
+
+		GameState.modifiyTotalUnits(1);
+        tile.setOccupier(unit);
+
+		
+		Gui.setUnitStats(unit, health, attack);
+
+		int positionInHand = card.getPositionInHand();
+		player.removeFromHand(positionInHand);
+		BasicCommands.deleteCard(out, positionInHand);
+		player.setUnit(unit);
+        player.updateMana(-card.getManacost());
+		if (GameState.getHumanPlayer() == player){
+			BasicCommands.setPlayer1Mana(out, player);
+		}
+		else {
+			BasicCommands.setPlayer2Mana(out, player);
+		}
+
+
+    }
+
+    public static Set<Tile> cardPlacements(Card card, Player player, Player enemy, Tile[][] board){
+        if (card.getManacost() > player.getMana()){
+             return null;
+        }
+
+        Set<Tile> validTiles = new HashSet<Tile>();
+
+
+        Set<Tile> playerUnits = getPlayerUnitPositions(player, board);
+        Set<Tile> enemyUnits = getEnemyUnitPositions(enemy, board);
+        /* if card can be played on all squares, return the board - occupied squares */
+        if (card.getMoveModifier()){
+            validTiles.removeAll(playerUnits);
+            validTiles.removeAll(enemyUnits);
+            return validTiles;
+        }
+
+        int x, y;
+        Set<Tile> validPlacements =  new HashSet<Tile>();
+
+        /* Add squares around player units to set. Return this minus occupied squares */
+        for (Tile tile : playerUnits){
+            x = tile.getTilex();
+            y = tile.getTiley();
+            for (int i = -1 ; i <= 1 ; i++){
+                for (int j = -1 ; j <= 1 ; j++){
+                    validPlacements.add(board[x + i][y + j]);
+                }
+            }
+        }
+        validPlacements.removeAll(playerUnits);
+        validPlacements.removeAll(enemyUnits);
+        return validPlacements;
+    }
+    
+    public static Set<Tile> getPlayerUnitPositions(Player player, Tile[][] board){
+        Set<Tile> s = new HashSet<Tile>();
+        for (Unit unit : player.getUnits()){
+            /* Add unit to set of player positions */
+            s.add(board[unit.getPosition().getTilex()][unit.getPosition().getTiley()]);
+        }
+        return s;
+
+    }
+    
+    public static Set<Tile> getEnemyUnitPositions(Player enemy, Tile[][] board){
+        Set<Tile> s = new HashSet<Tile>();
+		ArrayList<Unit> uList = enemy.getUnits();
+        for (Unit unit : uList){
+            /* Add unit to set of enemy positions */
+            s.add(board[unit.getPosition().getTilex()][unit.getPosition().getTiley()]);
+        }
+        return s;
+    }
+
+    public static boolean validMove(ActorRef out, Card card, Player player, Player enemy, Tile tile, Tile[][] board){
+        if (card.getManacost() > player.getMana()){
+            return false;
+        }
+        Set<Tile> s = cardPlacements(card, player, enemy, board);
+        if (s.contains(tile)){
+            return true;
+        }
+        return false;
+    }
+    
+    
+
+    public static Set<Tile> showValidMoves(Card card, Player player, Player enemy, Tile[][] board){
+        Set<Tile> s = cardPlacements(card, player, enemy, board);
+        return s;
+    }
+    
+    
+
+	public static void checkEndGame(Unit defender) {
+		//unit death
+		if(defender.getHealth() <= 0) {
+			BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.death);
+			try {Thread.sleep(3000);} catch (InterruptedException e) {e.printStackTrace();}
+			GameState.board[defender.getPosition().getTilex()][defender.getPosition().getTiley()].setOccupier(null); //remove unit from tiles
+			BasicCommands.deleteUnit(out, defender); //delete unit from board
+			
+//		AI unit
+			if(GameState.getAiPlayer().getUnits().contains(defender)) {
+				GameState.getAiPlayer().removeUnit(defender); 
+				
+				GameState.getAiPlayer().setHealth(0); //for testing purposes <= DOES THIS NEED TO GO???
+				
+				if(GameState.getAiPlayer().getHealth() <= 0) {
+					BasicCommands.addPlayer1Notification(out, "Player 1 wins!", 20);
+					//game over:
+				}
+				
+//		Human unit
+			}else if(GameState.getHumanPlayer().getUnits().contains(defender)) {
+				GameState.getHumanPlayer().removeUnit(defender);
+				if(GameState.getHumanPlayer().getHealth() <= 0) {
+					BasicCommands.addPlayer1Notification(out, "You lose!", 20);
+				}
+			}	
+		}
+	}
+	
 
     public static void moveUnit(Unit unit, Tile tile) {
         GameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()].setOccupier(null); //clear unit from tile
@@ -324,5 +447,13 @@ public class Utility {
 		}
 		return positions;
 	}
-	
+
+	public static Set<Tile> boardToSet(Tile[][] board){
+		Set<Tile> s = new HashSet<Tile>();
+		for (Tile[] a : board){
+			s.addAll(Arrays.asList(a));
+		}
+		return s;
+	}
+
 }
