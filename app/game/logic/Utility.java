@@ -17,6 +17,7 @@ import structures.basic.UnitAnimationType;
 
 
 public class Utility {
+	
     /*
      * This class is the utility class where methods with some main logic of the game will be provided
      *
@@ -69,25 +70,84 @@ public class Utility {
     /*
      * Attacking logic
      */
-    public static void adjacentAttack(Unit attacker, Unit defender) {
-
-        if (!attacker.hasAttacked()) {
-            Gui.performAttack(attacker);
-            BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.idle);
-            
-            attacker.setAttacked();
-
-            int newHealth = defender.getHealth() - attacker.getAttack();
-            defender.setHealth(newHealth);
-            Gui.setUnitStats(defender, defender.getHealth(), defender.getAttack());
-            
-            
-            counterAttack(attacker, defender);
-            
-        }
-    }
-
-
+        
+	public static void adjacentAttack(Unit attacker, Unit defender) {
+			
+		if (!attacker.hasAttacked()) {
+			Gui.performAttack(attacker);
+			BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.idle);
+			
+			int newHealth = defender.getHealth()-attacker.getAttack();
+			defender.setHealth(newHealth);
+			Gui.setUnitStats(defender, defender.getHealth(), defender.getAttack());
+			
+			attacker.setAttacked(); // commented out to test that unit dies
+			
+			counterAttack(attacker, defender);
+			checkEndGame(attacker, defender);
+			
+//			//unit death
+//			if(defender.getHealth() <= 0) {
+//				BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.death);
+//				try {Thread.sleep(3000);} catch (InterruptedException e) {e.printStackTrace();}
+//				GameState.board[defender.getPosition().getTilex()][defender.getPosition().getTiley()].setOccupier(null); //remove unit from tiles
+//				BasicCommands.deleteUnit(out, defender); //delete unit from board
+//				
+//	//		AI unit
+//				if(GameState.getAiPlayer().getUnits().contains(defender)) {
+//					GameState.getAiPlayer().removeUnit(defender); 
+//					
+//					GameState.getAiPlayer().setHealth(0); //for testing purposes
+//					
+//					if(GameState.getAiPlayer().getHealth() <= 0) {
+//						BasicCommands.addPlayer1Notification(out, "Player 1 wins!", 20);
+//						//game over:
+//					}
+//					
+//	//		Human unit
+//				}else if(GameState.getHumanPlayer().getUnits().contains(defender)) {
+//					GameState.getHumanPlayer().removeUnit(defender);
+//					if(GameState.getHumanPlayer().getHealth() <= 0) {
+//						BasicCommands.addPlayer1Notification(out, "You lose!", 20);
+//					}
+//				}	
+//			}
+		}
+	}
+	
+	public static void checkEndGame(Unit attacker, Unit defender) {
+	
+		//unit death
+		if(defender.getHealth() <= 0) {
+			BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.death);
+			try {Thread.sleep(3000);} catch (InterruptedException e) {e.printStackTrace();}
+			GameState.board[defender.getPosition().getTilex()][defender.getPosition().getTiley()].setOccupier(null); //remove unit from tiles
+			BasicCommands.deleteUnit(out, defender); //delete unit from board
+			
+//		AI unit
+			if(GameState.getAiPlayer().getUnits().contains(defender)) {
+				GameState.getAiPlayer().removeUnit(defender); 
+				
+				GameState.getAiPlayer().setHealth(0); //for testing purposes
+				
+				if(GameState.getAiPlayer().getHealth() <= 0) {
+					BasicCommands.addPlayer1Notification(out, "Player 1 wins!", 20);
+					//game over:
+				}
+				
+//		Human unit
+			}else if(GameState.getHumanPlayer().getUnits().contains(defender)) {
+				GameState.getHumanPlayer().removeUnit(defender);
+				if(GameState.getHumanPlayer().getHealth() <= 0) {
+					BasicCommands.addPlayer1Notification(out, "You lose!", 20);
+				}
+			}	
+		}
+		
+	}
+	
+	
+	
     public static void distancedAttack(Unit attacker, Unit defender, Player enemy) {
         System.out.println("Distanced Attack Activated");
         if (!attacker.hasAttacked() && !attacker.hasMoved()) {
@@ -270,6 +330,8 @@ public class Utility {
                         int newHealth = attacker.getHealth() - countAttacker.getAttack();
                         attacker.setHealth(newHealth);
                         Gui.setUnitStats(attacker, attacker.getHealth(), attacker.getAttack());
+                        
+                        checkEndGame(countAttacker, attacker);
                     	
                     }
                 }
@@ -279,7 +341,7 @@ public class Utility {
 
 	// Get positions of potential targets of a spell.
 	public static Set<Tile> getSpellTargetPositions(ArrayList<Unit> targets) {
-		HashSet<Tile> positions = new HashSet<>();
+		Set<Tile> positions = new HashSet<>();
 
 		for (Unit unit : targets) {
 			int unitx = unit.getPosition().getTilex();
@@ -288,6 +350,5 @@ public class Utility {
 		}
 		return positions;
 	}
-
 	
 }

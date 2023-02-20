@@ -68,6 +68,7 @@ public class CardClicked implements EventProcessor{
 	}
 
 	public static void clearHighlighted(){
+		
 		// Unhighlight currently highlighted cards
 		if (!currentlyHighlighted.isEmpty()) {
 			currentlyHighlighted.forEach((key, value) -> {
