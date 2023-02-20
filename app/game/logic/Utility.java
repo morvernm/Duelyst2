@@ -72,34 +72,43 @@ public class Utility {
 		
 		if (!attacker.hasAttacked()) {
 			Gui.performAttack(attacker);
-			
-			attacker.setAttacked();
-			
 			int newHealth = defender.getHealth()-attacker.getAttack();
 			defender.setHealth(newHealth);
 			Gui.setUnitStats(defender, defender.getHealth(), defender.getAttack());
-//			attacker.setAttacked();
 			
-			//unit death
-			if(defender.getHealth() <= 0) {
-				BasicCommands.addPlayer1Notification(out, "playUnitAnimation [Death]", 3);
-				BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.death);
-				try {Thread.sleep(3000);} catch (InterruptedException e) {e.printStackTrace();}
-				GameState.board[defender.getPosition().getTilex()][defender.getPosition().getTiley()].setOccupier(null); //remove unit from board
-				GameState.getAiPlayer().removeUnit(defender); //need to change this so that we check whose unit it is. remove unit from player units
-				//to do:  get hand position
-				//remove from hand
+//			attacker.setAttacked(); - commented out to test that unit dies
+	
+			
+		//unit death
+		if(defender.getHealth() <= 0) {
+			BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.death);
+			try {Thread.sleep(3000);} catch (InterruptedException e) {e.printStackTrace();}
+			GameState.board[defender.getPosition().getTilex()][defender.getPosition().getTiley()].setOccupier(null); //remove unit from tiles
+			BasicCommands.deleteUnit(out, defender); //delete unit from board
+			
+//		AI unit
+			if(GameState.getAiPlayer().getUnits().contains(defender)) {
+				GameState.getAiPlayer().removeUnit(defender); 
 				
-//				to do: if unit is an avatar
-//				if(Initalize.unit.equals(defender)) {
-//					
-//				}
+				GameState.getAiPlayer().setHealth(0); //for testing purposes
 				
-			}
-		} 
+				if(GameState.getAiPlayer().getHealth() <= 0) {
+					BasicCommands.addPlayer1Notification(out, "Player 1 wins!", 20);
+					//game over:
+				}
+				
+//		Human unit
+			}else if(GameState.getHumanPlayer().getUnits().contains(defender)) {
+				GameState.getHumanPlayer().removeUnit(defender);
+				if(GameState.getHumanPlayer().getHealth() <= 0) {
+					BasicCommands.addPlayer1Notification(out, "You lose!", 20);
+				}
+				
+			}	
+		}
+		}
 	}
-	
-	
+
 	public static void distancedAttack(Unit attacker, Unit defender, Player enemy) {
 		System.out.println("Distanced Attack Activated");
 		if (!attacker.hasAttacked() && !attacker.hasMoved()) {
@@ -170,7 +179,9 @@ public class Utility {
 		BasicCommands.moveUnitToTile(out, unit,tile); //move unit to chosen tiles
 		unit.setPositionByTile(tile); //change position of unit to new tiles
 		tile.setOccupier(unit); //set unit as occupier of tiles
-		unit.setMoved();
+		
+//		unit.setMoved(); - commented out to test that unit dies
+		
 		Gui.removeHighlightTiles(out, GameState.board); //clearing board 
 	}
 	
