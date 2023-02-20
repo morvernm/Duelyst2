@@ -6,8 +6,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import akka.actor.ActorRef;
 import commands.BasicCommands;
 import game.logic.Gui;
+import game.logic.Utility;
 import structures.GameState;
 import structures.basic.Card;
+import structures.basic.spellcards.SpellCard;
+import structures.basic.spellcards.Sundrop;
+import structures.basic.spellcards.Truestrike;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,11 +30,32 @@ import java.util.HashSet;
  */
 public class CardClicked implements EventProcessor{
 	private static HashMap<Card, Integer> currentlyHighlighted = new HashMap<>();
+	private HashMap<String, SpellCard> spellcards = new HashMap<String,SpellCard>();
+	private SpellCard currentSpellcard;
+	private static int handPosition;
+
+	public CardClicked() {
+		initaliseSpellcards();
+	}
 
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
-		int handPosition = message.get("position").asInt();
+		this.handPosition = message.get("position").asInt();
 		highlightCard(handPosition, gameState);
+		Gui.removeHighlightTiles(out, GameState.getBoard());
+		// ensure there aren't duplicate spellcards already in the previousActions waiting to be played
+		if(GameState.previousAction.contains(currentSpellcard)) GameState.previousAction.remove(currentSpellcard);
+
+		if(spellcards.get(gameState.getHumanPlayer().getCard(handPosition).getCardname()) != null) { // if currently selected card is a spellcard
+			// Create an instance of the spellcard:
+			currentSpellcard = spellcards.get(gameState.getHumanPlayer().getCard(handPosition).getCardname()) ;
+
+			// Highlight tiles
+			currentSpellcard.highlightTargets(out);
+
+			GameState.setPreviousAction(currentSpellcard);
+
+		}
 	}
 
 
@@ -50,6 +75,15 @@ public class CardClicked implements EventProcessor{
 			});
 			currentlyHighlighted.clear();
 		}
+	}
+
+	public void initaliseSpellcards(){
+		spellcards.put("Truestrike", new Truestrike());
+		spellcards.put("Sundrop Elixir", new Sundrop());
+	}
+
+	public static int getHandPosition() {
+		return handPosition;
 	}
 }
 

@@ -6,13 +6,16 @@ import akka.actor.ActorRef;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
+import akka.japi.Effect;
 import commands.BasicCommands;
-import structures.basic.Player;
-import structures.basic.Tile;
+import structures.basic.*;
 import akka.actor.CoordinatedShutdown;
+
 import structures.basic.Card;
 import structures.basic.Unit;
 import structures.basic.UnitAnimationType;
+
 import utils.BasicObjectBuilders;
 
 /*
@@ -43,13 +46,11 @@ public class Gui {
 	
 	public static void highlightTiles(ActorRef out, Set<Tile> tiles, int mode) {
 	
-		for (Tile tile : tiles) {
-			//BasicCommands.addPlayer1Notification(out, "drawingAttackTile", 10);
-			
+		for (Tile tile : tiles) {			
 			BasicCommands.drawTile(out, tile, mode);
-
 			try {Thread.sleep(1);} catch (InterruptedException e) {e.printStackTrace();}
 		}
+		
 	}
 	
 	public static void removeHighlightTiles(ActorRef out, Tile[][] board) {
@@ -108,6 +109,14 @@ public class Gui {
 		BasicCommands.setPlayer1Mana(out, player);
 	}
 
+	public static void displayAIHP(Player player) {
+		BasicCommands.setPlayer2Health(out, player);
+	}
+
+	public static void displayAIMana(Player player) {
+		BasicCommands.setPlayer2Mana(out, player);
+	}
+
 	// draw unit on board
 	public static void drawUnit(Unit unit, Tile tile) {
 		BasicCommands.drawUnit(out, unit, tile);
@@ -115,6 +124,18 @@ public class Gui {
 
 	public static void highlightCard(Card card, int position) {
 		BasicCommands.drawCard(out, card, position,1);
+	}
+
+	public static void setUnitHealth(Unit unit, int health) {
+		BasicCommands.setUnitHealth(out, unit, health);
+	}
+
+	public static void playEffectAnimation(EffectAnimation effect, Tile tile) {
+		BasicCommands.playEffectAnimation(out, effect, tile);
+	}
+
+	public static void deleteCard(int position) {
+		BasicCommands.deleteCard(out, position);
 	}
 
 }

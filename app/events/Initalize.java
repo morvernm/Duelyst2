@@ -14,12 +14,14 @@ import game.logic.Gui;
 import play.shaded.ahc.io.netty.util.internal.SystemPropertyUtil;
 import play.twirl.api.TemplateMagic;
 import structures.GameState;
+import structures.basic.AIPlayer;
 import structures.basic.Card;
 import structures.basic.Player;
 import structures.basic.Tile;
 import structures.basic.Unit;
 import structures.basic.UnitAnimationType;
 import structures.basic.SpecialUnits.Windshrike;
+
 import utils.BasicObjectBuilders;
 import utils.StaticConfFiles;
 
@@ -45,8 +47,8 @@ public class Initalize implements EventProcessor{
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
 		// hello this is a change
 		Player humanPlayer = createHumanPlayer(out);
-		gameState.setCurrentPlayer(humanPlayer);
 		gameState.setHumanPlayer(humanPlayer);
+		gameState.setCurrentPlayer(gameState.getHumanPlayer());
 		gameState.gameInitalised = true;
 		
 		gameState.something = true;
@@ -69,7 +71,9 @@ public class Initalize implements EventProcessor{
 		unit.setPositionByTile(gameState.board[3][2]); 
 		gameState.board[3][2].setOccupier(unit);
 		BasicCommands.drawUnit(out, unit, gameState.board[3][2]);
+
 		gameState.getHumanPlayer().setUnit(unit);
+
 		
 		/*
 		 *  Set the stats of the avatar
@@ -99,9 +103,10 @@ public class Initalize implements EventProcessor{
 		 * Enemy avatar stuff
 		 */
 		
-		GameState.enemy = new Player();
+		GameState.enemy = new AIPlayer();
 		
 		Unit enemyUnit = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 1, Unit.class);
+
 		
 		enemyUnit.setPositionByTile(gameState.board[5][2]); 
 		gameState.board[5][2].setOccupier(enemyUnit);
@@ -113,7 +118,14 @@ public class Initalize implements EventProcessor{
 		enemyUnit.setHealth(20);
 		enemyUnit.setAttack(2);
 		
+
 		GameState.enemy.setUnit(enemyUnit);
+
+		try {Thread.sleep(100);}catch (InterruptedException e){e.printStackTrace();}
+		
+		unit.setHealth(humanPlayer.getHealth());
+		enemyUnit.setHealth(GameState.enemy.getHealth());
+
 		
 		
 //		Unit enemyUnitTwo = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 2, Unit.class);

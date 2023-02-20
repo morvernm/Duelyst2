@@ -2,6 +2,8 @@ package structures.basic;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import game.logic.Gui;
+import structures.GameState;
 
 /**
  * This is a representation of a Unit on the game board.
@@ -25,11 +27,14 @@ public class Unit {
 	Position position;
 	UnitAnimationSet animations;
 	ImageCorrection correction;
+
+	private int health;
+	//TODO 5 IS A TEST VALUE. MUST BE CHANGED ONCE UNITCARDS ARE IMPLEMENTED
+	private int maxHealth = 20; // This health value must never be exceeded when using healing spells
 	
 	private boolean attacked;
 	private boolean moved;
-	
-	private int health;
+
 	private int attack;	
 	
 	
@@ -134,17 +139,31 @@ public class Unit {
 	public void clearAttacked() {
 		this.attacked = false;
 	}
-	
-	public void setHealth(int health) {
-		this.health = health;
-	}
-	
-	public void setAttack(int attack) {
-		this.attack = attack;
-	}
-	
+
 	public int getHealth() {
 		return this.health;
+	}
+
+	public void setHealth(int health) {
+		// Check if the unit is a player avatar. Adjust health of appropriate player accordingly if so.
+		if(this.getId() == 0){
+			GameState.getHumanPlayer().setHealth(health);
+		}
+		else if(this.getId() == 1) {
+			GameState.getAIPlayer().setHealth(health);
+		}
+
+		this.health = health;
+		Gui.setUnitHealth(this, health);
+	}
+
+	public int getMaxHealth() {
+		return this.maxHealth;
+	}
+	
+		
+	public void setAttack(int attack) {
+		this.attack = attack;
 	}
 	
 	public int getAttack() {

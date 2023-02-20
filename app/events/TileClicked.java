@@ -11,6 +11,7 @@ import structures.GameState;
 import structures.basic.Player;
 import structures.basic.Tile;
 import structures.basic.Unit;
+import structures.basic.spellcards.SpellCard;
 import utils.BasicObjectBuilders;
 
 /**
@@ -36,7 +37,18 @@ public class TileClicked implements EventProcessor{
 		
 		// if there is a unit on the tile and the unit is not an enemy unit
 		if (gameState.board[tilex][tiley].getOccupier() != null) {  // check if selected tile has a unit on it
-			
+
+			/*
+			if there are previous actions, and the last action was drawing a spell card,
+			play the spellcard
+			 */
+			if(!(GameState.previousAction.isEmpty())) {
+				if (GameState.previousAction.peek() instanceof SpellCard) {
+					handleSpellCasting(gameState.board[tilex][tiley].getOccupier(), gameState.board[tilex][tiley], out);
+					return;
+				}
+			}
+
 			if (gameState.previousAction.isEmpty()) {
 				
 				if (!gameState.enemy.getUnits().contains(gameState.board[tilex][tiley].getOccupier())) {
@@ -95,26 +107,33 @@ public class TileClicked implements EventProcessor{
 				Unit unit = (Unit) GameState.getPreviousAction(); //get unit from stack 
 
 				Utility.moveUnit(unit, gameState.board[tilex][tiley]);
-									
-//				gameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()].setOccupier(null); //clear unit from tile
-//				
-//				BasicCommands.moveUnitToTile(out, unit,gameState.board[tilex][tiley]); //move unit to chosen tiles
-//				unit.setPositionByTile(gameState.board[tilex][tiley]); //change position of unit to new tiles
-//				
-//				gameState.board[tilex][tiley].setOccupier(unit); //set unit as occupier of tiles
-//				
-//				unit.setMoved();
-//				Gui.removeHighlightTiles(out, gameState.board); //clearing board 
-				
-				
-			}
-//			need to do y movement too
-		}
 
+			}
+		}
+		
 	}
 	
 	
 	
+
+	// Spell card helper function
+	private void handleSpellCasting(Unit target, Tile targetTile, ActorRef out) {
+		// if player does not have enough mana, skip.
+		// if(!(GameState.getCurrentPlayer().getMana() >= GameState.getCurrentPlayer().getCard(CardClicked.getHandPosition()).getManacost())) return;
+
+		SpellCard spellCard = (SpellCard) GameState.previousAction.pop();
+		spellCard.highlightTargets(out);
+		boolean successfulSpell = spellCard.castSpell(target, targetTile);
+
+		if(successfulSpell) {
+			//decrement mana from player
+			GameState.getCurrentPlayer().setMana(GameState.getCurrentPlayer().getMana()
+					- GameState.getCurrentPlayer().getCard(CardClicked.getHandPosition()).getManacost());
+			CardClicked.clearHighlighted();
+			Gui.removeHighlightTiles(out, GameState.getBoard());
+			GameState.getCurrentPlayer().removeFromHand(CardClicked.getHandPosition()); // remove card from hand
+		}
+	}
 
 	
 }			

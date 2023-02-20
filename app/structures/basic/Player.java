@@ -14,8 +14,8 @@ import java.util.NoSuchElementException;
  */
 public class Player {
 
-	int health;
-	int mana;
+	protected int health;
+	protected int mana;
 	protected Card[] hand;
 	protected int cardsInHand = 0;
 	protected Deck deck;
@@ -24,20 +24,19 @@ public class Player {
 	
 	public Player() {
 		super();
-
 		setHealth(20);
-		setMana(0);
+		setMana(2);
 		hand = new Card[6];
 		deck = new Deck(1);
 		this.units = new ArrayList<>();
 	}
 	
-	public Player(int health, int mana) {
+	public Player(int health, int mana, int deckNum) {
 		super();
 		setHealth(health);
 		setMana(mana);
 		hand = new Card[6];
-		deck = new Deck(1);
+		deck = new Deck(deckNum);
 		this.units = new ArrayList<>();
 	}
 
@@ -52,7 +51,7 @@ public class Player {
 		return mana;
 	}
 	public void setMana(int mana) {
-		this.mana = mana;
+		this.mana = Math.min(mana, 9); // cap the max amount of mana a player can have at 9, as per GUI.
 		Gui.displayHumanMana(this);
 	}
 
@@ -65,6 +64,7 @@ public class Player {
 	public void removeFromHand(int position) { // remove a card from the hand at a given position
 		hand[position-1] = null; // Set position to null to remove card. Use range 1 - 6 to reflect front-end display logic.
 		cardsInHand--;
+		Gui.deleteCard(position);
 	}
 
 	public Deck getDeck() {

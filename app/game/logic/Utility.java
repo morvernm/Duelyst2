@@ -168,7 +168,7 @@ public class Utility {
 
         tile.setOccupier(unit); //set unit as occupier of tiles
 
-        //unit.setMoved();
+        unit.setMoved();
         
         Gui.removeHighlightTiles(out, GameState.board); //clearing board
     }
@@ -276,4 +276,18 @@ public class Utility {
             }
         }
     }
+
+	// Get positions of potential targets of a spell.
+	public static Set<Tile> getSpellTargetPositions(ArrayList<Unit> targets) {
+		HashSet<Tile> positions = new HashSet<>();
+
+		for (Unit unit : targets) {
+			int unitx = unit.getPosition().getTilex();
+			int unity = unit.getPosition().getTiley();
+			positions.add(GameState.getBoard()[unitx][unity]);
+		}
+		return positions;
+	}
+
+	
 }
