@@ -28,11 +28,13 @@ public class Utility {
 	 * 
 	 */	
 	public static void placeUnit(ActorRef out, Card card, Player player, Tile tile){
-
+		/* Set unit id to number of total units on board + 1 */
         String unit_conf = StaticConfFiles.getUnitConf(card.getCardname());
-        int unit_id = card.getId();
+        int unit_id = GameState.getTotalUnits();
         Unit unit = BasicObjectBuilders.loadUnit(unit_conf, unit_id, Unit.class);
         unit.setPositionByTile(tile);
+		GameState.modifiyTotalUnits(1);
+
 		BigCard bigCard = card.getBigCard();
 		int attack = bigCard.getAttack();
 		int health = bigCard.getHealth();
@@ -44,6 +46,7 @@ public class Utility {
 
         tile.setOccupier(unit);
         BasicCommands.drawUnit(out, unit, tile);
+		
 		Gui.setUnitStats(unit, health, attack);
 
 		int positionInHand = card.getPositionInHand();

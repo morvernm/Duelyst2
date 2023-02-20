@@ -35,9 +35,12 @@ public class CardClicked implements EventProcessor{
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
 		int handPosition = message.get("position").asInt();
-		Card card = highlightCard(handPosition, gameState);
-
-		checkCardType(out, card);
+		try{
+			Card card = highlightCard(handPosition, gameState);
+			checkCardType(out, card);
+		}catch (Exception E){
+			return;
+		}
 	}
 
 	public void checkCardType(ActorRef out, Card card){
@@ -75,12 +78,7 @@ public class CardClicked implements EventProcessor{
 
 	public static void clearHighlighted(){
 		// Unhighlight currently highlighted cards
-		if (!currentlyHighlighted.isEmpty()) {
-			currentlyHighlighted.forEach((key, value) -> {
-				Gui.displayCard(key, value);
-			});
-			currentlyHighlighted.clear();
-		}
+		currentlyHighlighted.clear();
 	}
 
 	public static void pushToPreviousAction(Card card){

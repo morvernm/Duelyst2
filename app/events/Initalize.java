@@ -45,6 +45,7 @@ public class Initalize implements EventProcessor{
 		// hello this is a change
 		System.out.println("initialize");
 		Player humanPlayer = createHumanPlayer(out);
+		GameState.setTotalUnits();
 		gameState.setCurrentPlayer(humanPlayer);
 		gameState.setHumanPlayer(humanPlayer);
 		gameState.gameInitalised = true;
@@ -72,6 +73,7 @@ public class Initalize implements EventProcessor{
 		gameState.board[3][2].setOccupier(unit);
 		BasicCommands.drawUnit(out, unit, gameState.board[3][2]);
 		gameState.getHumanPlayer().setUnit(unit);
+		GameState.modifiyTotalUnits(1);
 		
 		/*
 		 *  Set the stats of the avatar
@@ -95,6 +97,7 @@ public class Initalize implements EventProcessor{
 		enemyUnit.setAttack(2);
 		
 		GameState.enemy.setUnit(enemyUnit);
+		GameState.modifiyTotalUnits(1);
 		
 		
 //		Unit enemyUnitTwo = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 2, Unit.class);

@@ -28,6 +28,7 @@ public class GameState {
 	public static Player enemyPlayer;
 
 	public static Player humanPlayer;
+	private static int totalUnits;
 
 	private static int status;
 	private static final int PreviousActionEmpty = 0;
@@ -104,5 +105,16 @@ public class GameState {
 		return enemyPlayer;
 	}
 
+	public static void modifiyTotalUnits(int mod){
+		totalUnits += mod;
+	}
+
+	public static void setTotalUnits(){
+		totalUnits = 0;
+	}
+
+	public static int getTotalUnits(){
+		return totalUnits;
+	}
 }
 

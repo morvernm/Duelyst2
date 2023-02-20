@@ -81,6 +81,9 @@ public class TileClicked implements EventProcessor{
 				break;
 			/* Unit card in stack */
 			case 2:
+				if (GameState.currentPlayer != GameState.humanPlayer){
+					return;
+				}
 				Card card = (Card)GameState.previousAction.peek();
 				Tile tile = GameState.board[tilex][tiley];
 				Player player = GameState.currentPlayer;
