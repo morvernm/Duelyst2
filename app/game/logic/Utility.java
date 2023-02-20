@@ -34,28 +34,33 @@ public class Utility {
         int unit_id = GameState.getTotalUnits();
         Unit unit = BasicObjectBuilders.loadUnit(unit_conf, unit_id, Unit.class);
         unit.setPositionByTile(tile);
+
 		GameState.modifiyTotalUnits(1);
 		
 		player.setUnit(unit);
 
+		EffectAnimation effect = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_summon);
+        BasicCommands.playEffectAnimation(out, effect, tile);
+		BasicCommands.drawUnit(out, unit, tile);
+
+
 		BigCard bigCard = card.getBigCard();
 		int attack = bigCard.getAttack();
 		int health = bigCard.getHealth();
+		Gui.setUnitStats(unit, health, attack);
         unit.setAttack(attack);
         unit.setHealth(health);
 
-		EffectAnimation effect = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_summon);
-        BasicCommands.playEffectAnimation(out, effect, tile);
-
+		GameState.modifiyTotalUnits(1);
         tile.setOccupier(unit);
-        BasicCommands.drawUnit(out, unit, tile);
+
 		
 		Gui.setUnitStats(unit, health, attack);
 
 		int positionInHand = card.getPositionInHand();
 		player.removeFromHand(positionInHand);
 		BasicCommands.deleteCard(out, positionInHand);
-		
+		player.setUnit(unit);
         player.updateMana(-card.getManacost());
 		if (GameState.getHumanPlayer() == player){
 			BasicCommands.setPlayer1Mana(out, player);
@@ -63,6 +68,8 @@ public class Utility {
 		else {
 			BasicCommands.setPlayer2Mana(out, player);
 		}
+
+
     }
 
     public static Set<Tile> cardPlacements(Card card, Player player, Player enemy, Tile[][] board){
