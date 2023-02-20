@@ -126,7 +126,7 @@ public class Utility {
     }
 
     public static boolean validMove(ActorRef out, Card card, Player player, Player enemy, Tile tile, Tile[][] board){
-        if (card.getManacost() >= player.getMana()){
+        if (card.getManacost() > player.getMana()){
             return false;
         }
         Set<Tile> s = cardPlacements(card, player, enemy, board);

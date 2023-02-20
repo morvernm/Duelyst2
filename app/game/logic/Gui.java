@@ -43,7 +43,7 @@ public class Gui {
 			
 			BasicCommands.drawTile(out, tile, mode);
 
-			try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+			try {Thread.sleep(1);} catch (InterruptedException e) {e.printStackTrace();}
 		}
 	}
 	
@@ -65,11 +65,11 @@ public class Gui {
 	
 	public static void setUnitStats(Unit unit, int health, int attack) {
 		// setUnitHealth
-		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+		try {Thread.sleep(200);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.setUnitHealth(out, unit, health);
 		
 		// setUnitAttack
-		try {Thread.sleep(3000);} catch (InterruptedException e) {e.printStackTrace();}
+		try {Thread.sleep(200);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.setUnitAttack(out, unit, attack);
 	}
 	
