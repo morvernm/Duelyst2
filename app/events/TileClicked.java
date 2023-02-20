@@ -37,11 +37,8 @@ public class TileClicked implements EventProcessor{
 		int tiley = message.get("tiley").asInt();
 
 		int status = gameState.getStatus();
-		System.out.println(status);
 
 		if (gameState.board[tilex][tiley].getOccupier() != null) {  // check if selected tile has a unit on it
-			
-			
 			if (gameState.previousAction.isEmpty() && gameState.getHumanPlayer().getUnits().contains(gameState.board[tilex][tiley].getOccupier())) {
 				Unit unit = gameState.board[tilex][tiley].getOccupier();
 				
@@ -84,14 +81,15 @@ public class TileClicked implements EventProcessor{
 				break;
 			/* Unit card in stack */
 			case 2:
-				Card card = (Card)gameState.previousAction.peek();
-				Tile tile = gameState.board[tilex][tiley];
-				Player player = gameState.currentPlayer;
-				Player enemy = gameState.enemy;
+				Card card = (Card)GameState.previousAction.peek();
+				Tile tile = GameState.board[tilex][tiley];
+				Player player = GameState.currentPlayer;
+				Player enemy = GameState.enemy;
 
-				if (Utility.validMove(out, card, player, enemy, tile, gameState.board)){
+				if (Utility.validMove(out, card, player, enemy, tile, GameState.board)){
 					Utility.placeUnit(out, card, player, tile);
-					gameState.emptyPreviousAction();
+					Gui.removeHighlightTiles(out, GameState.board);
+					GameState.emptyPreviousAction();
 				}
 				return;
 			/* Spell card in stack */

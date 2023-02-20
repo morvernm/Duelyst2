@@ -28,25 +28,35 @@ public class Utility {
 	 * 
 	 */	
 	public static void placeUnit(ActorRef out, Card card, Player player, Tile tile){
-        EffectAnimation effect = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_summon);
-        BasicCommands.playEffectAnimation(out, effect, tile);
 
         String unit_conf = StaticConfFiles.getUnitConf(card.getCardname());
         int unit_id = card.getId();
         Unit unit = BasicObjectBuilders.loadUnit(unit_conf, unit_id, Unit.class);
         unit.setPositionByTile(tile);
 		BigCard bigCard = card.getBigCard();
-        unit.setAttack(bigCard.getAttack());
-        unit.setHealth(bigCard.getHealth());
+		int attack = bigCard.getAttack();
+		int health = bigCard.getHealth();
+        unit.setAttack(attack);
+        unit.setHealth(health);
 
+		EffectAnimation effect = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_summon);
+        BasicCommands.playEffectAnimation(out, effect, tile);
 
         tile.setOccupier(unit);
         BasicCommands.drawUnit(out, unit, tile);
+		Gui.setUnitStats(unit, health, attack);
+
 		int positionInHand = card.getPositionInHand();
 		player.removeFromHand(positionInHand);
+		BasicCommands.deleteCard(out, positionInHand);
 		
-
         player.updateMana(-card.getManacost());
+		if (GameState.getHumanPlayer() == player){
+			BasicCommands.setPlayer1Mana(out, player);
+		}
+		else {
+			BasicCommands.setPlayer2Mana(out, player);
+		}
     }
 
     public static Set<Tile> cardPlacements(Card card, Player player, Player enemy, Tile[][] board){
