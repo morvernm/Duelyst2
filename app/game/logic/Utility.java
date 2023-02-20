@@ -28,12 +28,15 @@ public class Utility {
 	 * 
 	 */	
 	public static void placeUnit(ActorRef out, Card card, Player player, Tile tile){
+		
 		/* Set unit id to number of total units on board + 1 */
         String unit_conf = StaticConfFiles.getUnitConf(card.getCardname());
         int unit_id = GameState.getTotalUnits();
         Unit unit = BasicObjectBuilders.loadUnit(unit_conf, unit_id, Unit.class);
         unit.setPositionByTile(tile);
 		GameState.modifiyTotalUnits(1);
+		
+		player.setUnit(unit);
 
 		BigCard bigCard = card.getBigCard();
 		int attack = bigCard.getAttack();
@@ -116,7 +119,7 @@ public class Utility {
     }
 
     public static boolean validMove(ActorRef out, Card card, Player player, Player enemy, Tile tile, Tile[][] board){
-        if (card.getManacost() > player.getMana()){
+        if (card.getManacost() >= player.getMana()){
             return false;
         }
         Set<Tile> s = cardPlacements(card, player, enemy, board);
@@ -125,11 +128,15 @@ public class Utility {
         }
         return false;
     }
+    
+    
 
     public static Set<Tile> showValidMoves(Card card, Player player, Player enemy, Tile[][] board){
         Set<Tile> s = cardPlacements(card, player, enemy, board);
         return s;
     }
+    
+    
 
 	public static Set<Tile> determineTargets(Tile tile, Set<Tile> positions, Player enemy, Tile[][] board){
 		
@@ -154,18 +161,6 @@ public class Utility {
 		return validAttacks;
 	}
 	
-	public static void adjacentAttack(Unit attacker, Unit defender) {
-		System.out.println("Adjacent Attack Activated");
-		Gui.performAttack(attacker);
-
-				
-	}
-	
-	
-	public static void distancedAttack() {
-		System.out.println("Distanced Attack Activated");
-		
-	}
 	
 	
 	

@@ -62,10 +62,10 @@ public class TileClicked implements EventProcessor{
 					// Determine if Adjacent or Distanced Attack aka. move and attack
 					if (Utility.getValidTargets(GameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()], GameState.enemy, GameState.board).contains(gameState.board[tilex][tiley])) {
 						
-						Utility.adjacentAttack(unit, GameState.board[tilex][tiley].getOccupier());
+						
 					} else if (gameState.validAttacks.contains(GameState.board[tilex][tiley])) {
 						
-						Utility.distancedAttack();
+						
 					}
 				}
 			}		
