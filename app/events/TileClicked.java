@@ -90,8 +90,8 @@ public class TileClicked implements EventProcessor{
 				Player enemy = GameState.enemy;
 
 				if (Utility.validMove(out, card, player, enemy, tile, GameState.board)){
-					Utility.placeUnit(out, card, player, tile);
 					Gui.removeHighlightTiles(out, GameState.board);
+					Utility.placeUnit(out, card, player, tile);
 					GameState.emptyPreviousAction();
 				}
 				return;
