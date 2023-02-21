@@ -12,6 +12,8 @@ import events.CardClicked;
 import structures.GameState;
 
 import structures.basic.Player;
+import structures.basic.SpecialUnits.Provoke;
+import structures.basic.SpecialUnits.SilverguardKnight;
 import structures.basic.SpecialUnits.Windshrike;
 import structures.basic.Tile;
 import structures.basic.Unit;
@@ -49,8 +51,8 @@ public class Utility {
             return null;
             // Has moved but has not attacked - consider only the current position
         } else if (tile.getOccupier().hasMoved() && !tile.getOccupier().hasAttacked()) {
-            return getValidTargets(tile, enemy, board);
-
+        	validAttacks = getValidTargets(tile, enemy, board);
+        	
             // Has not moved nor attacked - consider all possible movements as well.
         } else if (!tile.getOccupier().hasMoved() && !tile.getOccupier().hasAttacked()) {
             System.out.println("has NOT moved NOR attacked");
@@ -65,7 +67,7 @@ public class Utility {
     public static Set<Tile> getValidTargets(Tile tile, Player enemy, Tile[][] board) {
 
         Set<Tile> validAttacks = new HashSet<>();
-
+                
         for (Unit unit : enemy.getUnits()) {
             int unitx = unit.getPosition().getTilex();
             int unity = unit.getPosition().getTiley();
@@ -74,6 +76,18 @@ public class Utility {
                 validAttacks.add(board[unitx][unity]);
             }
         }
+        
+        /*
+         * check for provoke units
+         */
+        for (Tile validAttack : validAttacks) {
+        	if (validAttack.getOccupier() instanceof Provoke) {
+        		System.out.println("PROVOKE UNIT IN THE HOOSE");
+        		return ((Provoke)validAttack.getOccupier()).specialAbility(validAttack.getOccupier());        		        		
+        	}
+        }
+        
+        
         return validAttacks;
     }
 
@@ -81,8 +95,9 @@ public class Utility {
      * Attacking logic
      */
 	public static void adjacentAttack(Unit attacker, Unit defender) {
-			
+	
 		if (!attacker.hasAttacked()) {
+						
 			Gui.performAttack(attacker);
 			BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.idle);
 			
@@ -174,7 +189,14 @@ public class Utility {
         String unit_conf = StaticConfFiles.getUnitConf(card.getCardname());
         int unit_id = GameState.getTotalUnits();
         
-        Unit unit = BasicObjectBuilders.loadUnit(unit_conf, unit_id, Unit.class);
+        Unit unit = null;
+        
+        if (card.getCardname().equals("Silverguard Knight")) {
+        	unit = (SilverguardKnight) BasicObjectBuilders.loadUnit(unit_conf, unit_id, SilverguardKnight.class);
+        } else {
+        	unit = BasicObjectBuilders.loadUnit(unit_conf, unit_id, Unit.class);
+       }
+       
         unit.setPositionByTile(tile);
         tile.setOccupier(unit);
 
@@ -198,9 +220,7 @@ public class Utility {
         unit.setHealth(health);
 
 		GameState.modifiyTotalUnits(1);
-        
 
-		
 		Gui.setUnitStats(unit, health, attack);
 
 		int positionInHand = card.getPositionInHand();
