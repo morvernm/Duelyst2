@@ -213,15 +213,21 @@ public class Utility {
     }
 
     public static Set<Tile> cardPlacements(Card card, Player player, Player enemy, Tile[][] board){
-        if (card.getManacost() > player.getMana()){
-             return null;
-        }
+//        if (card.getManacost() > player.getMana()){
+//             return null;
+//        }
+    	
+    	/*
+    	 * 
+    	 * this will not work for the ai player <-- needs to be fixed
+    	 */
 
         Set<Tile> validTiles = new HashSet<Tile>();
 
 
         Set<Tile> playerUnits = getPlayerUnitPositions(player, board);
         Set<Tile> enemyUnits = getEnemyUnitPositions(enemy, board);
+        
         /* if card can be played on all squares, return the board - occupied squares */
         if (card.getMoveModifier()){
             validTiles.removeAll(playerUnits);
@@ -230,6 +236,7 @@ public class Utility {
         }
 
         int x, y;
+        
         Set<Tile> validPlacements =  new HashSet<Tile>();
 
         /* Add squares around player units to set. Return this minus occupied squares */
@@ -242,13 +249,16 @@ public class Utility {
                 }
             }
         }
+       
         validPlacements.removeAll(playerUnits);
         validPlacements.removeAll(enemyUnits);
         return validPlacements;
     }
     
     public static Set<Tile> getPlayerUnitPositions(Player player, Tile[][] board){
+    	
         Set<Tile> s = new HashSet<Tile>();
+        
         for (Unit unit : player.getUnits()){
             /* Add unit to set of player positions */
             s.add(board[unit.getPosition().getTilex()][unit.getPosition().getTiley()]);
