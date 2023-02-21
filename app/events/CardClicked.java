@@ -32,7 +32,7 @@ import java.util.Set;
  *
  */
 public class CardClicked implements EventProcessor{
-	private static HashMap<Card, Integer> currentlyHighlighted = new HashMap<>();
+	public static HashMap<Card, Integer> currentlyHighlighted = new HashMap<>();
 	private HashMap<String, SpellCard> spellcards = new HashMap<String,SpellCard>();
 	//private SpellCard currentSpellcard;
 	private static int handPosition;
@@ -44,14 +44,16 @@ public class CardClicked implements EventProcessor{
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
 		
+		System.out.println("processEvent CardClicked");
+		
 		this.handPosition = message.get("position").asInt();
 		
-		highlightCard(handPosition, gameState);
+		//highlightCard(handPosition, gameState);
 		Gui.removeHighlightTiles(out, GameState.getBoard());
 		
 		// ensure there aren't any cards in the stack alredy
-		if(!GameState.previousAction.isEmpty())
-			GameState.previousAction.pop();
+//		if(!GameState.previousAction.isEmpty())
+//			GameState.previousAction.pop();
 //		
 //		/*
 //		 *  might need to amend the above to remove any otehr card trhat's in the stack
@@ -76,6 +78,7 @@ public class CardClicked implements EventProcessor{
 	
 
 	public void checkCardType(ActorRef out, Card card){
+		System.out.println("checkCardType CardClicked");
 		if (!(card instanceof SpellCard)) {
 			System.out.println("UNIT CARD");
 			checkValidity(out, card);
@@ -94,10 +97,9 @@ public class CardClicked implements EventProcessor{
 				SpellCard currentSpellcard = (SpellCard)GameState.getHumanPlayer().getCard(handPosition);
 				
 				currentSpellcard.highlightTargets(out);
-				GameState.setPreviousAction(currentSpellcard);
+				//GameState.setPreviousAction(currentSpellcard); // <=== STACK
 				//}
 			} else {
-				
 				if (GameState.getCurrentPlayer().equals(GameState.getHumanPlayer())) {
 					BasicCommands.addPlayer1Notification(out, "Not enough mana, boi", 2);
 				} 
@@ -106,6 +108,7 @@ public class CardClicked implements EventProcessor{
 	}
 
 	public void checkValidity(ActorRef out, Card card){
+		System.out.println("checkValidity CardClicked");
 		Player human = GameState.getHumanPlayer();
 		Player current = GameState.getCurrentPlayer();
 		
@@ -124,13 +127,13 @@ public class CardClicked implements EventProcessor{
 	}
 	
 	public Card highlightCard(int handPosition, GameState gameState) {
+		System.out.println("HighlightCard cardclicked");
 		clearHighlighted();
-		
 		
 		// highlighted the selected card
 		Card highlightedCard = gameState.getHumanPlayer().getCard(handPosition);
 		highlightedCard.setPositionInHand(handPosition);
-		pushToPreviousAction(highlightedCard);
+		pushToPreviousAction(highlightedCard); //<=== STACK
 		
 		Gui.highlightCard(highlightedCard, handPosition);
 		currentlyHighlighted.put(highlightedCard, handPosition);
@@ -144,6 +147,7 @@ public class CardClicked implements EventProcessor{
 //	}
 	
 	public static void clearHighlighted(){
+		System.out.println("clearHighLighted CardClicked");
 
 		// Unhighlight currently highlighted cards
 
@@ -153,15 +157,18 @@ public class CardClicked implements EventProcessor{
 			});
 			currentlyHighlighted.clear();
 		}
+		
+		
 		/*
 		 *  Need to clear the stack as well
 		 */
-		if(!GameState.previousAction.isEmpty())
-			GameState.previousAction.pop();
+//		if(!GameState.previousAction.isEmpty())
+//			GameState.previousAction.pop();
 	}
 
 
 	public static void pushToPreviousAction(Card card){
+		System.out.println("pushToPreviousAction CardClicked");
 		GameState.setPreviousAction(card);
 	}
 

@@ -8,6 +8,7 @@ import java.util.Collections;
 
 import akka.actor.ActorRef;
 import commands.BasicCommands;
+import events.CardClicked;
 import structures.GameState;
 
 import structures.basic.Player;
@@ -85,8 +86,7 @@ public class Utility {
 			Gui.performAttack(attacker);
 			BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.idle);
 			
-			int newHealth = defender.getHealth()-attacker.getAttack();
-			defender.setHealth(newHealth);
+			defender.setHealth(defender.getHealth()-attacker.getAttack());
 			Gui.setUnitStats(defender, defender.getHealth(), defender.getAttack());
 			
 			attacker.setAttacked(); // commented out to test that unit dies
@@ -168,31 +168,37 @@ public class Utility {
 
 	
 	public static void placeUnit(ActorRef out, Card card, Player player, Tile tile){
+		System.out.println("placeUnit Utility");
 		
 		/* Set unit id to number of total units on board + 1 */
         String unit_conf = StaticConfFiles.getUnitConf(card.getCardname());
         int unit_id = GameState.getTotalUnits();
+        
         Unit unit = BasicObjectBuilders.loadUnit(unit_conf, unit_id, Unit.class);
         unit.setPositionByTile(tile);
+        tile.setOccupier(unit);
 
 		GameState.modifiyTotalUnits(1);
 		
-		player.setUnit(unit);
+		//player.setUnit(unit);
 
 		EffectAnimation effect = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_summon);
         BasicCommands.playEffectAnimation(out, effect, tile);
 		BasicCommands.drawUnit(out, unit, tile);
-
+		player.setUnit(unit);
 
 		BigCard bigCard = card.getBigCard();
+		
 		int attack = bigCard.getAttack();
 		int health = bigCard.getHealth();
-		Gui.setUnitStats(unit, health, attack);
+		unit.setMaxHealth(health);
+		
+		//Gui.setUnitStats(unit, health, attack);
         unit.setAttack(attack);
         unit.setHealth(health);
 
 		GameState.modifiyTotalUnits(1);
-        tile.setOccupier(unit);
+        
 
 		
 		Gui.setUnitStats(unit, health, attack);
@@ -200,8 +206,11 @@ public class Utility {
 		int positionInHand = card.getPositionInHand();
 		player.removeFromHand(positionInHand);
 		BasicCommands.deleteCard(out, positionInHand);
-		player.setUnit(unit);
+		
+		
         player.updateMana(-card.getManacost());
+        CardClicked.currentlyHighlighted.remove(card);
+        
 		if (GameState.getHumanPlayer() == player){
 			BasicCommands.setPlayer1Mana(out, player);
 		}
@@ -216,12 +225,7 @@ public class Utility {
 //        if (card.getManacost() > player.getMana()){
 //             return null;
 //        }
-    	
-    	/*
-    	 * 
-    	 * this will not work for the ai player <-- needs to be fixed
-    	 */
-
+    	System.out.println("cardPlacement Utility");
         Set<Tile> validTiles = new HashSet<Tile>();
 
 
@@ -309,7 +313,7 @@ public class Utility {
 			if(GameState.getAiPlayer().getUnits().contains(defender)) {
 				GameState.getAiPlayer().removeUnit(defender); 
 				
-				GameState.getAiPlayer().setHealth(0); //for testing purposes <= DOES THIS NEED TO GO???
+				//GameState.getAiPlayer().setHealth(0); //for testing purposes <= DOES THIS NEED TO GO???
 				
 				if(GameState.getAiPlayer().getHealth() <= 0) {
 					BasicCommands.addPlayer1Notification(out, "Player 1 wins!", 20);

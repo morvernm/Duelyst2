@@ -29,7 +29,7 @@ public class Unit implements Playable{
 	ImageCorrection correction;
 
 	private int health;
-	//TODO 5 IS A TEST VALUE. MUST BE CHANGED ONCE UNITCARDS ARE IMPLEMENTED
+	
 	private int maxHealth = 20; // This health value must never be exceeded when using healing spells
 	
 	private boolean attacked;
@@ -162,6 +162,10 @@ public class Unit implements Playable{
 
 	public int getMaxHealth() {
 		return this.maxHealth;
+	}
+	
+	public void setMaxHealth(int maxHealth) {
+		this.maxHealth = maxHealth;
 	}
 	
 		

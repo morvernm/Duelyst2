@@ -64,20 +64,21 @@ public class GameState {
 	
 	public static void setPreviousAction(Playable action) {
 		previousAction.push(action);
-		System.out.println(action.type);
-		if (action instanceof Unit){
-			status = PreviousActionContainsUnit;
-			return;
-		}
-		if (action instanceof SpellCard){
-			status = PreviousActionContainsSpellCard;
-			return;
-		}
-		if (action instanceof Card){
-			status = PreviousActionContainsUnitCard;
-			return;
-		}
-		return;
+		//System.out.println(action.type);
+		System.out.println("pushed to stack" + action);
+//		if (action instanceof Unit){
+//			status = PreviousActionContainsUnit;
+//			return;
+//		}
+//		if (action instanceof SpellCard){
+//			status = PreviousActionContainsSpellCard;
+//			return;
+//		}
+//		if (action instanceof Card){
+//			status = PreviousActionContainsUnitCard;
+//			return;
+//		}
+//		return;
 	}
 
 	public static void emptyPreviousAction(){

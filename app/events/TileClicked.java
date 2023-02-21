@@ -1,5 +1,7 @@
 package events;
 
+import java.util.Stack;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
@@ -7,11 +9,13 @@ import commands.BasicCommands;
 import game.logic.Gui;
 import game.logic.Utility;
 import structures.GameState;
+import structures.basic.Card;
+import structures.basic.Playable;
 import structures.basic.Player;
 import structures.basic.Tile;
 import structures.basic.Unit;
 import structures.basic.spellcards.SpellCard;
-import utils.BasicObjectBuilders;
+
 
 /**
  * Indicates that the user has clicked an object on the game canvas, in this case a tile.
@@ -36,7 +40,6 @@ public class TileClicked implements EventProcessor{
 		
 		// if there is a unit on the tile and the unit is not an enemy unit
 		if (gameState.board[tilex][tiley].getOccupier() != null) {  // check if selected tile has a unit on it
-
 			/*
 			if there are previous actions, and the last action was drawing a spell card,
 			play the spellcard
@@ -92,18 +95,33 @@ public class TileClicked implements EventProcessor{
 					
 				}
 
-			}			
-		}
+			}// check if tile is free - can only move to an empty place 		
+		} else if (gameState.board[tilex][tiley].getOccupier() == null && !gameState.previousAction.isEmpty()) {  
+			if (GameState.previousAction.peek() instanceof Unit){
+				if(gameState.validMoves.contains(gameState.board[tilex][tiley])) { // check if unit can move to selected tile
+				
+					Unit unit = (Unit) GameState.getPreviousAction(); //get unit from stack 
+					Utility.moveUnit(unit, gameState.board[tilex][tiley]);
+				}
+				
+			} else if( GameState.previousAction.peek() instanceof Card) {
+	//			if (GameState.getCurrentPlayer() != GameState.getHumanPlayer()){
+	//				return;
+	//			}
+				
+				System.out.println("PLACE UNIT CARD ON BOARD");
+				
+				Card card = (Card) GameState.previousAction.peek();
+				Tile tile = GameState.board[tilex][tiley];
+				Player player = GameState.getCurrentPlayer();
+				Player enemy = GameState.enemy;
 		
-		// check if tile is free - can only move to an empty place 
-		if (gameState.board[tilex][tiley].getOccupier() == null && !gameState.previousAction.isEmpty()) {  
-			
-			if(gameState.validMoves.contains(gameState.board[tilex][tiley])) { // check if unit can move to selected tile
-								
-				Unit unit = (Unit) GameState.getPreviousAction(); //get unit from stack 
-
-				Utility.moveUnit(unit, gameState.board[tilex][tiley]);
-
+				if (Utility.validMove(out, card, player, enemy, tile, GameState.board)){
+					Gui.removeHighlightTiles(out, GameState.board);
+					Utility.placeUnit(out, card, player, tile);
+					GameState.emptyPreviousAction();
+				}
+				return;
 			}
 		}
 		
