@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.Collections;
 
 import akka.actor.ActorRef;
+//import akka.parboiled2.Position;
 import commands.BasicCommands;
 import events.CardClicked;
 import structures.GameState;
@@ -17,6 +18,7 @@ import structures.basic.SpecialUnits.SilverguardKnight;
 import structures.basic.SpecialUnits.Windshrike;
 import structures.basic.Tile;
 import structures.basic.Unit;
+import structures.basic.Position;
 
 import structures.basic.UnitAnimationType;
 
@@ -49,11 +51,12 @@ public class Utility {
         // Has Attacked already
         if (tile.getOccupier().hasAttacked()) {
             return null;
-            // Has moved but has not attacked - consider only the current position
+            
+        // Has moved but has not attacked - consider only the current position
         } else if (tile.getOccupier().hasMoved() && !tile.getOccupier().hasAttacked()) {
         	validAttacks = getValidTargets(tile, enemy, board);
         	
-            // Has not moved nor attacked - consider all possible movements as well.
+        // Has not moved nor attacked - consider all possible movements as well.
         } else if (!tile.getOccupier().hasMoved() && !tile.getOccupier().hasAttacked()) {
             System.out.println("has NOT moved NOR attacked");
 
@@ -63,11 +66,35 @@ public class Utility {
         }
         return validAttacks;
     }
+    
+    public static Position checkProvoker(Tile tile) {
+    	for (Unit unit : GameState.getOtherPlayer().getUnits()) {
+        	
+        	int tilex = tile.getTilex();
+    		int tiley = tile.getTiley();
+   
+    		if (Math.abs(tilex - unit.getPosition().getTilex()) < 2 && Math.abs(tiley - unit.getPosition().getTiley()) < 2) {
+    			if (unit instanceof Provoke) {
+    				System.out.println("Provoker in the house");
+    				return unit.getPosition();
+    			}	
+    		}	
+        }
+		return null;
+    }
+    
 
     public static Set<Tile> getValidTargets(Tile tile, Player enemy, Tile[][] board) {
 
         Set<Tile> validAttacks = new HashSet<>();
-                
+        
+        Position provoker = checkProvoker(tile);
+        if (provoker != null) {
+        	validAttacks.add(board[provoker.getTilex()][provoker.getTiley()]);
+        	return validAttacks;
+        }
+        	 
+
         for (Unit unit : enemy.getUnits()) {
             int unitx = unit.getPosition().getTilex();
             int unity = unit.getPosition().getTiley();
@@ -75,22 +102,17 @@ public class Utility {
             if (Math.abs(unitx - tile.getTilex()) < 2 && Math.abs(unity - tile.getTiley()) < 2) {
                 validAttacks.add(board[unitx][unity]);
             }
-        }
+        } 
         
-        /*
-         * check for provoke units
-         */
-        for (Tile validAttack : validAttacks) {
-        	if (validAttack.getOccupier() instanceof Provoke) {
-        		System.out.println("PROVOKE UNIT IN THE HOOSE");
-        		return ((Provoke)validAttack.getOccupier()).specialAbility(validAttack.getOccupier());        		        		
-        	}
-        }
-        
+        for (Tile t : validAttacks) {
+        	System.out.println("GVT -> x = " + tile.getTilex() + " x = " + tile.getTiley());
+        }      
         
         return validAttacks;
     }
 
+    
+   
     /*
      * Attacking logic
      */
@@ -162,7 +184,8 @@ public class Utility {
      * Gets the valid attack positions for distanced attacks (move first and then attack)
      */
 
-    public static ArrayList<Tile> getValidAttackTiles(Unit unit) {
+    @SuppressWarnings("unchecked")
+	public static ArrayList<Tile> getValidAttackTiles(Unit unit) {
         ArrayList<Tile> validTiles = new ArrayList<>();
 
         for (Tile tile : GameState.validMoves) {
@@ -364,15 +387,37 @@ public class Utility {
         Gui.removeHighlightTiles(out, GameState.board); //clearing board
     }
 
+    
+    public static boolean checkProvoked(Unit unit) {
+		for (Unit other : GameState.getOtherPlayer().getUnits()) {
+		        	
+        	int unitx = unit.getPosition().getTilex();
+    		int unity = unit.getPosition().getTiley();
+    	
+    		if (Math.abs(unitx - other.getPosition().getTilex()) < 2 && Math.abs(unity - other.getPosition().getTiley()) < 2) {
+    			if (other instanceof Provoke) {
+    				((Provoke) other).disableUnit(unit);
+    				System.out.println("Unit is provoked!");
+    				return true;
+    			}	
+    		}	
+        }
+		return false;
+    }
+    
 
     public static Set<Tile> determineValidMoves(Tile[][] board, Unit unit) {
 
         Set<Tile> validTiles = new HashSet<>();
+        /*
+         * Check for provoke units
+         */
+        if (checkProvoked(unit))
+        	return null;   
 
         if (unit.getClass().equals(Windshrike.class) && !unit.hasMoved() && !unit.hasAttacked()) {
             return ((Windshrike) unit).specialAbility(board);
-            
-            
+    
         } else if (!unit.hasMoved() && !unit.hasAttacked()) {
             int x = unit.getPosition().getTilex();
             int y = unit.getPosition().getTiley();

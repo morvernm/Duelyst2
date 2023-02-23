@@ -46,10 +46,12 @@ public class Gui {
 	
 	public static void highlightTiles(ActorRef out, Set<Tile> tiles, int mode) {
 		
+		if (tiles == null) {
+			return;
+		}
 	
 		for (Tile tile : tiles) {			
 			BasicCommands.drawTile(out, tile, mode);
-
 			try {Thread.sleep(2);} catch (InterruptedException e) {e.printStackTrace();}
 		}
 		

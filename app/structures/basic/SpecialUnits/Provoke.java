@@ -11,26 +11,23 @@ import structures.basic.Unit;
 public abstract class Provoke extends Unit{
 	
 	private String name = null;
-	private Set<Tile> validTiles;
+	private Set<Tile> validAttacks;
 	
-	public Set<Tile> specialAbility(Unit unit){
-		
+	public Set<Tile> attractAttack(Tile tile){
+		System.out.println("Attack Attracted");
 		/*
 		 * How many provoke units does the enemy has on the boards
 		 */
-		Set<Unit> provokeUnits = new HashSet<>();
-		
-		validTiles = new HashSet<>();
-		
-	
-		validTiles.add(GameState.getBoard()[this.getPosition().getTilex()][this.getPosition().getTiley()]);
+		validAttacks = new HashSet<>();	
+		validAttacks.add(GameState.board[this.getPosition().getTilex()][this.getPosition().getTiley()]);
 
-		unit.setMoved();
-
-		return validTiles;
+		return validAttacks;
 	}
 	
+	public void disableUnit(Unit other) {
+		
+		System.out.println("Unit disabled");
+		other.setMoved();
 	
-	
-	
+	}
 }
