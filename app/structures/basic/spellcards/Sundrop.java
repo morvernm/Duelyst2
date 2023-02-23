@@ -19,7 +19,7 @@ public class Sundrop extends SpellCard {
     	System.out.println("Sundrop - HIHGLIGHT TARGETS CALLED");
         ArrayList<Unit> units = GameState.getCurrentPlayer().getUnits();
         Set<Tile> positions = Utility.getSpellTargetPositions(units);
-        positions.addAll(Utility.getSpellTargetPositions(GameState.getOtherPlayer().getUnits()));
+        // positions.addAll(Utility.getSpellTargetPositions(GameState.getOtherPlayer().getUnits()));
         Gui.highlightTiles(out,positions,2);
     }
     @Override
