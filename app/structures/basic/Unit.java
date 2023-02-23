@@ -171,6 +171,7 @@ public class Unit implements Playable{
 		
 	public void setAttack(int attack) {
 		this.attack = attack;
+		Gui.setUnitAttack(this, attack);
 	}
 	
 	public int getAttack() {

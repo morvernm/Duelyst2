@@ -140,6 +140,15 @@ public class Gui {
 		BasicCommands.setUnitHealth(out, unit, health);
 	}
 
+	public static void setUnitAttack(Unit unit, int attack) {
+		try {
+			Thread.sleep(1);
+		}catch(InterruptedException e){
+			e.printStackTrace();
+		}
+		BasicCommands.setUnitHealth(out, unit, attack);
+	}
+
 	public static void playEffectAnimation(EffectAnimation effect, Tile tile) {
 		BasicCommands.playEffectAnimation(out, effect, tile);
 	}

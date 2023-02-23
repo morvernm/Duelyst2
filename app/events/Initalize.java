@@ -78,6 +78,7 @@ public class Initalize implements EventProcessor{
 		BasicCommands.drawUnit(out, unit, gameState.board[3][2]);
 
 		gameState.getHumanPlayer().setUnit(unit);
+		gameState.getHumanPlayer().setAvatar(unit);
 
 		GameState.modifiyTotalUnits(1);
 		
@@ -125,10 +126,12 @@ public class Initalize implements EventProcessor{
 		GameState.modifiyTotalUnits(1);
 
 		GameState.enemy.setUnit(enemyUnit);
+		GameState.enemy.setAvatar(enemyUnit);
 
 		try {Thread.sleep(100);}catch (InterruptedException e){e.printStackTrace();}
 		
 		unit.setHealth(humanPlayer.getHealth());
+		unit.setAttack(GameState.getHumanPlayer().getAvatar().getAttack());
 		enemyUnit.setHealth(GameState.enemy.getHealth());
 
 

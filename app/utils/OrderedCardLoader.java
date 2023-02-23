@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import structures.basic.Card;
-import structures.basic.spellcards.EntropicDecay;
-import structures.basic.spellcards.Staff;
-import structures.basic.spellcards.Sundrop;
-import structures.basic.spellcards.Truestrike;
+import structures.basic.spellcards.*;
 
 /**
  * This is a utility class that provides methods for loading the decks for each
@@ -25,6 +22,7 @@ public class OrderedCardLoader {
 	
 		List<Card> cardsInDeck = new ArrayList<Card>(20);
 		// cardsInDeck.add(BasicObjectBuilders.loadCard(StaticConfFiles.c_sundrop_elixir, 8, Card.class)); // HERE FOR TESTING PURPOSES
+		cardsInDeck.add(BasicObjectBuilders.loadCard(StaticConfFiles.c_staff_of_ykir, 32, Ykir.class)); // HERE FOR TESTING
 		cardsInDeck.add(BasicObjectBuilders.loadCard(StaticConfFiles.c_sundrop_elixir, 8, Sundrop.class));
 		cardsInDeck.add(BasicObjectBuilders.loadCard(StaticConfFiles.c_comodo_charger, 0, Card.class));
 		cardsInDeck.add(BasicObjectBuilders.loadCard(StaticConfFiles.c_pureblade_enforcer, 1, Card.class));

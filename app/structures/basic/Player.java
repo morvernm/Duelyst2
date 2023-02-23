@@ -20,7 +20,7 @@ public class Player {
 	protected int cardsInHand = 0;
 	protected Deck deck;
 	protected ArrayList<Unit> units; // store all units currently on board
-	protected static Unit avatar;
+	protected Unit avatar;
 	
 	
 	public Player() {
@@ -109,8 +109,16 @@ public class Player {
 	public void removeUnit(Unit unit) {
 		this.units.remove(unit);
 	}
-	
-//	public void createAvatar(Unit unit) {
+
+	public Unit getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(Unit avatar){
+		this.avatar = avatar;
+	}
+
+	//	public void createAvatar(Unit unit) {
 //		
 //	}
 //	public static Unit getAvatar() {
