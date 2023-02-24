@@ -143,6 +143,24 @@ public class Initalize implements EventProcessor{
 		unit.setHealth(humanPlayer.getHealth());
 		enemyUnit.setHealth(GameState.enemy.getHealth());
 
+		/*
+		 * ISSUE 17, SpellThief testing
+		 */
+
+		Unit pureblade = BasicObjectBuilders.loadUnit(StaticConfFiles.u_pureblade_enforcer, 1, Unit.class);
+		pureblade.setPositionByTile(GameState.board[5][3]); 
+		GameState.board[5][3].setOccupier(pureblade);
+		
+		BasicCommands.drawUnit(out, pureblade, GameState.board[5][3]);
+		
+		Gui.setUnitStats(pureblade, 3, 2);
+		
+		pureblade.setHealth(3);
+		pureblade.setAttack(2);
+		GameState.modifiyTotalUnits(1);
+
+		GameState.enemy.setUnit(pureblade);
+
 
 	}
 	

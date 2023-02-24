@@ -160,6 +160,10 @@ public class Unit implements Playable{
 		Gui.setUnitHealth(this, health);
 	}
 
+	public void modHealth(int health){
+		this.health += health;
+	}
+
 	public int getMaxHealth() {
 		return this.maxHealth;
 	}
@@ -171,6 +175,10 @@ public class Unit implements Playable{
 		
 	public void setAttack(int attack) {
 		this.attack = attack;
+	}
+
+	public void modAttack(int attack){
+		this.attack += attack;
 	}
 	
 	public int getAttack() {
