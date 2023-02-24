@@ -72,12 +72,15 @@ public class Initalize implements EventProcessor{
 		/*
 		 * Place the Human Avatar on the board
 		 */
-		Unit unit = BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, 0, Unit.class);
+		Unit unit = BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, -1, Unit.class);
 		unit.setPositionByTile(gameState.board[3][2]); 
 		gameState.board[3][2].setOccupier(unit);
 		BasicCommands.drawUnit(out, unit, gameState.board[3][2]);
 
-		gameState.getHumanPlayer().setUnit(unit);
+		GameState.getHumanPlayer().setUnit(unit);
+		for (Unit u : GameState.getHumanPlayer().getUnits()){
+			System.out.printf("Unit x %d and y  %d \n", unit.getPosition().getTilex(), unit.getPosition().getTiley());
+		}
 
 		GameState.modifiyTotalUnits(1);
 		
@@ -107,10 +110,19 @@ public class Initalize implements EventProcessor{
 		/*
 		 * Enemy avatar stuff
 		 */
+
+		/*
+		 *  ISSUE 27, Airdrop testing
+		 */
+
+		Card ironcliff = BasicObjectBuilders.loadCard(StaticConfFiles.c_ironcliff_guardian, 6, Card.class);
+		ironcliff.setManacost(1);
+		GameState.getHumanPlayer().testcard(ironcliff);
+
 		
 		GameState.enemy = new AIPlayer();
 		
-		Unit enemyUnit = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 1, Unit.class);
+		Unit enemyUnit = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, -2, Unit.class);
 
 		
 		enemyUnit.setPositionByTile(gameState.board[5][2]); 

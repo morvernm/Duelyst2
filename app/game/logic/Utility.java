@@ -172,10 +172,13 @@ public class Utility {
 		
 		/* Set unit id to number of total units on board + 1 */
         String unit_conf = StaticConfFiles.getUnitConf(card.getCardname());
-        int unit_id = GameState.getTotalUnits();
+        int unit_id = card.getId();
         
         Unit unit = BasicObjectBuilders.loadUnit(unit_conf, unit_id, Unit.class);
         unit.setPositionByTile(tile);
+		System.out.printf("Unit x %d and y  %d \n", unit.getPosition().getTilex(), unit.getPosition().getTiley());
+		System.out.printf("Tile x %d, y %d \n", tile.getTilex(), tile.getTiley());
+
         tile.setOccupier(unit);
 
 		GameState.modifiyTotalUnits(1);
@@ -185,7 +188,6 @@ public class Utility {
 		EffectAnimation effect = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_summon);
         BasicCommands.playEffectAnimation(out, effect, tile);
 		BasicCommands.drawUnit(out, unit, tile);
-		player.setUnit(unit);
 
 		BigCard bigCard = card.getBigCard();
 		
@@ -197,11 +199,14 @@ public class Utility {
         unit.setAttack(attack);
         unit.setHealth(health);
 
-		GameState.modifiyTotalUnits(1);
-        
-
-		
 		Gui.setUnitStats(unit, health, attack);
+
+
+
+		GameState.getCurrentPlayer().setUnit(unit);
+
+
+
 
 		int positionInHand = card.getPositionInHand();
 		player.removeFromHand(positionInHand);
@@ -227,7 +232,13 @@ public class Utility {
 //        }
     	System.out.println("cardPlacement Utility");
         Set<Tile> validTiles = new HashSet<Tile>();
+		int i , j;
 
+		for (i = 0; i < board.length; i++){
+			for (j = 0; j < board[0].length; j++){
+				validTiles.add(board[i][j]);
+			}
+		}
 
         Set<Tile> playerUnits = getPlayerUnitPositions(player, board);
         Set<Tile> enemyUnits = getEnemyUnitPositions(enemy, board);
@@ -242,17 +253,24 @@ public class Utility {
         int x, y;
         
         Set<Tile> validPlacements =  new HashSet<Tile>();
+		int xLength = GameState.getBoard().length;
+		int yLength = GameState.getBoard()[0].length;
 
         /* Add squares around player units to set. Return this minus occupied squares */
         for (Tile tile : playerUnits){
             x = tile.getTilex();
             y = tile.getTiley();
-            for (int i = -1 ; i <= 1 ; i++){
-                for (int j = -1 ; j <= 1 ; j++){
-                    validPlacements.add(board[x + i][y + j]);
-                }
-            }
-        }
+            i = -1; j = -1;
+			for (i = -1 ; i <= 1 ; i++){
+				if (i + x >= 0 && i + x < xLength){
+					for (j = -1 ; j <= 1 ; j++){
+						if (j + y >= 0 && j + y < yLength){
+							validPlacements.add(board[x+i][y+j]);
+						}
+					}
+				}
+			}
+		}
        
         validPlacements.removeAll(playerUnits);
         validPlacements.removeAll(enemyUnits);
@@ -260,12 +278,14 @@ public class Utility {
     }
     
     public static Set<Tile> getPlayerUnitPositions(Player player, Tile[][] board){
+
+		System.out.println("getting player unit positions");
     	
         Set<Tile> s = new HashSet<Tile>();
         
-        for (Unit unit : player.getUnits()){
+        for (Unit u : GameState.getCurrentPlayer().getUnits()){
             /* Add unit to set of player positions */
-            s.add(board[unit.getPosition().getTilex()][unit.getPosition().getTiley()]);
+            s.add(GameState.getBoard()[u.getPosition().getTilex()][u.getPosition().getTiley()]);
         }
         return s;
 

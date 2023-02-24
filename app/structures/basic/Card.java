@@ -32,13 +32,13 @@ public class Card implements Playable{
 		this.manacost = manacost;
 		this.miniCard = miniCard;
 		this.bigCard = bigCard;
-		setModifier(cardname);
+
 		System.out.println(cardname);
 		type = 2;
 	}
-	private void setModifier(String cardname){
+	public void setModifier(){
 		moveModifier = false;
-		switch(cardname){
+		switch(this.cardname){
 			case "Ironcliff Guardian":
 				moveModifier = true;
 				return;
@@ -46,7 +46,6 @@ public class Card implements Playable{
 				moveModifier = true;
 				return;
 		}
-
 	}
 	
 	public int getId() {
