@@ -356,41 +356,53 @@ public class Utility {
         } else if (!unit.hasMoved() && !unit.hasAttacked()) {
             int x = unit.getPosition().getTilex();
             int y = unit.getPosition().getTiley();
+
             // check one behind
             int newX = x - 1;
             if (newX > -1 && newX < board.length && board[newX][y].getOccupier() == null) {
                 validTiles.add(board[newX][y]);
-                // if one behind empty, check two behind
+            }
+            // if the nearby unit is a friendly unit, check the tile behind the friendly unit
+            if (GameState.getCurrentPlayer().getUnits().contains(board[newX][y].getOccupier()) || board[newX][y].getOccupier() == null) {
                 newX = x - 2;
                 if (newX > -1 && newX < board.length && board[newX][y].getOccupier() == null) {
                     validTiles.add(board[newX][y]);
                 }
             }
+
             // check one ahead
             newX = x + 1;
             if (newX > -1 && newX < board.length && board[newX][y].getOccupier() == null) {
                 validTiles.add(board[newX][y]);
-                // if one ahead empty, check two ahead
+            }
+            // if one ahead is a friendly unit, check the tile ahead of the friendly unit
+            if (GameState.getCurrentPlayer().getUnits().contains(board[newX][y].getOccupier()) || board[newX][y].getOccupier() == null) {
                 newX = x + 2;
                 if (newX > -1 && newX < board.length && board[newX][y].getOccupier() == null) {
                     validTiles.add(board[newX][y]);
                 }
             }
+
             // check one up
             int newY = y - 1;
             if (newY > -1 && newY < board[0].length && board[x][newY].getOccupier() == null) {
                 validTiles.add(board[x][newY]);
-                // if one up empty, check two up
+            }
+            // if one up a friendly unit, check two up
+            if (GameState.getCurrentPlayer().getUnits().contains(board[x][newY].getOccupier()) || board[x][newY].getOccupier() == null) {
                 newY = y - 2;
                 if (newY > -1 && newY < board[0].length && board[x][newY].getOccupier() == null) {
                     validTiles.add(board[x][newY]);
                 }
             }
+
             // check one down
             newY = y + 1;
             if (newY > -1 && newY < board[0].length && board[x][newY].getOccupier() == null) {
                 validTiles.add(board[x][newY]);
-                // if one up empty, check two up
+            }
+            // if one up a friendly unit, check two up
+            if (GameState.getCurrentPlayer().getUnits().contains(board[x][newY].getOccupier()) || board[x][newY].getOccupier() == null) {
                 newY = y + 2;
                 if (newY > -1 && newY < board[0].length && board[x][newY].getOccupier() == null) {
                     validTiles.add(board[x][newY]);
@@ -399,23 +411,39 @@ public class Utility {
 
             // diagonal tiles
             if (x + 1 < board.length && y + 1 < board[0].length && board[x + 1][y + 1].getOccupier() == null) {
-                validTiles.add(board[x + 1][y + 1]);
+                if (GameState.getCurrentPlayer().getUnits().contains(board[x+1][y].getOccupier()) || board[x+1][y].getOccupier() == null) {
+                    validTiles.add(board[x + 1][y + 1]);
+                } else if (GameState.getCurrentPlayer().getUnits().contains(board[x][y+1].getOccupier()) || board[x][y+1].getOccupier() == null) {
+                    validTiles.add(board[x + 1][y + 1]);
+                }
             }
 
             if (x - 1 >= 0 && y - 1 >= 0 && board[x - 1][y - 1].getOccupier() == null) {
-                validTiles.add(board[x - 1][y - 1]);
+                if (GameState.getCurrentPlayer().getUnits().contains(board[x-1][y].getOccupier()) || board[x-1][y].getOccupier() == null) {
+                    validTiles.add(board[x - 1][y - 1]);
+                } else if (GameState.getCurrentPlayer().getUnits().contains(board[x][y-1].getOccupier()) || board[x][y-1].getOccupier() == null) {
+                    validTiles.add(board[x - 1][y - 1]);
+                }
             }
 
             if (x + 1 < board.length && y - 1 >= 0 && board[x + 1][y - 1].getOccupier() == null) {
-                validTiles.add(board[x + 1][y - 1]);
+                if (GameState.getCurrentPlayer().getUnits().contains(board[x+1][y].getOccupier()) || board[x+1][y].getOccupier() == null) {
+                    validTiles.add(board[x + 1][y - 1]);
+                } else if (GameState.getCurrentPlayer().getUnits().contains(board[x][y-1].getOccupier()) || board[x][y-1].getOccupier() == null) {
+                    validTiles.add(board[x + 1][y - 1]);
+                }
             }
 
             if (x - 1 >= 0 && y + 1 < board[0].length && board[x - 1][y + 1].getOccupier() == null) {
-                validTiles.add(board[x - 1][y + 1]);
+                if (GameState.getCurrentPlayer().getUnits().contains(board[x-1][y].getOccupier()) || board[x-1][y].getOccupier() == null) {
+                    validTiles.add(board[x - 1][y + 1]);
+                } else if (GameState.getCurrentPlayer().getUnits().contains(board[x][y+1].getOccupier()) || board[x][y+1].getOccupier() == null) {
+                    validTiles.add(board[x - 1][y + 1]);
+                }
             }
 
         } else {
-            // cannot move, so what happens? just return empty set?
+            // cannot move, return empty set
             return validTiles;
         }
         return validTiles;
