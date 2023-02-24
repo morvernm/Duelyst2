@@ -14,6 +14,10 @@ public abstract class Provoke extends Unit{
 	private Set<Tile> validAttacks;
 	
 	public Set<Tile> attractAttack(Tile tile){
+		
+		/*
+		 * All this can be deleted...
+		 */
 		System.out.println("Attack Attracted");
 		/*
 		 * How many provoke units does the enemy has on the boards
@@ -27,7 +31,7 @@ public abstract class Provoke extends Unit{
 	public void disableUnit(Unit other) {
 		
 		System.out.println("Unit disabled");
-		other.setMoved();
+		//other.setMoved();
 	
 	}
 }

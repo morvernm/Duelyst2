@@ -42,12 +42,19 @@ public class Utility {
         Utility.out = out;
     }
 
-
-    public static Set<Tile> determineTargets(Tile tile, Set<Tile> positions, Player enemy, Tile[][] board) {
+	public static Set<Tile> determineTargets(Tile tile, Set<Tile> positions, Player enemy, Tile[][] board) {
 
         // Using Set so that the Tile Objects do not repeat for the last condition
         Set<Tile> validAttacks = new HashSet<>();
+        
+        if (positions == null && !checkProvoker(tile).isEmpty()){
+        	Set<Position> p = checkProvoker(tile);
+        	for (Position pos : p)
+        		validAttacks.add(board[pos.getTilex()][pos.getTiley()]);
+        	return validAttacks;
+        }
 
+        
         // Has Attacked already
         if (tile.getOccupier().hasAttacked()) {
             return null;
@@ -67,7 +74,10 @@ public class Utility {
         return validAttacks;
     }
     
-    public static Position checkProvoker(Tile tile) {
+    public static Set<Position> checkProvoker(Tile tile) {
+    	
+    	Set<Position> provoker = new HashSet<>();
+     	
     	for (Unit unit : GameState.getOtherPlayer().getUnits()) {
         	
         	int tilex = tile.getTilex();
@@ -76,11 +86,11 @@ public class Utility {
     		if (Math.abs(tilex - unit.getPosition().getTilex()) < 2 && Math.abs(tiley - unit.getPosition().getTiley()) < 2) {
     			if (unit instanceof Provoke) {
     				System.out.println("Provoker in the house");
-    				return unit.getPosition();
+    				provoker.add(unit.getPosition());
     			}	
     		}	
         }
-		return null;
+		return provoker;
     }
     
 
@@ -88,9 +98,11 @@ public class Utility {
 
         Set<Tile> validAttacks = new HashSet<>();
         
-        Position provoker = checkProvoker(tile);
-        if (provoker != null) {
-        	validAttacks.add(board[provoker.getTilex()][provoker.getTiley()]);
+        Set<Position> provoker = checkProvoker(tile);
+        if (!provoker.isEmpty()) {
+        	for (Position pos : provoker) {
+        		validAttacks.add(board[pos.getTilex()][pos.getTiley()]);
+        	}
         	return validAttacks;
         }
         	 
@@ -104,9 +116,9 @@ public class Utility {
             }
         } 
         
-        for (Tile t : validAttacks) {
-        	System.out.println("GVT -> x = " + tile.getTilex() + " x = " + tile.getTiley());
-        }      
+//        for (Tile t : validAttacks) {
+//        	System.out.println("GVT -> x = " + tile.getTilex() + " x = " + tile.getTiley());
+//        }      
         
         return validAttacks;
     }
@@ -184,7 +196,7 @@ public class Utility {
      * Gets the valid attack positions for distanced attacks (move first and then attack)
      */
 
-    @SuppressWarnings("unchecked")
+    
 	public static ArrayList<Tile> getValidAttackTiles(Unit unit) {
         ArrayList<Tile> validTiles = new ArrayList<>();
 

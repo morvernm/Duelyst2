@@ -133,6 +133,20 @@ public class Initalize implements EventProcessor{
 		unitTwo.setAttack(3);
 		
 		GameState.modifiyTotalUnits(1);
+		
+//		Unit unit3 = (SilverguardKnight)BasicObjectBuilders.loadUnit(StaticConfFiles.u_silverguard_knight, 70, SilverguardKnight.class);
+//		unit3.setPositionByTile(gameState.board[5][1]); 
+//		
+//		gameState.board[5][1].setOccupier(unit3);
+//		BasicCommands.drawUnit(out, unit3, gameState.board[5][1]);
+//		gameState.getAiPlayer().setUnit(unit3);
+//		
+//		Gui.setUnitStats(unit3, 3, 3);
+//		
+//		unit3.setHealth(4);
+//		unit3.setAttack(3);
+//		
+//		GameState.modifiyTotalUnits(1);
 	}
 	
 	
