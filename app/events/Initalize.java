@@ -161,6 +161,24 @@ public class Initalize implements EventProcessor{
 
 		GameState.enemy.setUnit(pureblade);
 
+		/*
+		 * Windshrike testing
+		 */
+
+		Unit windshrike = BasicObjectBuilders.loadUnit(StaticConfFiles.u_windshrike, 34, Unit.class);
+		windshrike.setPositionByTile(GameState.board[5][4]); 
+		GameState.board[5][4].setOccupier(windshrike);
+		
+		BasicCommands.drawUnit(out, windshrike, GameState.board[5][4]);
+		
+		Gui.setUnitStats(windshrike, 1, 2);
+		
+		windshrike.setHealth(1);
+		windshrike.setAttack(2);
+		GameState.modifiyTotalUnits(1);
+
+		GameState.enemy.setUnit(windshrike);
+
 
 	}
 	

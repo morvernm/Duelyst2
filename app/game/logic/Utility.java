@@ -328,6 +328,14 @@ public class Utility {
 			try {Thread.sleep(3000);} catch (InterruptedException e) {e.printStackTrace();}
 			GameState.board[defender.getPosition().getTilex()][defender.getPosition().getTiley()].setOccupier(null); //remove unit from tiles
 			BasicCommands.deleteUnit(out, defender); //delete unit from board
+
+            /*
+             * Checks if unit has ID 24/34 which correspond to windshrike
+             */
+            int id = defender.getId();
+            if (id == 34 || id == 24){
+                GameState.getAIPlayer().drawCard();
+            }
 			
 //		AI unit
 			if(GameState.getAiPlayer().getUnits().contains(defender)) {
