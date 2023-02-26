@@ -19,14 +19,11 @@ public class Sundrop extends SpellCard {
     	System.out.println("Sundrop - HIHGLIGHT TARGETS CALLED");
         ArrayList<Unit> units = GameState.getCurrentPlayer().getUnits();
         Set<Tile> positions = Utility.getSpellTargetPositions(units);
-        // positions.addAll(Utility.getSpellTargetPositions(GameState.getOtherPlayer().getUnits()));
+        positions.addAll(Utility.getSpellTargetPositions(GameState.getOtherPlayer().getUnits()));
         Gui.highlightTiles(out,positions,2);
     }
     @Override
     public boolean castSpell(Unit target, Tile targetTile) {
-        // Check the player owns this unit. This spell card can only be applied to friendlies
-        if(!GameState.getCurrentPlayer().getUnits().contains(target)) return false;
-
         // Add health to the unit. Cap so the new value doesn't exceed the unit's max health
         // TODO Cap so the new value doesn't exceed the unit's max health// will become easier once unit cards implemented
         target.setHealth(Math.min(target.getHealth() + 5, target.getMaxHealth()));

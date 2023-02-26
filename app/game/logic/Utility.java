@@ -196,7 +196,7 @@ public class Utility {
 		//Gui.setUnitStats(unit, health, attack);
         unit.setAttack(attack);
         unit.setHealth(health);
-
+        unit.setMaxHealth(health); // Set the maximum health this unit can have at any point in the game.
 		GameState.modifiyTotalUnits(1);
         
 
