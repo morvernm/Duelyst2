@@ -12,6 +12,9 @@ import events.CardClicked;
 import structures.GameState;
 
 import structures.basic.Player;
+import structures.basic.SpecialUnits.FireSpitter;
+import structures.basic.SpecialUnits.Pyromancer;
+import structures.basic.SpecialUnits.RangedAttack;
 import structures.basic.SpecialUnits.Windshrike;
 import structures.basic.Tile;
 import structures.basic.Unit;
@@ -43,6 +46,15 @@ public class Utility {
 
         // Using Set so that the Tile Objects do not repeat for the last condition
         Set<Tile> validAttacks = new HashSet<>();
+
+        if (tile.getOccupier() instanceof RangedAttack) {
+            System.out.println("Determine Target - Ranged Attack");
+            if (tile.getOccupier().hasAttacked()) {
+                return null;
+            } else if (!tile.getOccupier().hasAttacked()) {
+                return RangedAttack.specialAbility(board);
+            }
+        }
 
         // Has Attacked already
         if (tile.getOccupier().hasAttacked()) {
@@ -98,6 +110,20 @@ public class Utility {
 	
 	public static void distancedAttack(Unit attacker, Unit defender, Player enemy) {
         System.out.println("Distanced Attack Activated");
+
+        if (!attacker.hasAttacked() && attacker instanceof RangedAttack) {
+            Gui.performAttack(attacker);
+            BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.idle);
+
+            defender.setHealth(defender.getHealth()-attacker.getAttack());
+            Gui.setUnitStats(defender, defender.getHealth(), defender.getAttack());
+
+            attacker.setAttacked(); // commented out to test that unit dies
+
+            checkEndGame(defender);
+            counterAttack(attacker, defender);
+        }
+
         if (!attacker.hasAttacked() && !attacker.hasMoved()) {
 
             // Get the valid tiles from which the unit can attack
@@ -174,10 +200,19 @@ public class Utility {
         String unit_conf = StaticConfFiles.getUnitConf(card.getCardname());
         int unit_id = GameState.getTotalUnits();
         
-        Unit unit = BasicObjectBuilders.loadUnit(unit_conf, unit_id, Unit.class);
+        Unit unit = null;
+
+        if (card.getCardname().equals("Fire Spitter")) {
+            unit = (FireSpitter) BasicObjectBuilders.loadUnit(unit_conf, unit_id, FireSpitter.class);
+        } else if (card.getCardname().equals("Pyromancer")) {
+            unit = (Pyromancer) BasicObjectBuilders.loadUnit(unit_conf, unit_id, Pyromancer.class);
+        } else {
+            unit = BasicObjectBuilders.loadUnit(unit_conf, unit_id, Unit.class);
+
+        }
+
         unit.setPositionByTile(tile);
         tile.setOccupier(unit);
-
 		GameState.modifiyTotalUnits(1);
 		
 		//player.setUnit(unit);
@@ -332,16 +367,20 @@ public class Utility {
 	
 
     public static void moveUnit(Unit unit, Tile tile) {
-        GameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()].setOccupier(null); //clear unit from tile
+        if (!unit.hasMoved() && !unit.hasAttacked()) {
+            GameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()].setOccupier(null); //clear unit from tile
 
-        BasicCommands.moveUnitToTile(out, unit, tile); //move unit to chosen tiles
-        unit.setPositionByTile(tile); //change position of unit to new tiles
+            BasicCommands.moveUnitToTile(out, unit, tile); //move unit to chosen tiles
+            unit.setPositionByTile(tile); //change position of unit to new tiles
 
-        tile.setOccupier(unit); //set unit as occupier of tiles
+            tile.setOccupier(unit); //set unit as occupier of tiles
 
-        unit.setMoved();
-        
-        Gui.removeHighlightTiles(out, GameState.board); //clearing board
+            unit.setMoved();
+
+            Gui.removeHighlightTiles(out, GameState.board); //clearing board
+        } else {
+            BasicCommands.addPlayer1Notification(out, "Unit cannot move again this turn", 2);
+        }
     }
 
 
