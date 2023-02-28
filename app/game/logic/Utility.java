@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Collections;
+
 
 import akka.actor.ActorRef;
 //import akka.parboiled2.Position;
@@ -13,8 +13,14 @@ import events.CardClicked;
 import structures.GameState;
 
 import structures.basic.Player;
+
 import structures.basic.SpecialUnits.Provoke;
 import structures.basic.SpecialUnits.SilverguardKnight;
+
+import structures.basic.SpecialUnits.FireSpitter;
+import structures.basic.SpecialUnits.Pyromancer;
+import structures.basic.SpecialUnits.RangedAttack;
+
 import structures.basic.SpecialUnits.Windshrike;
 import structures.basic.Tile;
 import structures.basic.Unit;
@@ -46,6 +52,15 @@ public class Utility {
 
         // Using Set so that the Tile Objects do not repeat for the last condition
         Set<Tile> validAttacks = new HashSet<>();
+
+        if (tile.getOccupier() instanceof RangedAttack) {
+            System.out.println("Determine Target - Ranged Attack");
+            if (tile.getOccupier().hasAttacked()) {
+                return null;
+            } else if (!tile.getOccupier().hasAttacked()) {
+                return RangedAttack.specialAbility(board);
+            }
+        }
         
         if (positions == null && !checkProvoker(tile).isEmpty()){
         	Set<Position> p = checkProvoker(tile);
@@ -53,8 +68,8 @@ public class Utility {
         		validAttacks.add(board[pos.getTilex()][pos.getTiley()]);
         	return validAttacks;
         }
-
         
+
         // Has Attacked already
         if (tile.getOccupier().hasAttacked()) {
             return null;
@@ -133,8 +148,11 @@ public class Utility {
 		if (!attacker.hasAttacked()) {
 						
 			Gui.performAttack(attacker);
-			BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.idle);
 			
+			BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.hit);
+			try {Thread.sleep(750);} catch (InterruptedException e) {e.printStackTrace();}
+			BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.idle);
+			BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.idle);
 			defender.setHealth(defender.getHealth()-attacker.getAttack());
 			Gui.setUnitStats(defender, defender.getHealth(), defender.getAttack());
 			
@@ -147,6 +165,30 @@ public class Utility {
 	
 	public static void distancedAttack(Unit attacker, Unit defender, Player enemy) {
         System.out.println("Distanced Attack Activated");
+
+        if (!attacker.hasAttacked() && attacker instanceof RangedAttack) {
+            Gui.performAttack(attacker);
+            BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.idle);
+            
+            EffectAnimation projectile = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_projectiles);
+            //try {Thread.sleep(100);} catch (InterruptedException e) {e.printStackTrace();}
+    		BasicCommands.playProjectileAnimation(out, projectile, 0, GameState.getBoard()[attacker.getPosition().getTilex()][attacker.getPosition().getTiley()], GameState.getBoard()[defender.getPosition().getTilex()][defender.getPosition().getTiley()]);
+    		
+    		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+    		BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.hit);
+			try {Thread.sleep(750);} catch (InterruptedException e) {e.printStackTrace();}
+			BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.idle);
+			BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.idle);
+			
+            defender.setHealth(defender.getHealth()-attacker.getAttack());
+            Gui.setUnitStats(defender, defender.getHealth(), defender.getAttack());
+
+            attacker.setAttacked(); // commented out to test that unit dies
+
+            checkEndGame(defender);
+            counterAttack(attacker, defender);
+        }
+
         if (!attacker.hasAttacked() && !attacker.hasMoved()) {
 
             // Get the valid tiles from which the unit can attack
@@ -225,16 +267,20 @@ public class Utility {
         int unit_id = GameState.getTotalUnits();
         
         Unit unit = null;
+
         
         if (card.getCardname().equals("Silverguard Knight")) {
         	unit = (SilverguardKnight) BasicObjectBuilders.loadUnit(unit_conf, unit_id, SilverguardKnight.class);
+        } else if (card.getCardname().equals("Fire Spitter")) {
+            unit = (FireSpitter) BasicObjectBuilders.loadUnit(unit_conf, unit_id, FireSpitter.class);
+        } else if (card.getCardname().equals("Pyromancer")) {
+            unit = (Pyromancer) BasicObjectBuilders.loadUnit(unit_conf, unit_id, Pyromancer.class);
         } else {
-        	unit = BasicObjectBuilders.loadUnit(unit_conf, unit_id, Unit.class);
-       }
-       
+            unit = BasicObjectBuilders.loadUnit(unit_conf, unit_id, Unit.class);
+        }
+
         unit.setPositionByTile(tile);
         tile.setOccupier(unit);
-
 		GameState.modifiyTotalUnits(1);
 		
 		//player.setUnit(unit);
@@ -389,6 +435,7 @@ public class Utility {
 	
 
     public static void moveUnit(Unit unit, Tile tile) {
+
 	    if(!unit.hasMoved() && !unit.hasAttacked()) {
 	        GameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()].setOccupier(null); //clear unit from tile
 	
@@ -402,8 +449,8 @@ public class Utility {
 	        Gui.removeHighlightTiles(out, GameState.board); //clearing board
 	    } else {
 	    	BasicCommands.addPlayer1Notification(out, "Unit cannot move again this turn", 2);
-	    	
 	    }
+
     }
     
     public static boolean checkProvoked(Unit unit) {
@@ -439,41 +486,53 @@ public class Utility {
         } else if (!unit.hasMoved() && !unit.hasAttacked()) {
             int x = unit.getPosition().getTilex();
             int y = unit.getPosition().getTiley();
+
             // check one behind
             int newX = x - 1;
             if (newX > -1 && newX < board.length && board[newX][y].getOccupier() == null) {
                 validTiles.add(board[newX][y]);
-                // if one behind empty, check two behind
+            }
+            // if the nearby unit is a friendly unit, check the tile behind the friendly unit
+            if (GameState.getCurrentPlayer().getUnits().contains(board[newX][y].getOccupier()) || board[newX][y].getOccupier() == null) {
                 newX = x - 2;
                 if (newX > -1 && newX < board.length && board[newX][y].getOccupier() == null) {
                     validTiles.add(board[newX][y]);
                 }
             }
+
             // check one ahead
             newX = x + 1;
             if (newX > -1 && newX < board.length && board[newX][y].getOccupier() == null) {
                 validTiles.add(board[newX][y]);
-                // if one ahead empty, check two ahead
+            }
+            // if one ahead is a friendly unit, check the tile ahead of the friendly unit
+            if (GameState.getCurrentPlayer().getUnits().contains(board[newX][y].getOccupier()) || board[newX][y].getOccupier() == null) {
                 newX = x + 2;
                 if (newX > -1 && newX < board.length && board[newX][y].getOccupier() == null) {
                     validTiles.add(board[newX][y]);
                 }
             }
+
             // check one up
             int newY = y - 1;
             if (newY > -1 && newY < board[0].length && board[x][newY].getOccupier() == null) {
                 validTiles.add(board[x][newY]);
-                // if one up empty, check two up
+            }
+            // if one up a friendly unit, check two up
+            if (GameState.getCurrentPlayer().getUnits().contains(board[x][newY].getOccupier()) || board[x][newY].getOccupier() == null) {
                 newY = y - 2;
                 if (newY > -1 && newY < board[0].length && board[x][newY].getOccupier() == null) {
                     validTiles.add(board[x][newY]);
                 }
             }
+
             // check one down
             newY = y + 1;
             if (newY > -1 && newY < board[0].length && board[x][newY].getOccupier() == null) {
                 validTiles.add(board[x][newY]);
-                // if one up empty, check two up
+            }
+            // if one up a friendly unit, check two up
+            if (GameState.getCurrentPlayer().getUnits().contains(board[x][newY].getOccupier()) || board[x][newY].getOccupier() == null) {
                 newY = y + 2;
                 if (newY > -1 && newY < board[0].length && board[x][newY].getOccupier() == null) {
                     validTiles.add(board[x][newY]);
@@ -482,23 +541,39 @@ public class Utility {
 
             // diagonal tiles
             if (x + 1 < board.length && y + 1 < board[0].length && board[x + 1][y + 1].getOccupier() == null) {
-                validTiles.add(board[x + 1][y + 1]);
+                if (GameState.getCurrentPlayer().getUnits().contains(board[x+1][y].getOccupier()) || board[x+1][y].getOccupier() == null) {
+                    validTiles.add(board[x + 1][y + 1]);
+                } else if (GameState.getCurrentPlayer().getUnits().contains(board[x][y+1].getOccupier()) || board[x][y+1].getOccupier() == null) {
+                    validTiles.add(board[x + 1][y + 1]);
+                }
             }
 
             if (x - 1 >= 0 && y - 1 >= 0 && board[x - 1][y - 1].getOccupier() == null) {
-                validTiles.add(board[x - 1][y - 1]);
+                if (GameState.getCurrentPlayer().getUnits().contains(board[x-1][y].getOccupier()) || board[x-1][y].getOccupier() == null) {
+                    validTiles.add(board[x - 1][y - 1]);
+                } else if (GameState.getCurrentPlayer().getUnits().contains(board[x][y-1].getOccupier()) || board[x][y-1].getOccupier() == null) {
+                    validTiles.add(board[x - 1][y - 1]);
+                }
             }
 
             if (x + 1 < board.length && y - 1 >= 0 && board[x + 1][y - 1].getOccupier() == null) {
-                validTiles.add(board[x + 1][y - 1]);
+                if (GameState.getCurrentPlayer().getUnits().contains(board[x+1][y].getOccupier()) || board[x+1][y].getOccupier() == null) {
+                    validTiles.add(board[x + 1][y - 1]);
+                } else if (GameState.getCurrentPlayer().getUnits().contains(board[x][y-1].getOccupier()) || board[x][y-1].getOccupier() == null) {
+                    validTiles.add(board[x + 1][y - 1]);
+                }
             }
 
             if (x - 1 >= 0 && y + 1 < board[0].length && board[x - 1][y + 1].getOccupier() == null) {
-                validTiles.add(board[x - 1][y + 1]);
+                if (GameState.getCurrentPlayer().getUnits().contains(board[x-1][y].getOccupier()) || board[x-1][y].getOccupier() == null) {
+                    validTiles.add(board[x - 1][y + 1]);
+                } else if (GameState.getCurrentPlayer().getUnits().contains(board[x][y+1].getOccupier()) || board[x][y+1].getOccupier() == null) {
+                    validTiles.add(board[x - 1][y + 1]);
+                }
             }
 
         } else {
-            // cannot move, so what happens? just return empty set?
+            // cannot move, return empty set
             return validTiles;
         }
         return validTiles;
@@ -518,9 +593,14 @@ public class Utility {
                     } else if (attacker.getPosition().getTilex() == i & attacker.getPosition().getTiley() == j) {
                         //adjacentAttack(countAttacker, attacker);
                     	Gui.performAttack(countAttacker);
-                    	BasicCommands.playUnitAnimation(out, countAttacker, UnitAnimationType.idle);
+                    	
                         //attacker.setAttacked(); // - believe we dont need this
-
+                    	
+            			BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.hit);
+            			BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.idle);
+            			try {Thread.sleep(750);} catch (InterruptedException e) {e.printStackTrace();}
+						BasicCommands.playUnitAnimation(out, countAttacker, UnitAnimationType.idle);
+						
                         int newHealth = attacker.getHealth() - countAttacker.getAttack();
                         attacker.setHealth(newHealth);
                         Gui.setUnitStats(attacker, attacker.getHealth(), attacker.getAttack());

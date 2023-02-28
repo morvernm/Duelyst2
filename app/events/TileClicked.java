@@ -12,6 +12,7 @@ import structures.GameState;
 import structures.basic.Card;
 import structures.basic.Playable;
 import structures.basic.Player;
+import structures.basic.SpecialUnits.RangedAttack;
 import structures.basic.Tile;
 import structures.basic.Unit;
 import structures.basic.spellcards.SpellCard;
@@ -65,7 +66,11 @@ public class TileClicked implements EventProcessor{
 						gameState.previousAction.push(unit);
 						
 					} else if (unit.hasMoved() && !unit.hasAttacked()) {
-						gameState.validAttacks = Utility.getValidTargets(gameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()], gameState.enemy, gameState.board);
+						if (unit instanceof RangedAttack) {
+							gameState.validAttacks = ((RangedAttack) unit).specialAbility(gameState.board);
+						} else {
+							gameState.validAttacks = Utility.getValidTargets(gameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()], gameState.enemy, gameState.board);
+						}
 						Gui.highlightTiles(out, gameState.validAttacks, 2);
 						gameState.previousAction.push(unit);
 						
@@ -124,7 +129,7 @@ public class TileClicked implements EventProcessor{
 				return;
 			}
 		}
-		
+
 	}
 	
 	// Spell card helper function

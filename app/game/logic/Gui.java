@@ -75,7 +75,7 @@ public class Gui {
 
 	public static void performAttack(Unit unit) {
 		BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.attack);
-		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+		try {Thread.sleep(1500);} catch (InterruptedException e) {e.printStackTrace();}
 	}
 
 	/*

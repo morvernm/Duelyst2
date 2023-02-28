@@ -17,6 +17,7 @@ import structures.GameState;
 import structures.basic.AIPlayer;
 import structures.basic.Card;
 import structures.basic.Player;
+import structures.basic.SpecialUnits.FireSpitter;
 import structures.basic.Tile;
 import structures.basic.Unit;
 import structures.basic.UnitAnimationType;
@@ -85,10 +86,28 @@ public class Initalize implements EventProcessor{
 		Gui.setUnitStats(unit, gameState.getHumanPlayer().getHealth(), 2);
 		unit.setHealth(gameState.getHumanPlayer().getHealth());
 		unit.setAttack(2);
+
 		
 		
-		
-		
+
+		/*
+		 * TEST
+		 */
+////		
+//		Unit unitTwo = (FireSpitter) BasicObjectBuilders.loadUnit(StaticConfFiles.u_fire_spitter, 69, FireSpitter.class);
+//		unitTwo.setPositionByTile(gameState.board[1][2]);
+////
+//		gameState.board[1][2].setOccupier(unitTwo);
+//		BasicCommands.drawUnit(out, unitTwo, gameState.board[1][2]);
+//		gameState.getHumanPlayer().setUnit(unitTwo);
+//		B
+//		Gui.setUnitStats(unitTwo, 4, 3);
+//
+//		unitTwo.setHealth(4);
+//		unitTwo.setAttack(3);
+////
+////		GameState.modifiyTotalUnits(1);
+
 		/*
 		 * Enemy avatar stuff
 		 */
