@@ -20,7 +20,6 @@ public class Player {
 	protected int cardsInHand = 0;
 	protected Deck deck;
 	protected ArrayList<Unit> units; // store all units currently on board
-	protected static Unit avatar;
 	
 	
 	public Player() {
@@ -113,8 +112,13 @@ public class Player {
 //	public void createAvatar(Unit unit) {
 //		
 //	}
-//	public static Unit getAvatar() {
-//		return avatar;
+//	public Unit getAvatar() {
+//		
+//		for (Unit unit : this.getUnits()) {
+//			if (unit.getId() == 100 || unit.getId() == 101)
+//				return unit;
+//		} 
+//		return null;
 //	}
 
 }

@@ -140,11 +140,7 @@ public class CardClicked implements EventProcessor{
 		return highlightedCard;
 	}
 
-//	public static void clearHighlighted(){
-//		
-//		// Unhighlight currently highlighted cards
-//		currentlyHighlighted.clear();
-//	}
+
 	
 	public static void clearHighlighted(){
 		System.out.println("clearHighLighted CardClicked");
@@ -159,11 +155,6 @@ public class CardClicked implements EventProcessor{
 		}
 		
 		
-		/*
-		 *  Need to clear the stack as well
-		 */
-//		if(!GameState.previousAction.isEmpty())
-//			GameState.previousAction.pop();
 	}
 
 
@@ -172,10 +163,7 @@ public class CardClicked implements EventProcessor{
 		GameState.setPreviousAction(card);
 	}
 
-//	public void initaliseSpellcards(){
-//		spellcards.put("Truestrike", new Truestrike());
-//		spellcards.put("Sundrop Elixir", new Sundrop());
-//	}
+
 
 	public static int getHandPosition() {
 		return handPosition;
