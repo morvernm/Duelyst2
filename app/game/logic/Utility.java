@@ -16,6 +16,7 @@ import structures.basic.Player;
 
 import structures.basic.SpecialUnits.Provoke;
 import structures.basic.SpecialUnits.SilverguardKnight;
+import structures.basic.SpecialUnits.*;
 
 import structures.basic.SpecialUnits.FireSpitter;
 import structures.basic.SpecialUnits.Pyromancer;
@@ -275,6 +276,10 @@ public class Utility {
             unit = (FireSpitter) BasicObjectBuilders.loadUnit(unit_conf, unit_id, FireSpitter.class);
         } else if (card.getCardname().equals("Pyromancer")) {
             unit = (Pyromancer) BasicObjectBuilders.loadUnit(unit_conf, unit_id, Pyromancer.class);
+        } else if (card.getCardname().equals("Serpenti")) {
+        	unit = (Serpenti) BasicObjectBuilders.loadUnit(unit_conf, unit_id, Serpenti.class);
+        } else if (card.getCardname().equals("Azurite Lion"))  {
+        	unit = (AzuriteLion) BasicObjectBuilders.loadUnit(unit_conf, unit_id, AzuriteLion.class);
         } else {
             unit = BasicObjectBuilders.loadUnit(unit_conf, unit_id, Unit.class);
         }
