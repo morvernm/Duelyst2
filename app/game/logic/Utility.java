@@ -304,6 +304,8 @@ public class Utility {
             y = tile.getTiley();
             for (int i = -1 ; i <= 1 ; i++){
                 for (int j = -1 ; j <= 1 ; j++){
+                	if (x + i > 8 || y +j > 4 || x + i <0 || y +j<0)
+                		continue;
                     validPlacements.add(board[x + i][y + j]);
                 }
             }
@@ -387,18 +389,22 @@ public class Utility {
 	
 
     public static void moveUnit(Unit unit, Tile tile) {
-        GameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()].setOccupier(null); //clear unit from tile
-
-        BasicCommands.moveUnitToTile(out, unit, tile); //move unit to chosen tiles
-        unit.setPositionByTile(tile); //change position of unit to new tiles
-
-        tile.setOccupier(unit); //set unit as occupier of tiles
-
-        unit.setMoved();
-        
-        Gui.removeHighlightTiles(out, GameState.board); //clearing board
+	    if(!unit.hasMoved() && !unit.hasAttacked()) {
+	        GameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()].setOccupier(null); //clear unit from tile
+	
+	        BasicCommands.moveUnitToTile(out, unit, tile); //move unit to chosen tiles
+	        unit.setPositionByTile(tile); //change position of unit to new tiles
+	
+	        tile.setOccupier(unit); //set unit as occupier of tiles
+	
+	        unit.setMoved();
+	        
+	        Gui.removeHighlightTiles(out, GameState.board); //clearing board
+	    } else {
+	    	BasicCommands.addPlayer1Notification(out, "Unit cannot move again this turn", 2);
+	    	
+	    }
     }
-
     
     public static boolean checkProvoked(Unit unit) {
 		for (Unit other : GameState.getOtherPlayer().getUnits()) {

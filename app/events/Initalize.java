@@ -120,7 +120,7 @@ public class Initalize implements EventProcessor{
 		 * TEST
 		 */
 		
-		Unit unitTwo = (SilverguardKnight)BasicObjectBuilders.loadUnit(StaticConfFiles.u_silverguard_knight, 69, SilverguardKnight.class);
+		Unit unitTwo = BasicObjectBuilders.loadUnit(StaticConfFiles.u_pyromancer, 69, Unit.class);
 		unitTwo.setPositionByTile(gameState.board[5][3]); 
 		
 		gameState.board[5][3].setOccupier(unitTwo);
@@ -134,19 +134,19 @@ public class Initalize implements EventProcessor{
 		
 		GameState.modifiyTotalUnits(1);
 		
-//		Unit unit3 = (SilverguardKnight)BasicObjectBuilders.loadUnit(StaticConfFiles.u_silverguard_knight, 70, SilverguardKnight.class);
-//		unit3.setPositionByTile(gameState.board[5][1]); 
-//		
-//		gameState.board[5][1].setOccupier(unit3);
-//		BasicCommands.drawUnit(out, unit3, gameState.board[5][1]);
-//		gameState.getAiPlayer().setUnit(unit3);
-//		
-//		Gui.setUnitStats(unit3, 3, 3);
-//		
-//		unit3.setHealth(4);
-//		unit3.setAttack(3);
-//		
-//		GameState.modifiyTotalUnits(1);
+		Unit unit3 = (SilverguardKnight)BasicObjectBuilders.loadUnit(StaticConfFiles.u_silverguard_knight, 70, SilverguardKnight.class);
+		unit3.setPositionByTile(gameState.board[5][1]); 
+		
+		gameState.board[5][1].setOccupier(unit3);
+		BasicCommands.drawUnit(out, unit3, gameState.board[5][1]);
+		gameState.getAiPlayer().setUnit(unit3);
+		
+		Gui.setUnitStats(unit3, 3, 3);
+		
+		unit3.setHealth(4);
+		unit3.setAttack(3);
+		
+		GameState.modifiyTotalUnits(1);
 	}
 	
 	
