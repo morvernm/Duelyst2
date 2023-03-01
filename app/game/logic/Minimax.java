@@ -37,10 +37,11 @@ public class Minimax implements Runnable{
 		
 		System.out.println("ACTIONS IN MINIMAX");
 		ArrayList<AttackAction> actions = new ArrayList<>();
-		Set<Tile> targets = new HashSet<>();
+		
 		
 		
 		for(Unit unit : gameState.getAIPlayer().getUnits()) {
+			Set<Tile> targets = new HashSet<>();
 			if (unit.hasAttacked()){
 				continue;
 			}
@@ -59,6 +60,7 @@ public class Minimax implements Runnable{
 			for (Tile tile : targets) {
 				actions.add(new AttackAction(unit,tile));
 			}	
+			
 			
 			Gui.removeHighlightTiles(out, gameState.getBoard());
 			

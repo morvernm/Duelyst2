@@ -178,7 +178,7 @@ public class Utility {
 	 */
 	public static void checkSilverKnight(Unit defender) {
 		if(defender.getId() == 100) {
-			for (Unit  unit: GameState.getCurrentPlayer().getUnits()) {
+			for (Unit  unit: GameState.getHumanPlayer().getUnits()) {
 				if (unit instanceof SilverguardKnight && GameState.getHumanPlayer().getUnits().contains(unit)) {
 					((SilverguardKnight) unit).buffAttack();
 				}
@@ -219,7 +219,8 @@ public class Utility {
 
         if (!attacker.hasAttacked() && !attacker.hasMoved()) {
 
-            // Get the valid tiles from which the unit can attack
+            // Get the valid tiles from which the unit can be attacked
+        	GameState.validMoves = Utility.determineValidMoves(GameState.getBoard(), attacker); // THATS NEEDED FOR THE AI 
             ArrayList<Tile> validTiles = getValidAttackTiles(defender);
 
             int minScore = Integer.MAX_VALUE;
@@ -230,7 +231,7 @@ public class Utility {
                 int score = 0;
                 score += Math.abs(tile.getTilex() - attacker.getPosition().getTilex());
                 score += Math.abs(tile.getTiley() - attacker.getPosition().getTiley());
-                if (score <= minScore && tile.getOccupier() == null) {
+                if (score < minScore && tile.getOccupier() == null) {
                     minScore = score;
                     closestTile = tile;
                 }
@@ -257,16 +258,17 @@ public class Utility {
                     }
                 }
                 adjacentAttack(attacker, defender);
-
             }
         }
     }
 	
 	 /*
      * Gets the valid attack positions for distanced attacks (move first and then attack)
+     * Determines from which positions a unit can be attacked
+     * 
+     * @param unit
+     * 
      */
-
-    
 	public static ArrayList<Tile> getValidAttackTiles(Unit unit) {
         ArrayList<Tile> validTiles = new ArrayList<>();
 
