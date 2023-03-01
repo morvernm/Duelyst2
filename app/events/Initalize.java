@@ -158,10 +158,10 @@ public class Initalize implements EventProcessor{
 		BasicCommands.drawUnit(out, unit3, gameState.board[5][1]);
 		gameState.getAiPlayer().setUnit(unit3);
 		
-		Gui.setUnitStats(unit3, 3, 3);
+		Gui.setUnitStats(unit3, 3,1);
 		
-		unit3.setHealth(4);
-		unit3.setAttack(3);
+		unit3.setHealth(3);
+		unit3.setAttack(1);
 		
 		GameState.modifiyTotalUnits(1);
 	}

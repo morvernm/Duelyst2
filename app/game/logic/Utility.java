@@ -177,9 +177,9 @@ public class Utility {
 	 * @param unit
 	 */
 	public static void checkSilverKnight(Unit defender) {
-		if(defender.getId() == 100 ) {
+		if(defender.getId() == 100) {
 			for (Unit  unit: GameState.getCurrentPlayer().getUnits()) {
-				if (unit instanceof SilverguardKnight) {
+				if (unit instanceof SilverguardKnight && GameState.getHumanPlayer().getUnits().contains(unit)) {
 					((SilverguardKnight) unit).buffAttack();
 				}
 			}
@@ -230,7 +230,7 @@ public class Utility {
                 int score = 0;
                 score += Math.abs(tile.getTilex() - attacker.getPosition().getTilex());
                 score += Math.abs(tile.getTiley() - attacker.getPosition().getTiley());
-                if (score < minScore) {
+                if (score <= minScore && tile.getOccupier() == null) {
                     minScore = score;
                     closestTile = tile;
                 }
