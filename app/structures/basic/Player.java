@@ -110,15 +110,7 @@ public class Player {
 		return this.units;
 	}
 
-	public int getHandSize(){
-		for (int i = 0 ; i < hand.length ; i++){
-			if (hand[i] == null){}
-			else {
-				System.out.println(hand[i].getCardname());
-			}
-		}
-		return cardsInHand;
-	}
+
 	
 //	public Unit getUnitByIndex(int index) {
 //		return units.get(index);

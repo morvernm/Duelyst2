@@ -176,45 +176,50 @@ public class Utility {
         
         Unit unit = BasicObjectBuilders.loadUnit(unit_conf, unit_id, Unit.class);
         unit.setPositionByTile(tile);
-		System.out.printf("Unit x %d and y  %d \n", unit.getPosition().getTilex(), unit.getPosition().getTiley());
-		System.out.printf("Tile x %d, y %d \n", tile.getTilex(), tile.getTiley());
-
         tile.setOccupier(unit);
 
 		GameState.modifiyTotalUnits(1);
 		
-		//player.setUnit(unit);
 
+        // Plays annimations
 		EffectAnimation effect = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_summon);
         BasicCommands.playEffectAnimation(out, effect, tile);
 		BasicCommands.drawUnit(out, unit, tile);
 
+
 		BigCard bigCard = card.getBigCard();
-		
 		int attack = bigCard.getAttack();
 		int health = bigCard.getHealth();
 		unit.setMaxHealth(health);
 		
-		//Gui.setUnitStats(unit, health, attack);
+		//Sets unit stats
         unit.setAttack(attack);
         unit.setHealth(health);
 
+        // Sends stats to gui
 		Gui.setUnitStats(unit, health, attack);
-
-
-
 		GameState.getCurrentPlayer().setUnit(unit);
-
-
-
 
 		int positionInHand = card.getPositionInHand();
 		player.removeFromHand(positionInHand);
 		BasicCommands.deleteCard(out, positionInHand);
 		
-		
         player.updateMana(-card.getManacost());
         CardClicked.currentlyHighlighted.remove(card);
+
+        /*
+         * Checks if unit is Azure Herald, if so, applies healing effect to player avatar
+         */
+
+         if (unit_id == 5 || unit_id == 15){
+            int hp = 5 + player.getHealth();
+            if (hp >= 20){
+                player.setHealth(20);
+            }
+            else {
+                player.setHealth(hp);
+            }
+         }
         
 		if (GameState.getHumanPlayer() == player){
 			BasicCommands.setPlayer1Mana(out, player);
@@ -222,8 +227,6 @@ public class Utility {
 		else {
 			BasicCommands.setPlayer2Mana(out, player);
 		}
-
-
     }
 
     public static Set<Tile> cardPlacements(Card card, Player player, Player enemy, Tile[][] board){
