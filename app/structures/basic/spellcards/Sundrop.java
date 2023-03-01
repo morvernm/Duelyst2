@@ -5,6 +5,7 @@ import game.logic.Gui;
 import game.logic.Utility;
 import structures.GameState;
 import structures.basic.*;
+import structures.basic.SpecialUnits.Pureblade;
 import utils.BasicObjectBuilders;
 import utils.StaticConfFiles;
 
@@ -35,16 +36,11 @@ public class Sundrop extends SpellCard {
         return true;
     }
 
+    /*
+     * Checks if unit has SpellThief by checcking unit id, if so, applies the affect
+     */
     @Override
     public void handleSpellThief(){
-        Player enemy = GameState.getAIPlayer();
-        for (Unit unit : enemy.getUnits()){
-            if (unit.getId() == 13 || unit.getId() == 1){
-                unit.modAttack(1);
-                unit.modHealth(1);
-                Gui.setUnitStats(unit, unit.getHealth(), unit.getAttack());
-                return;
-            }
-        }
+        return;
     }
 }

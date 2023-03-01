@@ -6,6 +6,7 @@ import structures.basic.*;
 import java.util.HashSet;
 import java.util.Set;
 
+
 public class Windshrike extends Unit {
 
     private final String name = "Windshrike";

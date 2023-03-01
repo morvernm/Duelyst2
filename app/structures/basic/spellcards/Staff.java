@@ -8,6 +8,7 @@ import structures.basic.Tile;
 import structures.basic.Unit;
 import structures.GameState;
 import structures.basic.Player;
+import structures.basic.SpecialUnits.*;
 
 public class Staff extends SpellCard {
 
@@ -23,14 +24,16 @@ public class Staff extends SpellCard {
 
     }
 
+    /*
+     * Checks if unit has SpellThief by checcking unit id, if so, applies the affect
+     */
     @Override
     public void handleSpellThief(){
-        Player enemy = GameState.getAIPlayer();
+        Player enemy = GameState.getHumanPlayer();
         for (Unit unit : enemy.getUnits()){
-            if (unit.getId() == 13 || unit.getId() == 1){
-                unit.modAttack(1);
-                unit.modHealth(1);
-                Gui.setUnitStats(unit, unit.getHealth(), unit.getAttack());
+            if (unit.getClass().equals(Pureblade.class)){
+                Pureblade p = (Pureblade)unit;
+                p.specialAbility();
                 return;
             }
         }

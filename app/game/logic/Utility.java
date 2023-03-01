@@ -12,6 +12,7 @@ import events.CardClicked;
 import structures.GameState;
 
 import structures.basic.Player;
+import structures.basic.SpecialUnits.Pureblade;
 import structures.basic.SpecialUnits.Windshrike;
 import structures.basic.Tile;
 import structures.basic.Unit;
@@ -173,8 +174,41 @@ public class Utility {
 		/* Set unit id to number of total units on board + 1 */
         String unit_conf = StaticConfFiles.getUnitConf(card.getCardname());
         int unit_id = card.getId();
+        Unit unit;
+        /* 
+        Checks if unit is windshrike
+        */
+
+        if (unit_id == 34 || unit_id == 24){
+            unit = (Windshrike)BasicObjectBuilders.loadUnit(unit_conf, unit_id, Windshrike.class);
+        }
+        /*
+        Checks if unit is pureblade
+        */
+        else if (unit_id == 1 || unit_id == 13){
+            unit = (Pureblade)BasicObjectBuilders.loadUnit(unit_conf, unit_id, Pureblade.class);
+        }
+        /*
+        Unit is a standard unit
+        */
+        else {
+            unit = BasicObjectBuilders.loadUnit(unit_conf, unit_id, Unit.class);
+
+            /*
+            * Checks if unit is Azure Herald, if so, applies healing effect to player avatar
+            */
+            if (unit_id == 5 || unit_id == 15){
+                int hp = 5 + player.getHealth();
+                if (hp >= 20){
+                    player.setHealth(20);
+                }
+                else {
+                    player.setHealth(hp);
+                }
+            }
+        }
         
-        Unit unit = BasicObjectBuilders.loadUnit(unit_conf, unit_id, Unit.class);
+ 
         unit.setPositionByTile(tile);
         tile.setOccupier(unit);
 
@@ -207,19 +241,8 @@ public class Utility {
         player.updateMana(-card.getManacost());
         CardClicked.currentlyHighlighted.remove(card);
 
-        /*
-         * Checks if unit is Azure Herald, if so, applies healing effect to player avatar
-         */
 
-         if (unit_id == 5 || unit_id == 15){
-            int hp = 5 + player.getHealth();
-            if (hp >= 20){
-                player.setHealth(20);
-            }
-            else {
-                player.setHealth(hp);
-            }
-         }
+
         
 		if (GameState.getHumanPlayer() == player){
 			BasicCommands.setPlayer1Mana(out, player);
@@ -333,10 +356,10 @@ public class Utility {
 			BasicCommands.deleteUnit(out, defender); //delete unit from board
 
             /*
-             * Checks if unit has ID 24/34 which correspond to windshrike
+             * Checks if unit is windshrike to windshrike
              */
-            int id = defender.getId();
-            if (id == 34 || id == 24){
+
+            if (defender.getClass().equals(Windshrike.class)){
                 GameState.getAIPlayer().drawCard();
             }
 			

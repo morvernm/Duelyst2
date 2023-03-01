@@ -20,6 +20,7 @@ import structures.basic.Player;
 import structures.basic.Tile;
 import structures.basic.Unit;
 import structures.basic.UnitAnimationType;
+import structures.basic.SpecialUnits.Pureblade;
 import structures.basic.SpecialUnits.Windshrike;
 
 import utils.BasicObjectBuilders;
@@ -147,7 +148,7 @@ public class Initalize implements EventProcessor{
 		 * ISSUE 17, SpellThief testing
 		 */
 
-		Unit pureblade = BasicObjectBuilders.loadUnit(StaticConfFiles.u_pureblade_enforcer, 1, Unit.class);
+		Pureblade pureblade = (Pureblade)BasicObjectBuilders.loadUnit(StaticConfFiles.u_pureblade_enforcer, 1, Pureblade.class);
 		pureblade.setPositionByTile(GameState.board[5][3]); 
 		GameState.board[5][3].setOccupier(pureblade);
 		
@@ -165,7 +166,7 @@ public class Initalize implements EventProcessor{
 		 * Windshrike testing
 		 */
 
-		Unit windshrike = BasicObjectBuilders.loadUnit(StaticConfFiles.u_windshrike, 34, Unit.class);
+		Windshrike windshrike = (Windshrike)BasicObjectBuilders.loadUnit(StaticConfFiles.u_windshrike, 34, Windshrike.class);
 		windshrike.setPositionByTile(GameState.board[5][4]); 
 		GameState.board[5][4].setOccupier(windshrike);
 		
