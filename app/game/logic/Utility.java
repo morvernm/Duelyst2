@@ -7,6 +7,7 @@ import java.util.Set;
 
 
 import akka.actor.ActorRef;
+import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
 //import akka.parboiled2.Position;
 import commands.BasicCommands;
 import events.CardClicked;
@@ -154,13 +155,34 @@ public class Utility {
 			try {Thread.sleep(750);} catch (InterruptedException e) {e.printStackTrace();}
 			BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.idle);
 			BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.idle);
+			
 			defender.setHealth(defender.getHealth()-attacker.getAttack());
+			
+			// check if silverguard Knight, one or more, are on the board
+			checkSilverKnight(defender);
+			
 			Gui.setUnitStats(defender, defender.getHealth(), defender.getAttack());
 			
 			attacker.setAttacked(); // commented out to test that unit dies
 			
 			checkEndGame(defender);
 			counterAttack(attacker, defender);
+		}
+	}
+	
+	/**
+	 * Checks if a SilverGuard Knight(SK) is present on the board;
+	 * If the damdaged unit is the Human's avatar then buff all friendly SK units
+	 * 
+	 * @param unit
+	 */
+	public static void checkSilverKnight(Unit defender) {
+		if(defender.getId() == 100 ) {
+			for (Unit  unit: GameState.getCurrentPlayer().getUnits()) {
+				if (unit instanceof SilverguardKnight) {
+					((SilverguardKnight) unit).buffAttack();
+				}
+			}
 		}
 	}
 	
@@ -181,9 +203,14 @@ public class Utility {
 			BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.idle);
 			BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.idle);
 			
+			// check if silverguard Knight, one or more, are on the board
+			checkSilverKnight(defender);
+			
             defender.setHealth(defender.getHealth()-attacker.getAttack());
             Gui.setUnitStats(defender, defender.getHealth(), defender.getAttack());
-
+            
+            
+            
             attacker.setAttacked(); // commented out to test that unit dies
 
             checkEndGame(defender);
@@ -605,6 +632,10 @@ public class Utility {
             			BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.idle);
             			try {Thread.sleep(750);} catch (InterruptedException e) {e.printStackTrace();}
 						BasicCommands.playUnitAnimation(out, countAttacker, UnitAnimationType.idle);
+						
+						
+						// check if silverguard Knight, one or more, are on the board
+						checkSilverKnight(attacker);
 						
                         int newHealth = attacker.getHealth() - countAttacker.getAttack();
                         attacker.setHealth(newHealth);
