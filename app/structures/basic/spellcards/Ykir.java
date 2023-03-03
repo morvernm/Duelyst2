@@ -50,4 +50,19 @@ public class Ykir extends SpellCard {
         Gui.highlightTiles(out, positions, 2);
 	}
 
+	@Override
+	public ArrayList<Unit> getTargets() {
+		ArrayList<Unit> targets = new ArrayList<>();
+
+		Unit avatar = null;
+
+		for (Unit unit : GameState.getCurrentPlayer().getUnits()) {
+			if (unit.getId() == 100 || unit.getId() == 101) {
+				avatar = unit;
+			}
+		}
+		targets.add(avatar);
+		return targets;
+	}
+
 }

@@ -6,6 +6,8 @@ import structures.basic.MiniCard;
 import structures.basic.Tile;
 import structures.basic.Unit;
 
+import java.util.ArrayList;
+
 public class Staff extends SpellCard {
 
 
@@ -17,5 +19,10 @@ public class Staff extends SpellCard {
     @Override
     public void highlightTargets(ActorRef out) {
 
+    }
+
+    @Override
+    public ArrayList<Unit> getTargets() {
+        return null;
     }
 }

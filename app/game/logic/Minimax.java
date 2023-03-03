@@ -1,6 +1,7 @@
 package game.logic;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,10 +9,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
 import events.EndTurnClicked;
+import org.checkerframework.checker.units.qual.A;
 import structures.GameState;
+import structures.basic.Card;
+import structures.basic.SpecialUnits.Provoke;
 import structures.basic.Tile;
 import structures.basic.Unit;
-
+import structures.basic.spellcards.EntropicDecay;
+import structures.basic.spellcards.SpellCard;
 
 
 public class Minimax implements Runnable{
@@ -32,7 +37,34 @@ public class Minimax implements Runnable{
 	public void run() {
 		minimax(this.gameState);
 	}
-	
+
+	private static HashMap<SpellCard, ArrayList<SpellAction>> spellActions (GameState gameState){
+		HashMap<SpellCard,ArrayList<SpellAction>> actions = new HashMap<>();
+		Set<SpellCard> spellcards = new HashSet<>(); // used to store what spellcards the player has in their hand
+
+		// Check if AI has spellcards in hand
+		for(Card card: GameState.getCurrentPlayer().getHand()) {
+			if (card.getCardname().equals("Entropic Decay") || card.getCardname().equals("Staff of Y'Kir'")){
+				spellcards.add((SpellCard)card);
+			}
+		}
+
+		// If have spellcards, get their valid target units and associated tile positions. Else, return null
+		if(spellcards.isEmpty()) return null;
+
+		for(SpellCard card: spellcards) {
+			Set<Tile> targets = Utility.getSpellTargetPositions(card.getTargets());
+			ArrayList<SpellAction> a = new ArrayList<>();
+			for(Tile target: targets){
+				SpellAction action = new SpellAction(target.getOccupier(), target);
+				a.add(action);
+			}
+			actions.put(card,a);
+		}
+
+		return actions;
+	}
+
 	private static ArrayList<AttackAction> actions(GameState gameState){
 		
 		System.out.println("ACTIONS IN MINIMAX");
@@ -150,6 +182,29 @@ public class Minimax implements Runnable{
 			}
 		}
 		return actions;
+	}
+
+	private static Set<SpellAction> evaluateSpells(HashMap<SpellCard,ArrayList<SpellAction>> actions, GameState gameState) {
+
+		Set<SpellAction> returnActions = new HashSet<>();
+
+		// Go through possible actions. Check what time of spellcard is used for action (i.e. to buff friendlies, or attack enemies). Evaluate accordingly.
+		for(var entry: actions.entrySet()){
+			for(SpellAction action: entry.getValue()) {
+				if(entry.getKey() instanceof EntropicDecay) { // if entropic decay, high priority
+					if(action.unit instanceof Provoke){ // prioritise getting rid of provoke targets
+						action.value = 10;
+					} else{
+						action.value = 9;
+					}
+				} else { // else, must be Staff of Ykir. High priority again as buffs player's own avatar
+					action.value = 9;
+				}
+				returnActions.add(action);
+			}
+		}
+
+		return returnActions;
 	}
 	
 	private static AttackAction bestAttack(Set<AttackAction> actions) {

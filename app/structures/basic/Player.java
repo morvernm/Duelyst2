@@ -74,6 +74,10 @@ public class Player {
 		return this.deck;
 	}
 
+	public Card[] getHand() {
+		return hand;
+	}
+
 	// draw a card from the deck and place it in the player's hand.
 	public void drawCard() {
 		if (deck.isEmpty()) throw new NoSuchElementException("Deck is empty");

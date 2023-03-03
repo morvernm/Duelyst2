@@ -22,6 +22,12 @@ public class Sundrop extends SpellCard {
         positions.addAll(Utility.getSpellTargetPositions(GameState.getOtherPlayer().getUnits()));
         Gui.highlightTiles(out,positions,2);
     }
+
+    @Override
+    public ArrayList<Unit> getTargets() {
+        return null;
+    }
+
     @Override
     public boolean castSpell(Unit target, Tile targetTile) {
         // Check the player owns this unit. This spell card can only be applied to friendlies
