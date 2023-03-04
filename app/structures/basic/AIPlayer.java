@@ -1,8 +1,14 @@
 package structures.basic;
 
 import game.logic.Gui;
+import structures.GameState;
+import utils.BasicObjectBuilders;
+import utils.StaticConfFiles;
 
 import java.util.NoSuchElementException;
+
+import akka.actor.ActorRef;
+import commands.BasicCommands;
 
 public class AIPlayer extends Player{
 
@@ -36,5 +42,16 @@ public class AIPlayer extends Player{
 
         hand[i] = current;
         cardsInHand++;
+    }
+    public void createAvatar(ActorRef out) {
+		Unit enemyAvatar = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 101, Unit.class);
+		enemyAvatar.setPositionByTile(GameState.board[5][2]); 
+		GameState.board[5][2].setOccupier(enemyAvatar);
+		BasicCommands.drawUnit(out, enemyAvatar, GameState.board[5][2]);
+		Gui.setUnitStats(enemyAvatar, 20, 2);
+		enemyAvatar.setHealth(20);
+		enemyAvatar.setAttack(2);
+		GameState.modifiyTotalUnits(1);
+		GameState.enemy.setUnit(enemyAvatar);   	
     }
 }
