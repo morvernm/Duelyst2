@@ -17,6 +17,7 @@ import structures.basic.Tile;
 import structures.basic.Unit;
 import structures.basic.spellcards.EntropicDecay;
 import structures.basic.spellcards.SpellCard;
+import structures.basic.spellcards.Ykir;
 
 
 public class Minimax implements Runnable{
@@ -43,20 +44,28 @@ public class Minimax implements Runnable{
 		Set<SpellCard> spellcards = new HashSet<>(); // used to store what spellcards the player has in their hand
 
 		// Check if AI has spellcards in hand
+		if(GameState.getAIPlayer().handIsEmpty()) {System.out.println("AI hand empty"); return null;}
+
+		System.out.println("Checking for spell cards...");
 		for(Card card: GameState.getCurrentPlayer().getHand()) {
-			if (card.getCardname().equals("Entropic Decay") || card.getCardname().equals("Staff of Y'Kir'")){
-				spellcards.add((SpellCard)card);
+			if (card instanceof EntropicDecay || card instanceof Ykir){
+				// Add to list of possible actions if have mana to play that card
+				System.out.println("Adding " + card.getCardname());
+				if(GameState.getAIPlayer().getMana() >= card.getManacost()) {
+					spellcards.add((SpellCard) card);
+				}
 			}
 		}
 
 		// If have spellcards, get their valid target units and associated tile positions. Else, return null
 		if(spellcards.isEmpty()) return null;
 
+		System.out.println("Getting valid actions...");
 		for(SpellCard card: spellcards) {
 			Set<Tile> targets = Utility.getSpellTargetPositions(card.getTargets());
 			ArrayList<SpellAction> a = new ArrayList<>();
 			for(Tile target: targets){
-				SpellAction action = new SpellAction(target.getOccupier(), target);
+				SpellAction action = new SpellAction(target.getOccupier(), target, card);
 				a.add(action);
 			}
 			actions.put(card,a);
@@ -116,6 +125,9 @@ public class Minimax implements Runnable{
 		/*
 		 * start the whole thing and return an action 
 		 */
+
+		minimaxSpells(gameState);
+
 		for (int moves = 0; moves < 2; moves++) {
 			
 			ArrayList<AttackAction> acts = actions(gameState);
@@ -159,6 +171,37 @@ public class Minimax implements Runnable{
 	 *  3 - Attack and only damage non-avatar enemy unit with non-avatar unit
 	 *  2 - Attack with my avatar
 	 */
+
+	// Variant of minimax just for spells;
+	// perhaps could later be integrated to a more overarching logic that handles unit cards,
+	// attacks, spell cards etc.
+	public static void minimaxSpells(GameState gameState) {
+
+		while (true) {
+			// Get all possible spell actions and evaluate them
+			HashMap<SpellCard, ArrayList<SpellAction>> actions = spellActions(gameState);
+
+			// Check if there are any actions left to play
+			if (actions == null || actions.isEmpty()) {
+				System.out.println("No spells left to play");
+				return;
+			}
+			evaluateSpells(actions, gameState);
+			SpellAction bestSpell = bestSpell(actions,gameState);
+
+			// If so, play best spell
+			bestSpell.spellCard.castSpell(bestSpell.unit,bestSpell.tile);
+			// Remove from AI hand
+			for(int i = 0; i < GameState.getAIPlayer().getHand().length; i++) {
+				if(bestSpell.spellCard == GameState.getAIPlayer().getHand()[i]) {
+					System.out.println("removing " + GameState.getAIPlayer().getHand()[i].getCardname() + " from AI hand.");
+					GameState.getAIPlayer().removeFromHand(i + 1);
+				}
+			}
+		}
+	}
+
+
 	private static Set<AttackAction> evaluateAttacks(ArrayList<AttackAction> a, GameState gameState) {
 		
 		System.out.println("EVALUATing attacks...");
@@ -184,9 +227,9 @@ public class Minimax implements Runnable{
 		return actions;
 	}
 
-	private static Set<SpellAction> evaluateSpells(HashMap<SpellCard,ArrayList<SpellAction>> actions, GameState gameState) {
+	private static void evaluateSpells(HashMap<SpellCard,ArrayList<SpellAction>> actions, GameState gameState) {
 
-		Set<SpellAction> returnActions = new HashSet<>();
+		if(actions == null) return;
 
 		// Go through possible actions. Check what time of spellcard is used for action (i.e. to buff friendlies, or attack enemies). Evaluate accordingly.
 		for(var entry: actions.entrySet()){
@@ -200,13 +243,34 @@ public class Minimax implements Runnable{
 				} else { // else, must be Staff of Ykir. High priority again as buffs player's own avatar
 					action.value = 9;
 				}
-				returnActions.add(action);
 			}
 		}
-
-		return returnActions;
 	}
-	
+
+	// Method to find best spell. Once done, remove spell card so it cannot be played again.
+	private static SpellAction bestSpell(HashMap<SpellCard, ArrayList<SpellAction>> actions, GameState gameState) {
+		int maxValue = -1;
+		SpellAction bestSpell = null;
+		ArrayList<SpellCard> toRemove = new ArrayList<>(); // list of cards to remove from deck if we decide either to play that card, or find it has no actions left.
+
+		for (var entry : actions.entrySet()) {
+			for (SpellAction spell : entry.getValue()) { // For every possible action for each spell card
+				if (spell.value > maxValue) { // Find spell action with highest value
+					System.out.println("adding new best spell");
+					maxValue = spell.value;
+					bestSpell = spell;
+					toRemove.add(entry.getKey());
+				}
+			}
+		}
+		// Remove spell card which will play spell so it cannot be played again / remove cards that no longer have valid actions
+		for(SpellCard forRemoval: toRemove) {
+			actions.remove(forRemoval);
+		}
+
+		return bestSpell;
+	}
+
 	private static AttackAction bestAttack(Set<AttackAction> actions) {
 		System.out.println("PICKING BEST ATTACK");
 		Integer maxValue = -1;

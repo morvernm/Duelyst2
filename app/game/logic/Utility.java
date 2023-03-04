@@ -653,6 +653,7 @@ public class Utility {
 
 	// Get positions of potential targets of a spell.
 	public static Set<Tile> getSpellTargetPositions(ArrayList<Unit> targets) {
+        if(targets == null || targets.isEmpty()) return null; // if list of targets is null, then return no positions
 		Set<Tile> positions = new HashSet<>();
 
 		for (Unit unit : targets) {

@@ -149,7 +149,7 @@ public class GameState {
 		}
 
 		// give new current player appropriate mana at beginning of their turn
-		getCurrentPlayer().setMana(getTurnNumber() + 1);
+		getCurrentPlayer().setMana(getTurnNumber() + 8); // TODO CHANGED FOR TEST. CHANGE BACK TO +1
 	}
 	public static Player getAiPlayer() {
 		return enemy;

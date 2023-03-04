@@ -112,6 +112,10 @@ public class Player {
 	public void removeUnit(Unit unit) {
 		this.units.remove(unit);
 	}
+
+	public Boolean handIsEmpty() {
+		return cardsInHand == 0;
+	}
 	
 //	public void createAvatar(Unit unit) {
 //		
