@@ -17,7 +17,7 @@ public class Player {
 	protected int health;
 	protected int mana;
 	protected Card[] hand;
-	protected int cardsInHand = 0;
+	public int cardsInHand = 0;
 	protected Deck deck;
 	protected ArrayList<Unit> units; // store all units currently on board
 	protected static Unit avatar;
@@ -25,7 +25,7 @@ public class Player {
 	
 	public Player() {
 		super();
-		setHealth(20);
+		setHealth(15);
 		setMana(2);
 		hand = new Card[6];
 		deck = new Deck(1);

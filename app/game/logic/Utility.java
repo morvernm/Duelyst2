@@ -82,11 +82,11 @@ public class Utility {
      * Attacking logic
      */
 	public static void adjacentAttack(Unit attacker, Unit defender) {
-			
+		
 		if (!attacker.hasAttacked()) {
 			Gui.performAttack(attacker);
 			BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.idle);
-			
+
 			defender.setHealth(defender.getHealth()-attacker.getAttack());
 			Gui.setUnitStats(defender, defender.getHealth(), defender.getAttack());
 			
@@ -197,13 +197,16 @@ public class Utility {
             /*
             * Checks if unit is Azure Herald, if so, applies healing effect to player avatar
             */
+            System.out.println(unit_id);
             if (unit_id == 5 || unit_id == 15){
-                int hp = 5 + player.getHealth();
+                int hp = 5 + GameState.getCurrentPlayer().getHealth();
                 if (hp >= 20){
-                    player.setHealth(20);
+                    hp = 20;
+                    GameState.getCurrentPlayer().setHealth(hp);
                 }
                 else {
-                    player.setHealth(hp);
+                    System.out.println(hp);
+                    GameState.getCurrentPlayer().setHealth(hp);
                 }
             }
         }
@@ -349,6 +352,8 @@ public class Utility {
 
 	public static void checkEndGame(Unit defender) {
 		//unit death
+        System.out.println("checking end game");
+        System.out.println(GameState.enemy.getHealth());
 		if(defender.getHealth() <= 0) {
 			BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.death);
 			try {Thread.sleep(3000);} catch (InterruptedException e) {e.printStackTrace();}
@@ -356,11 +361,11 @@ public class Utility {
 			BasicCommands.deleteUnit(out, defender); //delete unit from board
 
             /*
-             * Checks if unit is windshrike to windshrike
+             * Checks if unit is windshrike 
              */
 
             if (defender.getClass().equals(Windshrike.class)){
-                GameState.getAIPlayer().drawCard();
+                GameState.enemy.drawCard();
             }
 			
 //		AI unit

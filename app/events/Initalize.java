@@ -52,7 +52,7 @@ public class Initalize implements EventProcessor{
 		GameState.setTotalUnits(); 
 
 		gameState.setHumanPlayer(humanPlayer);
-		gameState.setCurrentPlayer(gameState.getHumanPlayer());
+		gameState.setCurrentPlayer(humanPlayer);
 		gameState.gameInitalised = true;
 		gameState.emptyPreviousAction();
 
@@ -122,6 +122,7 @@ public class Initalize implements EventProcessor{
 
 		
 		GameState.enemy = new AIPlayer();
+
 		
 		Unit enemyUnit = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, -2, Unit.class);
 
@@ -149,14 +150,14 @@ public class Initalize implements EventProcessor{
 		 */
 
 		Pureblade pureblade = (Pureblade)BasicObjectBuilders.loadUnit(StaticConfFiles.u_pureblade_enforcer, 1, Pureblade.class);
-		pureblade.setPositionByTile(GameState.board[5][3]); 
-		GameState.board[5][3].setOccupier(pureblade);
+		pureblade.setPositionByTile(GameState.board[5][1]); 
+		GameState.board[5][1].setOccupier(pureblade);
 		
-		BasicCommands.drawUnit(out, pureblade, GameState.board[5][3]);
+		BasicCommands.drawUnit(out, pureblade, GameState.board[5][1]);
 		
-		Gui.setUnitStats(pureblade, 3, 2);
+		Gui.setUnitStats(pureblade, 1, 2);
 		
-		pureblade.setHealth(3);
+		pureblade.setHealth(1);
 		pureblade.setAttack(2);
 		GameState.modifiyTotalUnits(1);
 
@@ -180,6 +181,12 @@ public class Initalize implements EventProcessor{
 
 		GameState.enemy.setUnit(windshrike);
 
+		/*
+		Azure hearld testing 
+		*/
+
+		Card azure = BasicObjectBuilders.loadCard(StaticConfFiles.c_azure_herald, 5, Card.class);
+		GameState.getHumanPlayer().testcard(azure);
 
 	}
 	

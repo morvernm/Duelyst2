@@ -149,10 +149,10 @@ public class Unit implements Playable{
 
 	public void setHealth(int health) {
 		// Check if the unit is a player avatar. Adjust health of appropriate player accordingly if so.
-		if(this.getId() == 0){
+		if(this.getId() == -1){
 			GameState.getHumanPlayer().setHealth(health);
 		}
-		else if(this.getId() == 1) {
+		else if(this.getId() == -2) {
 			GameState.getAIPlayer().setHealth(health);
 		}
 
