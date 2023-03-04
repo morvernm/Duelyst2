@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
 import game.logic.Gui;
+import game.logic.Minimax;
 import structures.GameState;
 import structures.basic.Unit;
 
@@ -40,7 +41,16 @@ public class EndTurnClicked implements EventProcessor{
 			GameState.previousAction.pop(); // remove the previous action, effectively cancelling it.
 		}
 		
+		/*
+		 * Create the AI Thread and run it if it's the AI player's turn
+		 */
 		
+		if (GameState.getCurrentPlayer() == GameState.getAIPlayer()) {
+			
+			Minimax minimax = new Minimax(out, gameState, message);
+			Thread ai = new Thread(minimax);
+			ai.start();	
+		}
 		
 
 	}

@@ -18,6 +18,7 @@ import structures.basic.AIPlayer;
 import structures.basic.Card;
 import structures.basic.Player;
 import structures.basic.SpecialUnits.FireSpitter;
+import structures.basic.SpecialUnits.Pyromancer;
 import structures.basic.Tile;
 import structures.basic.Unit;
 import structures.basic.UnitAnimationType;
@@ -108,7 +109,7 @@ public class Initalize implements EventProcessor{
 		 * TEST
 		 */
 		
-		Unit unitTwo = BasicObjectBuilders.loadUnit(StaticConfFiles.u_pyromancer, 69, Unit.class);
+		Unit unitTwo = (Pyromancer)BasicObjectBuilders.loadUnit(StaticConfFiles.u_pyromancer, 69, Pyromancer.class);
 		unitTwo.setPositionByTile(gameState.board[5][3]); 
 		
 		gameState.board[5][3].setOccupier(unitTwo);
@@ -129,10 +130,10 @@ public class Initalize implements EventProcessor{
 		BasicCommands.drawUnit(out, unit3, gameState.board[5][1]);
 		gameState.getAiPlayer().setUnit(unit3);
 		
-		Gui.setUnitStats(unit3, 3, 3);
+		Gui.setUnitStats(unit3, 3,1);
 		
-		unit3.setHealth(4);
-		unit3.setAttack(3);
+		unit3.setHealth(3);
+		unit3.setAttack(1);
 		
 		GameState.modifiyTotalUnits(1);
 	}

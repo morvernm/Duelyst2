@@ -121,6 +121,7 @@ public class Player {
 		Gui.setUnitStats(unit, GameState.getHumanPlayer().getHealth(), 2);
 		unit.setHealth(GameState.getHumanPlayer().getHealth());
 		unit.setAttack(2);
+		
 	}
 
 }

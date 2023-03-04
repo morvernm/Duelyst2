@@ -52,6 +52,7 @@ public class AIPlayer extends Player{
 		enemyAvatar.setHealth(20);
 		enemyAvatar.setAttack(2);
 		GameState.modifiyTotalUnits(1);
-		GameState.enemy.setUnit(enemyAvatar);   	
+		GameState.enemy.setUnit(enemyAvatar);
+		
     }
 }
