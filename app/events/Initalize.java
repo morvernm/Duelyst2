@@ -79,6 +79,7 @@ public class Initalize implements EventProcessor{
 		BasicCommands.drawUnit(out, unit, gameState.board[3][2]);
 
 		GameState.getHumanPlayer().setUnit(unit);
+		GameState.getHumanPlayer().createAvatar(unit);
 		for (Unit u : GameState.getHumanPlayer().getUnits()){
 			System.out.printf("Unit x %d and y  %d \n", unit.getPosition().getTilex(), unit.getPosition().getTiley());
 		}
@@ -144,6 +145,7 @@ public class Initalize implements EventProcessor{
 		
 		unit.setHealth(humanPlayer.getHealth());
 		enemyUnit.setHealth(GameState.enemy.getHealth());
+		GameState.enemy.createAvatar(enemyUnit);
 
 		/*
 		 * ISSUE 17, SpellThief testing

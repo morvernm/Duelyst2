@@ -112,7 +112,6 @@ public class Gui {
 	}
 
 	public static void displayHumanHP(Player player){
-		System.out.println("dislaying human hp" + player.getHealth());
 		BasicCommands.setPlayer1Health(out, player);
 	}
 	

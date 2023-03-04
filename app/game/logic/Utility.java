@@ -202,11 +202,10 @@ public class Utility {
                 int hp = 5 + GameState.getCurrentPlayer().getHealth();
                 if (hp >= 20){
                     hp = 20;
-                    GameState.getCurrentPlayer().setHealth(hp);
+                    player.getAvatar().setHealth(hp);
                 }
                 else {
-                    System.out.println(hp);
-                    GameState.getCurrentPlayer().setHealth(hp);
+                    player.getAvatar().setHealth(hp);
                 }
             }
         }
