@@ -75,19 +75,8 @@ public class Initalize implements EventProcessor{
 		/*
 		 * Place the Human Avatar on the board
 		 */
-		Unit unit = BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, 100, Unit.class);
-		unit.setPositionByTile(gameState.board[3][2]); 
-		gameState.board[3][2].setOccupier(unit);
-		BasicCommands.drawUnit(out, unit, gameState.board[3][2]);
-
-		gameState.getHumanPlayer().setUnit(unit);
-
-		GameState.modifiyTotalUnits(1);
 		
-		Gui.setUnitStats(unit, gameState.getHumanPlayer().getHealth(), 2);
-		unit.setHealth(gameState.getHumanPlayer().getHealth());
-		unit.setAttack(2);
-			
+		humanPlayer.createAvatar(out);
 
 		/*
 		 * TEST
@@ -107,32 +96,14 @@ public class Initalize implements EventProcessor{
 ////
 ////		GameState.modifiyTotalUnits(1);
 
+		
 		/*
-		 * Enemy avatar stuff
+		 * Create enemy player and avatar
 		 */
 		
-		GameState.enemy = new AIPlayer();
-		
-		Unit enemyUnit = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 101, Unit.class);
-
-		
-		enemyUnit.setPositionByTile(gameState.board[5][2]); 
-		gameState.board[5][2].setOccupier(enemyUnit);
-		
-		BasicCommands.drawUnit(out, enemyUnit, gameState.board[5][2]);
-		
-		Gui.setUnitStats(enemyUnit, 20, 2);
-		
-		enemyUnit.setHealth(20);
-		enemyUnit.setAttack(2);
-		GameState.modifiyTotalUnits(1);
-
-		GameState.enemy.setUnit(enemyUnit);
-
-		try {Thread.sleep(100);}catch (InterruptedException e){e.printStackTrace();}
-		
-		unit.setHealth(humanPlayer.getHealth());
-		enemyUnit.setHealth(GameState.enemy.getHealth());
+		AIPlayer enemy = new AIPlayer();
+		GameState.enemy = enemy;
+		enemy.createAvatar(out);
 
 		/*
 		 * TEST

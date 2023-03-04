@@ -1,9 +1,15 @@
 package structures.basic;
 
 import game.logic.Gui;
+import structures.GameState;
+import utils.BasicObjectBuilders;
+import utils.StaticConfFiles;
 
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
+
+import akka.actor.ActorRef;
+import commands.BasicCommands;
 
 /**
  * A basic representation of the Player. A player
@@ -98,10 +104,6 @@ public class Player {
 		return this.units;
 	}
 	
-//	public Unit getUnitByIndex(int index) {
-//		return units.get(index);
-//	}
-	
 	public void setUnit(Unit unit) {
 		this.units.add(unit);
 	}
@@ -109,16 +111,17 @@ public class Player {
 		this.units.remove(unit);
 	}
 	
-//	public void createAvatar(Unit unit) {
-//		
-//	}
-//	public Unit getAvatar() {
-//		
-//		for (Unit unit : this.getUnits()) {
-//			if (unit.getId() == 100 || unit.getId() == 101)
-//				return unit;
-//		} 
-//		return null;
-//	}
+	public void createAvatar(ActorRef out) {
+		Unit unit = BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, 100, Unit.class);
+		unit.setPositionByTile(GameState.getBoard()[3][2]); 
+		GameState.getBoard()[3][2].setOccupier(unit);
+		BasicCommands.drawUnit(out, unit, GameState.getBoard()[3][2]);
+		GameState.getHumanPlayer().setUnit(unit);
+		GameState.modifiyTotalUnits(1);
+		Gui.setUnitStats(unit, GameState.getHumanPlayer().getHealth(), 2);
+		unit.setHealth(GameState.getHumanPlayer().getHealth());
+		unit.setAttack(2);
+		
+	}
 
 }
