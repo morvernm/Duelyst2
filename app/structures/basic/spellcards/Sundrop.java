@@ -41,6 +41,14 @@ public class Sundrop extends SpellCard {
      */
     @Override
     public void handleSpellThief(){
+        Player enemy = GameState.getHumanPlayer();
+        for (Unit unit : enemy.getUnits()){
+            if (unit.getClass().equals(Pureblade.class)){
+                Pureblade p = (Pureblade)unit;
+                p.specialAbility();
+                return;
+            }
+        }
         return;
     }
 }

@@ -364,7 +364,9 @@ public class Utility {
              */
 
             if (defender.getClass().equals(Windshrike.class)){
+                System.out.println("printing hand size " + GameState.enemy.cardsInHand);
                 GameState.enemy.drawCard();
+                System.out.println("printing hand size " + GameState.enemy.cardsInHand);
             }
 			
 //		AI unit

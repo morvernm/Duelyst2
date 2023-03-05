@@ -24,7 +24,7 @@ public class EntropicDecay extends SpellCard {
     }
 
     /*
-     * Checks if unit has SpellThief by checcking unit id, if so, applies the affect
+     * Checks if unit has SpellThief by checking unit id, if so, applies the affect
      */
     @Override
     public void handleSpellThief(){

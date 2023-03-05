@@ -163,7 +163,7 @@ public class Initalize implements EventProcessor{
 		pureblade.setAttack(2);
 		GameState.modifiyTotalUnits(1);
 
-		GameState.enemy.setUnit(pureblade);
+		GameState.getHumanPlayer().setUnit(pureblade);
 
 		/*
 		 * Windshrike testing
