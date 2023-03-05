@@ -17,10 +17,12 @@ import structures.GameState;
 import structures.basic.AIPlayer;
 import structures.basic.Card;
 import structures.basic.Player;
+import structures.basic.SpecialUnits.FireSpitter;
 import structures.basic.Tile;
 import structures.basic.Unit;
 import structures.basic.UnitAnimationType;
 import structures.basic.SpecialUnits.Pureblade;
+import structures.basic.SpecialUnits.SilverguardKnight;
 import structures.basic.SpecialUnits.Windshrike;
 
 import utils.BasicObjectBuilders;
@@ -73,7 +75,7 @@ public class Initalize implements EventProcessor{
 		/*
 		 * Place the Human Avatar on the board
 		 */
-		Unit unit = BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, -1, Unit.class);
+		Unit unit = BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, 100, Unit.class);
 		unit.setPositionByTile(gameState.board[3][2]); 
 		gameState.board[3][2].setOccupier(unit);
 		BasicCommands.drawUnit(out, unit, gameState.board[3][2]);
@@ -89,26 +91,26 @@ public class Initalize implements EventProcessor{
 		Gui.setUnitStats(unit, gameState.getHumanPlayer().getHealth(), 2);
 		unit.setHealth(gameState.getHumanPlayer().getHealth());
 		unit.setAttack(2);
-		
-		
+			
+
 		/*
 		 * TEST
 		 */
-//		
-//		Windshrike unitTwo = (Windshrike)BasicObjectBuilders.loadUnit(StaticConfFiles.u_windshrike, 6, Windshrike.class);
-//		unitTwo.setPositionByTile(gameState.board[1][2]); 
-//		
+////		
+//		Unit unitTwo = (FireSpitter) BasicObjectBuilders.loadUnit(StaticConfFiles.u_fire_spitter, 69, FireSpitter.class);
+//		unitTwo.setPositionByTile(gameState.board[1][2]);
+////
 //		gameState.board[1][2].setOccupier(unitTwo);
 //		BasicCommands.drawUnit(out, unitTwo, gameState.board[1][2]);
 //		gameState.getHumanPlayer().setUnit(unitTwo);
-//		
+//		B
 //		Gui.setUnitStats(unitTwo, 4, 3);
-//		
+//
 //		unitTwo.setHealth(4);
 //		unitTwo.setAttack(3);
-//		
-//		GameState.modifiyTotalUnits(1);
-//		
+////
+////		GameState.modifiyTotalUnits(1);
+
 		/*
 		 * Enemy avatar stuff
 		 */
@@ -125,8 +127,7 @@ public class Initalize implements EventProcessor{
 		GameState.enemy = new AIPlayer();
 
 		
-		Unit enemyUnit = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, -2, Unit.class);
-
+		Unit enemyUnit = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 101, Unit.class);
 		
 		enemyUnit.setPositionByTile(gameState.board[5][2]); 
 		gameState.board[5][2].setOccupier(enemyUnit);
@@ -183,16 +184,38 @@ public class Initalize implements EventProcessor{
 
 		GameState.enemy.setUnit(windshrike);
 
+
 		/*
-		Azure hearld testing 
-		*/
-
-
-		Card azure = BasicObjectBuilders.loadCard(StaticConfFiles.c_azure_herald, 5, Card.class);
-		GameState.getHumanPlayer().testcard(azure);
-
-		Card shrike = BasicObjectBuilders.loadCard(StaticConfFiles.c_windshrike, 24, Card.class);
-		GameState.getHumanPlayer().testcard(shrike);
+		 * TEST
+		 */
+		
+		Unit unitTwo = BasicObjectBuilders.loadUnit(StaticConfFiles.u_pyromancer, 69, Unit.class);
+		unitTwo.setPositionByTile(gameState.board[5][3]); 
+		
+		gameState.board[5][3].setOccupier(unitTwo);
+		BasicCommands.drawUnit(out, unitTwo, gameState.board[5][3]);
+		gameState.getAiPlayer().setUnit(unitTwo);
+		
+		Gui.setUnitStats(unitTwo, 3, 3);
+		
+		unitTwo.setHealth(4);
+		unitTwo.setAttack(3);
+		
+		GameState.modifiyTotalUnits(1);
+		
+		Unit unit3 = (SilverguardKnight)BasicObjectBuilders.loadUnit(StaticConfFiles.u_silverguard_knight, 70, SilverguardKnight.class);
+		unit3.setPositionByTile(gameState.board[5][1]); 
+		
+		gameState.board[5][1].setOccupier(unit3);
+		BasicCommands.drawUnit(out, unit3, gameState.board[5][1]);
+		gameState.getAiPlayer().setUnit(unit3);
+		
+		Gui.setUnitStats(unit3, 3, 3);
+		
+		unit3.setHealth(4);
+		unit3.setAttack(3);
+		
+		GameState.modifiyTotalUnits(1);
 	}
 	
 	

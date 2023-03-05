@@ -20,7 +20,10 @@ public class Player {
 	public int cardsInHand = 0;
 	protected Deck deck;
 	protected ArrayList<Unit> units; // store all units currently on board
+<<<<<<< app/structures/basic/Player.java
 	protected Unit avatar;
+=======
+>>>>>>> app/structures/basic/Player.java
 	
 	
 	public Player() {
@@ -123,6 +126,7 @@ public class Player {
 		this.units.remove(unit);
 	}
 	
+<<<<<<< app/structures/basic/Player.java
 	public void createAvatar(Unit unit) {
 		this.avatar = unit;
 	}
@@ -133,5 +137,18 @@ public class Player {
 
 
 
+=======
+//	public void createAvatar(Unit unit) {
+//		
+//	}
+//	public Unit getAvatar() {
+//		
+//		for (Unit unit : this.getUnits()) {
+//			if (unit.getId() == 100 || unit.getId() == 101)
+//				return unit;
+//		} 
+//		return null;
+//	}
+>>>>>>> app/structures/basic/Player.java
 
 }
