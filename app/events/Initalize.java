@@ -187,9 +187,12 @@ public class Initalize implements EventProcessor{
 		Azure hearld testing 
 		*/
 
+
 		Card azure = BasicObjectBuilders.loadCard(StaticConfFiles.c_azure_herald, 5, Card.class);
 		GameState.getHumanPlayer().testcard(azure);
 
+		Card shrike = BasicObjectBuilders.loadCard(StaticConfFiles.c_windshrike, 24, Card.class);
+		GameState.getHumanPlayer().testcard(shrike);
 	}
 	
 	

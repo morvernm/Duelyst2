@@ -40,6 +40,7 @@ public class Sundrop extends SpellCard {
      * Checks if unit has SpellThief by checcking unit id, if so, applies the affect
      */
     @Override
+    //this needs to be removed post testing
     public void handleSpellThief(){
         Player enemy = GameState.getHumanPlayer();
         for (Unit unit : enemy.getUnits()){
