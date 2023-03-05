@@ -197,7 +197,6 @@ public class Utility {
             /*
             * Checks if unit is Azure Herald, if so, applies healing effect to player avatar
             */
-            System.out.println(unit_id);
             if (unit_id == 5 || unit_id == 15){
                 int hp = 3 + GameState.getCurrentPlayer().getHealth();
                 if (hp >= 20){
@@ -367,6 +366,7 @@ public class Utility {
                 System.out.println("printing hand size " + GameState.enemy.cardsInHand);
                 GameState.enemy.drawCard();
                 System.out.println("printing hand size " + GameState.enemy.cardsInHand);
+                System.out.println("printing card name" + GameState.enemy.getCard(1).getCardname());
             }
 			
 //		AI unit
