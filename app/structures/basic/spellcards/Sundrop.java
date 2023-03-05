@@ -28,28 +28,10 @@ public class Sundrop extends SpellCard {
         // Check the player owns this unit. This spell card can only be applied to friendlies
         if(!GameState.getCurrentPlayer().getUnits().contains(target)) return false;
 
-        this.handleSpellThief();
         // Add health to the unit. Cap so the new value doesn't exceed the unit's max health
         // TODO Cap so the new value doesn't exceed the unit's max health// will become easier once unit cards implemented
         target.setHealth(Math.min(target.getHealth() + 5, target.getMaxHealth()));
         Gui.playEffectAnimation(BasicObjectBuilders.loadEffect(StaticConfFiles.f1_buff),targetTile);
         return true;
-    }
-
-    /*
-     * Checks if unit has SpellThief by checcking unit id, if so, applies the affect
-     */
-    @Override
-    //this needs to be removed post testing
-    public void handleSpellThief(){
-        Player enemy = GameState.getHumanPlayer();
-        for (Unit unit : enemy.getUnits()){
-            if (unit.getClass().equals(Pureblade.class)){
-                Pureblade p = (Pureblade)unit;
-                p.specialAbility();
-                return;
-            }
-        }
-        return;
     }
 }

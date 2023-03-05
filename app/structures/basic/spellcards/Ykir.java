@@ -8,6 +8,8 @@ import utils.StaticConfFiles;
 import game.logic.Gui;
 import game.logic.Utility;
 import structures.GameState;
+import structures.basic.SpecialUnits.Pureblade;
+import structures.basic.Player;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -24,7 +26,7 @@ public class Ykir extends SpellCard {
 			if (target.getId() != 101)
 				return false;
 		}
-			
+		this.handleSpellThief();	
 		
 		target.setAttack(target.getAttack() + 2);
 		
@@ -49,5 +51,16 @@ public class Ykir extends SpellCard {
         Set<Tile> positions = Utility.getSpellTargetPositions(targets);
         Gui.highlightTiles(out, positions, 2);
 	}
+
+	public void handleSpellThief(){
+        Player enemy = GameState.getHumanPlayer();
+        for (Unit unit : enemy.getUnits()){
+            if (unit.getClass().equals(Pureblade.class)){
+                Pureblade p = (Pureblade)unit;
+                p.specialAbility();
+                return;
+            }
+        }
+    }
 
 }

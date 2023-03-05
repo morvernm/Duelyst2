@@ -27,7 +27,6 @@ public class Staff extends SpellCard {
     /*
      * Checks if unit has SpellThief by checking unit id, if so, applies the affect
      */
-    @Override
     public void handleSpellThief(){
         Player enemy = GameState.getHumanPlayer();
         for (Unit unit : enemy.getUnits()){

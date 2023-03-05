@@ -11,6 +11,7 @@ import game.logic.Gui;
 import game.logic.Utility;
 import structures.GameState;
 import structures.basic.*;
+import structures.basic.SpecialUnits.Pureblade;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -70,7 +71,6 @@ public class EntropicDecay extends SpellCard {
     /*
      * Checks if unit has SpellThief by checking unit id, if so, applies the affect
      */
-    @Override
     public void handleSpellThief(){
         Player enemy = GameState.getHumanPlayer();
         for (Unit unit : enemy.getUnits()){

@@ -328,7 +328,6 @@ public class Utility {
             }
         }
         
-        Unit unit = null;
 
         
         if (card.getCardname().equals("Silverguard Knight")) {
@@ -422,14 +421,18 @@ public class Utility {
         for (Tile tile : playerUnits){
             x = tile.getTilex();
             y = tile.getTiley();
-            for (int i = -1 ; i <= 1 ; i++){
-                for (int j = -1 ; j <= 1 ; j++){
-                	if (x + i > 8 || y +j > 4 || x + i <0 || y +j<0)
-                		continue;
-                    validPlacements.add(board[x + i][y + j]);
-                }
-            }
-        }
+            i = -1; j = -1;
+			for (i = -1 ; i <= 1 ; i++){
+				if (i + x >= 0 && i + x < xLength){
+					for (j = -1 ; j <= 1 ; j++){
+						if (j + y >= 0 && j + y < yLength){
+							validPlacements.add(board[x+i][y+j]);
+						}
+					}
+				}
+			}
+		}
+
        
         validPlacements.removeAll(playerUnits);
         validPlacements.removeAll(enemyUnits);
@@ -580,53 +583,66 @@ public class Utility {
             int newX = x - 1;
             if (newX > -1 && newX < board.length && board[newX][y].getOccupier() == null) {
                 validTiles.add(board[newX][y]);
-            }
-            // if the nearby unit is a friendly unit, check the tile behind the friendly unit
-            if (GameState.getCurrentPlayer().getUnits().contains(board[newX][y].getOccupier()) || board[newX][y].getOccupier() == null) {
-                newX = x - 2;
-                if (newX > -1 && newX < board.length && board[newX][y].getOccupier() == null) {
-                    validTiles.add(board[newX][y]);
+                if (GameState.getCurrentPlayer().getUnits().contains(board[newX][y].getOccupier()) || board[newX][y].getOccupier() == null) {
+                    newX = x - 2;
+                    if (newX > -1 && newX < board.length && board[newX][y].getOccupier() == null) {
+                        validTiles.add(board[newX][y]);
+                    }
                 }
             }
+            // if the nearby unit is a friendly unit, check the tile behind the friendly unit
+
 
             // check one ahead
             newX = x + 1;
             if (newX > -1 && newX < board.length && board[newX][y].getOccupier() == null) {
                 validTiles.add(board[newX][y]);
-            }
-            // if one ahead is a friendly unit, check the tile ahead of the friendly unit
-            if (GameState.getCurrentPlayer().getUnits().contains(board[newX][y].getOccupier()) || board[newX][y].getOccupier() == null) {
-                newX = x + 2;
-                if (newX > -1 && newX < board.length && board[newX][y].getOccupier() == null) {
-                    validTiles.add(board[newX][y]);
+                if (GameState.getCurrentPlayer().getUnits().contains(board[newX][y].getOccupier()) || board[newX][y].getOccupier() == null) {
+                    newX = x + 2;
+                    if (newX > -1 && newX < board.length && board[newX][y].getOccupier() == null) {
+                        validTiles.add(board[newX][y]);
+                    }
                 }
             }
+            // if one ahead is a friendly unit, check the tile ahead of the friendly unit
 
             // check one up
             int newY = y - 1;
             if (newY > -1 && newY < board[0].length && board[x][newY].getOccupier() == null) {
                 validTiles.add(board[x][newY]);
-            }
-            // if one up a friendly unit, check two up
-            if (GameState.getCurrentPlayer().getUnits().contains(board[x][newY].getOccupier()) || board[x][newY].getOccupier() == null) {
-                newY = y - 2;
-                if (newY > -1 && newY < board[0].length && board[x][newY].getOccupier() == null) {
-                    validTiles.add(board[x][newY]);
+                if (GameState.getCurrentPlayer().getUnits().contains(board[x][newY].getOccupier()) || board[x][newY].getOccupier() == null) {
+                    newY = y - 2;
+                    if (newY > -1 && newY < board[0].length && board[x][newY].getOccupier() == null) {
+                        validTiles.add(board[x][newY]);
+                    }
                 }
             }
+            // if one up a friendly unit, check two up
+            // if (GameState.getCurrentPlayer().getUnits().contains(board[x][newY].getOccupier()) || board[x][newY].getOccupier() == null) {
+            //     newY = y - 2;
+            //     if (newY > -1 && newY < board[0].length && board[x][newY].getOccupier() == null) {
+            //         validTiles.add(board[x][newY]);
+            //     }
+            // }
 
             // check one down
             newY = y + 1;
             if (newY > -1 && newY < board[0].length && board[x][newY].getOccupier() == null) {
                 validTiles.add(board[x][newY]);
-            }
-            // if one up a friendly unit, check two up
-            if (GameState.getCurrentPlayer().getUnits().contains(board[x][newY].getOccupier()) || board[x][newY].getOccupier() == null) {
-                newY = y + 2;
-                if (newY > -1 && newY < board[0].length && board[x][newY].getOccupier() == null) {
-                    validTiles.add(board[x][newY]);
+                if (GameState.getCurrentPlayer().getUnits().contains(board[x][newY].getOccupier()) || board[x][newY].getOccupier() == null) {
+                    newY = y + 2;
+                    if (newY > -1 && newY < board[0].length && board[x][newY].getOccupier() == null) {
+                        validTiles.add(board[x][newY]);
+                    }
                 }
             }
+            // if one up a friendly unit, check two up
+            // if (GameState.getCurrentPlayer().getUnits().contains(board[x][newY].getOccupier()) || board[x][newY].getOccupier() == null) {
+            //     newY = y + 2;
+            //     if (newY > -1 && newY < board[0].length && board[x][newY].getOccupier() == null) {
+            //         validTiles.add(board[x][newY]);
+            //     }
+            // }
 
             // diagonal tiles
             if (x + 1 < board.length && y + 1 < board[0].length && board[x + 1][y + 1].getOccupier() == null) {

@@ -11,5 +11,4 @@ public abstract class SpellCard extends Card implements Playable{
     /*
      * Checks if unit has SpellThief by checcking unit id, if so, applies the affect
      */
-    public abstract void handleSpellThief();
 }
