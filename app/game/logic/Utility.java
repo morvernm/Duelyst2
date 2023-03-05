@@ -199,7 +199,7 @@ public class Utility {
             */
             System.out.println(unit_id);
             if (unit_id == 5 || unit_id == 15){
-                int hp = 5 + GameState.getCurrentPlayer().getHealth();
+                int hp = 3 + GameState.getCurrentPlayer().getHealth();
                 if (hp >= 20){
                     hp = 20;
                     player.getAvatar().setHealth(hp);
