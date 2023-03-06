@@ -38,9 +38,7 @@ public class Minimax implements Runnable{
 		
 		System.out.println("ACTIONS IN MINIMAX");
 		ArrayList<AttackAction> actions = new ArrayList<>();
-		
-		
-		
+
 		for(Unit unit : gameState.getAIPlayer().getUnits()) {
 			Set<Tile> targets = new HashSet<>();
 			if (unit.hasAttacked()){
@@ -79,21 +77,31 @@ public class Minimax implements Runnable{
 	public static ArrayList<MoveAction> moves(GameState gameState) {
 		System.out.println("MOVES IN MINIMAX");
 		ArrayList<MoveAction> moves = new ArrayList<>();
-		Set<Tile> positions;
 
 		for (Unit unit : gameState.getAIPlayer().getUnits()) {
-			positions = Utility.determineValidMoves(gameState.getBoard(), unit);
+			Set<Tile> positions = new HashSet<>();
+			
+			//positions = Utility.determineValidMoves(gameState.getBoard(), unit); // Not sure this is needed as seems to be repeating
+					
 			if (unit.hasAttacked() && unit.hasMoved()) {
 				continue;
 			} else if (!unit.hasMoved() && !unit.hasAttacked()) {
 				positions = Utility.determineValidMoves(gameState.getBoard(), unit);
 
 			}
+			
+			Gui.highlightTiles(out, positions, 1);
+			try {Thread.sleep(1500);} catch (InterruptedException e) {e.printStackTrace();}
 
 			for (Tile tile : positions) {
 				moves.add(new MoveAction(unit, tile));
 			}
+			Gui.removeHighlightTiles(out, gameState.getBoard());
 		}
+		
+//		for (MoveAction move : moves)
+//			System.out.println("Mac actions x = " + move.moveToTile.getTilex() + " y = " + move.moveToTile.getTiley() + " by " + move.attacker);
+		
 		return moves;
 
 	}
@@ -102,52 +110,55 @@ public class Minimax implements Runnable{
 		/*
 		 * start the whole thing and return an action 
 		 */
-		for (int moves = 0; moves < 2; moves++) {
-			
-			ArrayList<AttackAction> acts = actions(gameState);
-			if (acts == null) {
-				System.out.println("No more actions left on the board");
-				break;
-			}
-			
-			Set<AttackAction> actions = new HashSet<>(evaluateAttacks(acts, gameState));
-			AttackAction action = bestAttack(actions);
-			
-			if (action.unit.hasAttacked())
-				return;
-			if (Math.abs(action.unit.getPosition().getTilex() - action.tile.getTilex()) < 2 && Math.abs(action.unit.getPosition().getTiley() - action.tile.getTiley()) < 2) {
-				if (action.unit.hasAttacked())
-					continue;
-				System.out.println("Launching an adjacent attack");
-				Utility.adjacentAttack(action.unit, action.tile.getOccupier());
-			
-			} else {
-				if (action.unit.hasAttacked())		
-					continue;
-				System.out.println("Launching a distanced attack");
+		try {
+			for (int moves = 0; moves < 5; moves++) {
 				
-				Utility.distancedAttack(action.unit, action.tile.getOccupier(), gameState.getHumanPlayer());	
+		//			ArrayList<AttackAction> acts = actions(gameState);
+		//			if (acts == null) {
+		//				System.out.println("No more actions left on the board");
+		//				break;
+		//			}
+		//			
+		//			Set<AttackAction> actions = new HashSet<>(evaluateAttacks(acts, gameState));
+		//			AttackAction action = bestAttack(actions);
+		//			
+		//			if (action.unit.hasAttacked())
+		//				return;
+		//			if (Math.abs(action.unit.getPosition().getTilex() - action.tile.getTilex()) < 2 && Math.abs(action.unit.getPosition().getTiley() - action.tile.getTiley()) < 2) {
+		//				if (action.unit.hasAttacked())
+		//					continue;
+		//				System.out.println("Launching an adjacent attack");
+		//				Utility.adjacentAttack(action.unit, action.tile.getOccupier());
+		//			
+		//			} else {
+		//				if (action.unit.hasAttacked())		
+		//					continue;
+		//				System.out.println("Launching a distanced attack");
+		//				
+		//				Utility.distancedAttack(action.unit, action.tile.getOccupier(), gameState.getHumanPlayer());	
+		//				try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+		//			}
+		
+				System.out.println("Let's move");
+		
+				ArrayList<MoveAction> possibleMoves = moves(gameState);
+			
 				try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+				
+				if (possibleMoves == null) {
+					System.out.println("No more moves left on the board");
+				}
+		
+				Set<MoveAction> movess = new HashSet<>(evaluateMoves(possibleMoves, gameState));
+				MoveAction bestMove = bestMove(movess);
+				Utility.moveUnit(bestMove.attacker, bestMove.moveToTile);
 			}
-
-			System.out.println("Let's move");
-
-			ArrayList<MoveAction> possibleMoves = moves(gameState);
-			if (possibleMoves == null) {
-				System.out.println("No more moves left on the board");
-			}
-
-			Set<MoveAction> movess = new HashSet<>(evaluateMoves(possibleMoves, gameState));
-			MoveAction bestMove = bestMove(movess);
-			Utility.moveUnit(bestMove.attacker, bestMove.moveToTile);
+		} catch (NullPointerException e) {
+			
+		} finally {
+			EndTurnClicked endTurn = new EndTurnClicked();
+			endTurn.processEvent(out, gameState, message);
 		}
-
-
-
-		
-//		EndTurnClicked endTurn = new EndTurnClicked();
-//		endTurn.processEvent(out, gameState, message);
-		
 	}
 	
 	/*
@@ -204,27 +215,30 @@ public class Minimax implements Runnable{
 			return null;
 		}
 
-		Set<MoveAction> moves = new HashSet<>(a);
+		Set<MoveAction> moves = new HashSet<>(a); // why i have done this? its poitnless and i might be stupid ..
+		
 		for (MoveAction move : moves) {
-			if (!move.attacker.hasMoved() && !move.attacker.hasAttacked()) {
-				Set<Tile> tiles = Utility.determineValidMoves(gameState.board, move.attacker);
+			if (!move.attacker.hasMoved() && !move.attacker.hasAttacked()) { // you have already checked i think
+				//Set<Tile> tiles = Utility.determineValidMoves(gameState.board, move.attacker); // why again 
 				ArrayList<Unit> enemyUnits = gameState.getHumanPlayer().getUnits();
 
 				int minScore = Integer.MAX_VALUE;
-				for (Tile tile : tiles) {
-					for (Unit enemy : enemyUnits) {
-						int score = 0;
-						score = score + Math.abs(tile.getTilex() - enemy.getPosition().getTilex());
-						score = score + Math.abs(tile.getTiley() - enemy.getPosition().getTilex());
-						score = score + enemy.getHealth(); // total score considers the health of the unit too
-						if (!enemy.equals(gameState.getHumanPlayer().getUnits().get(0))) {
-							score = score + 5; // prioritise moving towards avatar
-						}
-						if (score < minScore && tile.getOccupier() == null) {
-							move.value = score;
-						}
+				
+				//for (Tile tile : tiles) {
+				for (Unit enemy : enemyUnits) {
+					int score = 0;
+					score += score + Math.abs(move.moveToTile.getTilex() - enemy.getPosition().getTilex());
+					score += score + Math.abs(move.moveToTile.getTiley() - enemy.getPosition().getTilex());
+					score += enemy.getHealth(); // total score considers the health of the unit too
+					if (!enemy.equals(gameState.getHumanPlayer().getUnits().get(0))) {
+						score = score + 5; // prioritise moving towards avatar
+					}
+					if (score < minScore && move.moveToTile.getOccupier() == null) {
+						move.value = score;
 					}
 				}
+				//}
+				System.out.println("Move" + move.moveToTile.getTilex() + " and y" + move.moveToTile.getTiley() + " and " + move.attacker + " value = " + move.value);
 			}
 		}
 		return moves;
