@@ -314,6 +314,7 @@ public class Utility {
         }
 
         unit.setPositionByTile(tile);
+        unit.setMaxHealth(unit.getHealth());
         tile.setOccupier(unit);
 		GameState.modifiyTotalUnits(1);
 		
