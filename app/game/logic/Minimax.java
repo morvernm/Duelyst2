@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import akka.actor.ActorRef;
 import events.EndTurnClicked;
 import structures.GameState;
+import structures.basic.Player;
 import structures.basic.Tile;
 import structures.basic.Unit;
 
@@ -74,11 +75,28 @@ public class Minimax implements Runnable{
 
 		return actions;
 	}
-	
-	
-	
-	
-	
+
+	public static ArrayList<MoveAction> moves(GameState gameState) {
+		System.out.println("MOVES IN MINIMAX");
+		ArrayList<MoveAction> moves = new ArrayList<>();
+		Set<Tile> positions;
+
+		for (Unit unit : gameState.getAIPlayer().getUnits()) {
+			positions = Utility.determineValidMoves(gameState.getBoard(), unit);
+			if (unit.hasAttacked() && unit.hasMoved()) {
+				continue;
+			} else if (!unit.hasMoved() && !unit.hasAttacked()) {
+				positions = Utility.determineValidMoves(gameState.getBoard(), unit);
+
+			}
+
+			for (Tile tile : positions) {
+				moves.add(new MoveAction(unit, tile));
+			}
+		}
+		return moves;
+
+	}
 
 	private static void minimax(GameState gameState) {
 		/*
@@ -111,8 +129,21 @@ public class Minimax implements Runnable{
 				Utility.distancedAttack(action.unit, action.tile.getOccupier(), gameState.getHumanPlayer());	
 				try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 			}
-	
+
+			System.out.println("Let's move");
+
+			ArrayList<MoveAction> possibleMoves = moves(gameState);
+			if (possibleMoves == null) {
+				System.out.println("No more moves left on the board");
+			}
+
+			Set<MoveAction> movess = new HashSet<>(evaluateMoves(possibleMoves, gameState));
+			MoveAction bestMove = bestMove(movess);
+			Utility.moveUnit(bestMove.attacker, bestMove.moveToTile);
 		}
+
+
+
 		
 //		EndTurnClicked endTurn = new EndTurnClicked();
 //		endTurn.processEvent(out, gameState, message);
@@ -165,6 +196,74 @@ public class Minimax implements Runnable{
 		}
 		System.out.println("Action" + bestAttack.tile + " and " + bestAttack.unit + " value = " + bestAttack.value);		
 		return bestAttack;
+	}
+
+	private static Set<MoveAction> evaluateMoves(ArrayList<MoveAction> a, GameState gameState) {
+		System.out.println("Evaluating moves...");
+		if (a == null) {
+			return null;
+		}
+
+		Set<MoveAction> moves = new HashSet<>(a);
+		for (MoveAction move : moves) {
+			if (!move.attacker.hasMoved() && !move.attacker.hasAttacked()) {
+				Set<Tile> tiles = Utility.determineValidMoves(gameState.board, move.attacker);
+				ArrayList<Unit> enemyUnits = gameState.getHumanPlayer().getUnits();
+
+				int minScore = Integer.MAX_VALUE;
+				for (Tile tile : tiles) {
+					for (Unit enemy : enemyUnits) {
+						int score = 0;
+						score = score + Math.abs(tile.getTilex() - enemy.getPosition().getTilex());
+						score = score + Math.abs(tile.getTiley() - enemy.getPosition().getTilex());
+						score = score + enemy.getHealth(); // total score considers the health of the unit too
+						if (!enemy.equals(gameState.getHumanPlayer().getUnits().get(0))) {
+							score = score + 5; // prioritise moving towards avatar
+						}
+						if (score < minScore && tile.getOccupier() == null) {
+							move.value = score;
+						}
+					}
+				}
+			}
+		}
+		return moves;
+	}
+
+	//				ArrayList<Unit> lowHealthUnit = new ArrayList<>();
+//				for (Tile tile : tiles) {
+//					for (Unit unit : enemyUnits) {
+//						if (unit.getHealth() == unitHealth) {
+//							int enemyX = unit.getPosition().getTilex();
+//							int enemyY = unit.getPosition().getTiley();
+//							int tileX = tile.getTilex();
+//							int tileY = tile.getTiley();
+//							// moving directly towards unit
+//							if (enemyY - tileY == 0 || enemyX - tileX == 0 && unit.getId() == 0) {
+//								move.value = 5;
+//							}
+//						}
+//					}
+//				}
+
+	private static MoveAction bestMove(Set<MoveAction> moves) {
+		System.out.println("PICKING BEST MOVE");
+		Integer maxValue = Integer.MAX_VALUE;
+		MoveAction bestMove = null;
+
+		for (MoveAction move : moves) {
+			if (move.value < maxValue) {
+				maxValue = move.value;
+				bestMove = move;
+			}
+		}
+		if (bestMove != null) {
+			System.out.println("Move" + bestMove.attacker + " value = " + bestMove.value);
+		} else {
+			System.out.println("No available moves");
+		}
+		return bestMove;
+
 	}
 	
 
