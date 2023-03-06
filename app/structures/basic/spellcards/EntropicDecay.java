@@ -86,7 +86,6 @@ public class EntropicDecay extends SpellCard {
                 avatar = unit;
             }
         }
-
         targets.remove(avatar);
         return targets;
     }

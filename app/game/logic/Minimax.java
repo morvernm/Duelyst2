@@ -58,16 +58,19 @@ public class Minimax implements Runnable{
 		}
 
 		// If have spellcards, get their valid target units and associated tile positions. Else, return null
-		if(spellcards.isEmpty()) return null;
+		if(spellcards.isEmpty()) {return null;}
 
-		System.out.println("Getting valid actions...");
 		for(SpellCard card: spellcards) {
 			Set<Tile> targets = Utility.getSpellTargetPositions(card.getTargets());
+			if(targets == null){continue;}
+
 			ArrayList<SpellAction> a = new ArrayList<>();
 			for(Tile target: targets){
 				SpellAction action = new SpellAction(target.getOccupier(), target, card);
 				a.add(action);
 			}
+			System.out.print("Actions for " + card.getCardname() + " is null:");
+			System.out.print(a.isEmpty());
 			actions.put(card,a);
 		}
 
@@ -189,8 +192,10 @@ public class Minimax implements Runnable{
 			evaluateSpells(actions, gameState);
 			SpellAction bestSpell = bestSpell(actions,gameState);
 
-			// If so, play best spell
+			// If so, play best spell and deduct mana
+			System.out.println(bestSpell==null);
 			bestSpell.spellCard.castSpell(bestSpell.unit,bestSpell.tile);
+			GameState.getAIPlayer().setMana(GameState.getAIPlayer().getMana() - bestSpell.spellCard.getManacost());
 			// Remove from AI hand
 			for(int i = 0; i < GameState.getAIPlayer().getHand().length; i++) {
 				if(bestSpell.spellCard == GameState.getAIPlayer().getHand()[i]) {
@@ -254,6 +259,8 @@ public class Minimax implements Runnable{
 		ArrayList<SpellCard> toRemove = new ArrayList<>(); // list of cards to remove from deck if we decide either to play that card, or find it has no actions left.
 
 		for (var entry : actions.entrySet()) {
+			System.out.println(entry.getKey().getCardname());
+			System.out.println(entry.getValue().isEmpty());
 			for (SpellAction spell : entry.getValue()) { // For every possible action for each spell card
 				if (spell.value > maxValue) { // Find spell action with highest value
 					System.out.println("adding new best spell");

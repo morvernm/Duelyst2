@@ -61,7 +61,7 @@ public class OrderedCardLoader {
 	public static List<Card> getPlayer2Cards() {
 	
 		List<Card> cardsInDeck = new ArrayList<Card>(20);
-		// cardsInDeck.add(BasicObjectBuilders.loadCard(StaticConfFiles.c_entropic_decay, 27, EntropicDecay.class)); // TODO REMOVE. JUST HERE FOR TESTING
+		cardsInDeck.add(BasicObjectBuilders.loadCard(StaticConfFiles.c_entropic_decay, 27, EntropicDecay.class)); // TODO REMOVE. JUST HERE FOR TESTING
 		cardsInDeck.add(BasicObjectBuilders.loadCard(StaticConfFiles.c_staff_of_ykir, 22, Ykir.class)); // TODO REMOVE. JUST HERE FOR TESTING
 		cardsInDeck.add(BasicObjectBuilders.loadCard(StaticConfFiles.c_rock_pulveriser, 20, Card.class));
 		cardsInDeck.add(BasicObjectBuilders.loadCard(StaticConfFiles.c_bloodshard_golem, 21, Card.class));

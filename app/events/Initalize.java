@@ -127,12 +127,13 @@ public class Initalize implements EventProcessor{
 		enemyUnit.setAttack(2);
 		GameState.modifiyTotalUnits(1);
 
-		GameState.enemy.setUnit(enemyUnit);
 
 		try {Thread.sleep(100);}catch (InterruptedException e){e.printStackTrace();}
 		
 		unit.setHealth(humanPlayer.getHealth());
 		enemyUnit.setHealth(GameState.enemy.getHealth());
+
+		GameState.getAIPlayer().setUnit(enemyUnit);
 
 		/*
 		 * TEST
@@ -165,6 +166,7 @@ public class Initalize implements EventProcessor{
 		unit3.setAttack(1);
 		
 		GameState.modifiyTotalUnits(1);
+
 	}
 	
 	
