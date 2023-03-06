@@ -14,6 +14,7 @@ import structures.GameState;
 import structures.basic.Card;
 import structures.basic.Tile;
 import structures.basic.Unit;
+import structures.basic.SpecialUnits.Windshrike;
 
 
 
@@ -80,9 +81,6 @@ public class Minimax implements Runnable{
 	 * get cards from AI player's hand
 	 */
 	private static void getPlayerHand() {
-//		Set<CardAction> specialCards = new HashSet<>();//storing the specialAbility unit cards in the player's hand
-//		Set<CardAction> regularCards = new HashSet<>(); //to store cards with no special ability
-//		Set<CardAction> playableCards = new HashSet<>();
 		Set<Card> cards = new HashSet<>();
 		for(Card card: GameState.getCurrentPlayer().getHand()) {
 			if(GameState.getCurrentPlayer().getHand().length == 0) { //if hand is empty
@@ -93,7 +91,6 @@ public class Minimax implements Runnable{
 			}
 		
 		}
-//		evaluateCards(specialCards,regularCards);
 		evaluateCards(cards);
 		}
 	private static void minimax(GameState gameState) {
@@ -128,6 +125,7 @@ public class Minimax implements Runnable{
 				try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 			}
 		}
+		miniMaxCards();
 		
 //		EndTurnClicked endTurn = new EndTurnClicked();
 //		endTurn.processEvent(out, gameState, message);
@@ -181,11 +179,14 @@ public class Minimax implements Runnable{
 		System.out.println("Action" + bestAttack.tile + " and " + bestAttack.unit + " value = " + bestAttack.value);		
 		return bestAttack;
 	}
-	
-	/*
-	 * evaluate which card the AI player should play.
-	 */
-//	continue working on this tomorrow!
+/*
+ * Evaluate AI player cards 
+ * 4 - provoke card
+ * 3 - high attack
+ * 2 -  other special ability card
+ * 1 - reg card
+ * 
+ */
 	
 	public static void evaluateCards(Set <Card> cards) {
 		Set <CardAction> playableCards = new HashSet<>();
@@ -194,22 +195,27 @@ public class Minimax implements Runnable{
 			return;
 		}
 		for (Card card: cards) {
-			if(card.getCardname() != "Bloodshard Golem" || card.getCardname() != "Hailstone Golem") {
-				playableCards.add(new CardAction(card,6));
-			}else {
-				playableCards.add(new CardAction(card,5));
-			}
+			CardAction AICard = new CardAction(card);
 			int highestAttack = card.getBigCard().getAttack();
-//			Card bestAttackCard = card; //best attack card  == this card. 
-			if(card.getBigCard().getAttack() > highestAttack) { //also prioritises Serpenti, as Serpenti has highest attack
-//				Card bestAttackCard = card;
-				playableCards.add(new CardAction(card,7)); 
+			playableCards.add(AICard);
+			if(card.getCardname() == "Rock Pulveriser") { //provoke card
+				AICard.value = 4;
 			}
-		
-//			Set <Tile> validTiles = 
-			if(Utility.cardPlacements(card, GameState.getCurrentPlayer(), GameState.getHumanPlayer(), GameState.getBoard())cards ) {
+			if(card.getBigCard().getAttack() > highestAttack) { // prioritises Serpenti, as Serpenti has highest attack
+				AICard.value = 3;
+			}
+			if(card.getCardname() != "Bloodshard Golem" || card.getCardname() != "Hailstone Golem") { //special cards
+				AICard.value = 2;
+			}else { //reg cards
+				AICard.value = 1;
+			}
+			bestCard(playableCards);
 				
-			}
+//			Set <Tile> validTiles = ;
+			//if validAttack tiles all- on board or validMoves all on board
+//			if(Utility.cardPlacements(card, GameState.getCurrentPlayer(), GameState.getHumanPlayer(), GameState.getBoard()) == Windshrike.specialAbility(GameState.getBoard())) {
+//				
+//			}
 		}
 	}
 	
@@ -217,8 +223,16 @@ public class Minimax implements Runnable{
 	 * pick the optimal card to play
 	 */
 	
-	public static Card bestCard() {
-		return null; //return bestCard for AI to play
+	public static CardAction bestCard(Set <CardAction> AICards) {
+		CardAction bestCard = null;
+		int maxValue = -1;
+		for(CardAction card: AICards) {
+			if(card.value > maxValue) {
+				bestCard = card;
+			}
+			
+		}
+		return bestCard; //return bestCard for AI to play
 	}
 	
 	//not sure if this should be separate or integrate w attack miniMax
