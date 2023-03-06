@@ -123,5 +123,8 @@ public class Player {
 		unit.setAttack(2);
 		
 	}
+	 public Card[] getHand() {
+	    	return this.hand;
+	    }
 
 }

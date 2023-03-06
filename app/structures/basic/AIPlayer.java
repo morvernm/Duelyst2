@@ -53,6 +53,8 @@ public class AIPlayer extends Player{
 		enemyAvatar.setAttack(2);
 		GameState.modifiyTotalUnits(1);
 		GameState.enemy.setUnit(enemyAvatar);
-		
     }
+//    public Card[] getHand() {
+//    	return this.hand;
+//    }
 }

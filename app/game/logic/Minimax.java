@@ -1,14 +1,17 @@
 package game.logic;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
+import akka.stream.impl.fusing.Map;
 import events.EndTurnClicked;
 import structures.GameState;
+import structures.basic.Card;
 import structures.basic.Tile;
 import structures.basic.Unit;
 
@@ -67,19 +70,32 @@ public class Minimax implements Runnable{
 		}
 		
 		
-		
 		for (AttackAction action : actions)
 			System.out.println("Mac actions x = " + action.tile.getTilex() + " y = " + action.tile.getTiley() + " by " + action.unit);
 		
 
 		return actions;
 	}
-	
-	
-	
-	
-	
-
+	/*
+	 * get cards from AI player's hand
+	 */
+	private static void getPlayerHand() {
+//		Set<CardAction> specialCards = new HashSet<>();//storing the specialAbility unit cards in the player's hand
+//		Set<CardAction> regularCards = new HashSet<>(); //to store cards with no special ability
+//		Set<CardAction> playableCards = new HashSet<>();
+		Set<Card> cards = new HashSet<>();
+		for(Card card: GameState.getCurrentPlayer().getHand()) {
+			if(GameState.getCurrentPlayer().getHand().length == 0) { //if hand is empty
+				System.out.println("No cards to play");
+			}
+			else {
+				cards.add(card);
+			}
+		
+		}
+//		evaluateCards(specialCards,regularCards);
+		evaluateCards(cards);
+		}
 	private static void minimax(GameState gameState) {
 		/*
 		 * start the whole thing and return an action 
@@ -111,7 +127,6 @@ public class Minimax implements Runnable{
 				Utility.distancedAttack(action.unit, action.tile.getOccupier(), gameState.getHumanPlayer());	
 				try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 			}
-	
 		}
 		
 //		EndTurnClicked endTurn = new EndTurnClicked();
@@ -166,6 +181,52 @@ public class Minimax implements Runnable{
 		System.out.println("Action" + bestAttack.tile + " and " + bestAttack.unit + " value = " + bestAttack.value);		
 		return bestAttack;
 	}
+	
+	/*
+	 * evaluate which card the AI player should play.
+	 */
+//	continue working on this tomorrow!
+	
+	public static void evaluateCards(Set <Card> cards) {
+		Set <CardAction> playableCards = new HashSet<>();
+		if(playableCards.isEmpty()) { //if player has no cards in hand
+			System.out.println("No cards to play!");
+			return;
+		}
+		for (Card card: cards) {
+			if(card.getCardname() != "Bloodshard Golem" || card.getCardname() != "Hailstone Golem") {
+				playableCards.add(new CardAction(card,6));
+			}else {
+				playableCards.add(new CardAction(card,5));
+			}
+			int highestAttack = card.getBigCard().getAttack();
+//			Card bestAttackCard = card; //best attack card  == this card. 
+			if(card.getBigCard().getAttack() > highestAttack) { //also prioritises Serpenti, as Serpenti has highest attack
+//				Card bestAttackCard = card;
+				playableCards.add(new CardAction(card,7)); 
+			}
+		
+//			Set <Tile> validTiles = 
+			if(Utility.cardPlacements(card, GameState.getCurrentPlayer(), GameState.getHumanPlayer(), GameState.getBoard())cards ) {
+				
+			}
+		}
+	}
+	
+	/*
+	 * pick the optimal card to play
+	 */
+	
+	public static Card bestCard() {
+		return null; //return bestCard for AI to play
+	}
+	
+	//not sure if this should be separate or integrate w attack miniMax
+	public static void miniMaxCards() { 
+		getPlayerHand();
+	}
+	 
+	
 	
 
 }
