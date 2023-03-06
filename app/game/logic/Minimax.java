@@ -131,38 +131,40 @@ public class Minimax implements Runnable{
 
 		minimaxSpells(gameState);
 
-		for (int moves = 0; moves < 2; moves++) {
-			
-			ArrayList<AttackAction> acts = actions(gameState);
-			if (acts == null) {
-				System.out.println("No more actions left on the board");
-				break;
-			}
-			
-			Set<AttackAction> actions = new HashSet<>(evaluateAttacks(acts, gameState));
-			AttackAction action = bestAttack(actions);
-			
-			if (action.unit.hasAttacked())
-				return;
-			if (Math.abs(action.unit.getPosition().getTilex() - action.tile.getTilex()) < 2 && Math.abs(action.unit.getPosition().getTiley() - action.tile.getTiley()) < 2) {
-				if (action.unit.hasAttacked())
-					continue;
-				System.out.println("Launching an adjacent attack");
-				Utility.adjacentAttack(action.unit, action.tile.getOccupier());
-			
-			} else {
-				if (action.unit.hasAttacked())		
-					continue;
-				System.out.println("Launching a distanced attack");
-				
-				Utility.distancedAttack(action.unit, action.tile.getOccupier(), gameState.getHumanPlayer());	
-				try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-			}
-	
-		}
+//		for (int moves = 0; moves < 2; moves++) {
+//			
+//			ArrayList<AttackAction> acts = actions(gameState);
+//			if (acts == null) {
+//				System.out.println("No more actions left on the board");
+//				break;
+//			}
+//			
+//			Set<AttackAction> actions = new HashSet<>(evaluateAttacks(acts, gameState));
+//			AttackAction action = bestAttack(actions);
+//			
+//			if (action.unit.hasAttacked())
+//				return;
+//			if (Math.abs(action.unit.getPosition().getTilex() - action.tile.getTilex()) < 2 && Math.abs(action.unit.getPosition().getTiley() - action.tile.getTiley()) < 2) {
+//				if (action.unit.hasAttacked())
+//					continue;
+//				System.out.println("Launching an adjacent attack");
+//				Utility.adjacentAttack(action.unit, action.tile.getOccupier());
+//			
+//			} else {
+//				if (action.unit.hasAttacked())		
+//					continue;
+//				System.out.println("Launching a distanced attack");
+//				
+//				Utility.distancedAttack(action.unit, action.tile.getOccupier(), gameState.getHumanPlayer());	
+//				try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+//			}
+//	
+//		}
 		
-//		EndTurnClicked endTurn = new EndTurnClicked();
-//		endTurn.processEvent(out, gameState, message);
+		try {Thread.sleep(3000);} catch (InterruptedException e) {e.printStackTrace();}	
+		
+		EndTurnClicked endTurn = new EndTurnClicked();
+		endTurn.processEvent(out, gameState, message);
 		
 	}
 	

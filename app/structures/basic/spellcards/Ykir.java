@@ -53,16 +53,16 @@ public class Ykir extends SpellCard {
 	@Override
 	public ArrayList<Unit> getTargets() {
 		ArrayList<Unit> targets = new ArrayList<>();
-		Unit avatar = null;
+		//Unit avatar = null;
 
 		for (Unit unit : GameState.getCurrentPlayer().getUnits()) {
 			if (unit.getId() == 100 || unit.getId() == 101) {
-				avatar = unit;
+				targets.add(unit);
 			}
 		}
 		System.out.print("Ykir avatar null: ");
-		System.out.println(avatar==null);
-		targets.add(avatar);
+//		System.out.println(avatar==null);
+//		targets.add(avatar);
 		return targets;
 	}
 

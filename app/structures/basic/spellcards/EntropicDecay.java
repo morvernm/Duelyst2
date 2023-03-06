@@ -71,22 +71,22 @@ public class EntropicDecay extends SpellCard {
 //        Player enemyPlayer = null;
 
         // If human player casting, get AI player's units. Else, get human player's units
-        if (GameState.getCurrentPlayer() == GameState.getHumanPlayer()) {
-            targets = GameState.getAIPlayer().getUnits();
-//            enemyPlayer = GameState.getAIPlayer();
-        } else {
-            targets = GameState.getHumanPlayer().getUnits();
-//            enemyPlayer = GameState.getHumanPlayer();
-        }
-        // Remove player avatar from targets
-        Unit avatar = null;
+//        if (GameState.getCurrentPlayer() == GameState.getHumanPlayer()) {
+//            targets = GameState.getAIPlayer().getUnits();
+////            enemyPlayer = GameState.getAIPlayer();
+//        } else {
+//            targets = GameState.getHumanPlayer().getUnits();
+////            enemyPlayer = GameState.getHumanPlayer();
+//        }
+//        // Remove player avatar from targets
+//        Unit avatar = null;
 
         for (Unit unit : GameState.getOtherPlayer().getUnits()) {
-            if (unit.getId() == 100 || unit.getId() == 101) {
-                avatar = unit;
+            if (unit.getId() != 100) {
+                targets.add(unit);
             }
         }
-        targets.remove(avatar);
+        //targets.remove(avatar);
         return targets;
     }
 }
