@@ -148,6 +148,7 @@ public class Unit implements Playable{
 	}
 
 	public void setHealth(int health) {
+		
 		// Check if the unit is a player avatar. Adjust health of appropriate player accordingly if so.
 		if(this.getId() == 100){
 			GameState.getHumanPlayer().setHealth(health);
@@ -158,6 +159,10 @@ public class Unit implements Playable{
 
 		this.health = health;
 		Gui.setUnitHealth(this, health);
+	}
+
+	public void modHealth(int health){
+		this.health += health;
 	}
 
 	public int getMaxHealth() {
@@ -171,6 +176,10 @@ public class Unit implements Playable{
 		
 	public void setAttack(int attack) {
 		this.attack = attack;
+	}
+
+	public void modAttack(int attack){
+		this.attack += attack;
 	}
 	
 	public int getAttack() {

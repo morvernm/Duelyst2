@@ -17,9 +17,10 @@ public class Player {
 	protected int health;
 	protected int mana;
 	protected Card[] hand;
-	protected int cardsInHand = 0;
+	public int cardsInHand = 0;
 	protected Deck deck;
 	protected ArrayList<Unit> units; // store all units currently on board
+	protected Unit avatar;
 	
 	
 	public Player() {
@@ -74,6 +75,17 @@ public class Player {
 		return this.deck;
 	}
 
+	public void testcard(Card card){
+		int i = 0;
+		while(hand[i] != null && i < hand.length - 1) {
+			i++;
+		}
+
+		hand[i] = card;
+		cardsInHand++;
+		Gui.displayCard(card, i + 1);
+	}
+
 	// draw a card from the deck and place it in the player's hand.
 	public void drawCard() {
 		if (deck.isEmpty()) throw new NoSuchElementException("Deck is empty");
@@ -109,16 +121,15 @@ public class Player {
 		this.units.remove(unit);
 	}
 	
-//	public void createAvatar(Unit unit) {
-//		
-//	}
-//	public Unit getAvatar() {
-//		
-//		for (Unit unit : this.getUnits()) {
-//			if (unit.getId() == 100 || unit.getId() == 101)
-//				return unit;
-//		} 
-//		return null;
-//	}
+	public void createAvatar(Unit unit) {
+		this.avatar = unit;
+	}
+
+	public Unit getAvatar() {
+		return avatar;
+	}
+
+
+
 
 }

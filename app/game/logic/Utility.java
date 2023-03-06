@@ -7,7 +7,7 @@ import java.util.Set;
 
 
 import akka.actor.ActorRef;
-import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
+
 //import akka.parboiled2.Position;
 import commands.BasicCommands;
 import events.CardClicked;
@@ -294,10 +294,8 @@ public class Utility {
 		
 		/* Set unit id to number of total units on board + 1 */
         String unit_conf = StaticConfFiles.getUnitConf(card.getCardname());
-        int unit_id = GameState.getTotalUnits();
-        
-        Unit unit = null;
-
+        int unit_id = card.getId();
+        Unit unit;
         
         if (card.getCardname().equals("Silverguard Knight")) {
         	unit = (SilverguardKnight) BasicObjectBuilders.loadUnit(unit_conf, unit_id, SilverguardKnight.class);
@@ -309,51 +307,66 @@ public class Utility {
         	unit = (Serpenti) BasicObjectBuilders.loadUnit(unit_conf, unit_id, Serpenti.class);
         } else if (card.getCardname().equals("Azurite Lion"))  {
         	unit = (AzuriteLion) BasicObjectBuilders.loadUnit(unit_conf, unit_id, AzuriteLion.class);
+        } else if (unit_id == 34 || unit_id == 24){
+            unit = (Windshrike)BasicObjectBuilders.loadUnit(unit_conf, unit_id, Windshrike.class);
+        } else if (unit_id == 1 || unit_id == 13){
+            unit = (Pureblade)BasicObjectBuilders.loadUnit(unit_conf, unit_id, Pureblade.class);
         } else {
             unit = BasicObjectBuilders.loadUnit(unit_conf, unit_id, Unit.class);
+            /*
+            * Checks if unit is Azure Herald, if so, applies healing effect to player avatar
+            */
+            if (unit_id == 5 || unit_id == 15){
+                int hp = 3 + GameState.getCurrentPlayer().getHealth();
+                if (hp >= 20){
+                    hp = 20;
+                    player.getAvatar().setHealth(hp);
+                }
+                else {
+                    player.getAvatar().setHealth(hp);
+                }
+            }
         }
+
 
         unit.setPositionByTile(tile);
         tile.setOccupier(unit);
 		GameState.modifiyTotalUnits(1);
 		
-		//player.setUnit(unit);
 
+        // Plays annimations
 		EffectAnimation effect = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_summon);
         BasicCommands.playEffectAnimation(out, effect, tile);
 		BasicCommands.drawUnit(out, unit, tile);
-		player.setUnit(unit);
+
 
 		BigCard bigCard = card.getBigCard();
-		
 		int attack = bigCard.getAttack();
 		int health = bigCard.getHealth();
 		unit.setMaxHealth(health);
 		
-		//Gui.setUnitStats(unit, health, attack);
+		//Sets unit stats
         unit.setAttack(attack);
         unit.setHealth(health);
 
 		GameState.modifiyTotalUnits(1);
 
 		Gui.setUnitStats(unit, health, attack);
+		GameState.getCurrentPlayer().setUnit(unit);
 
 		int positionInHand = card.getPositionInHand();
 		player.removeFromHand(positionInHand);
 		BasicCommands.deleteCard(out, positionInHand);
 		
-		
         player.updateMana(-card.getManacost());
         CardClicked.currentlyHighlighted.remove(card);
-        
+
 		if (GameState.getHumanPlayer() == player){
 			BasicCommands.setPlayer1Mana(out, player);
 		}
 		else {
 			BasicCommands.setPlayer2Mana(out, player);
 		}
-
-
     }
 
     public static Set<Tile> cardPlacements(Card card, Player player, Player enemy, Tile[][] board){
@@ -362,7 +375,13 @@ public class Utility {
 //        }
     	System.out.println("cardPlacement Utility");
         Set<Tile> validTiles = new HashSet<Tile>();
+		int i , j;
 
+		for (i = 0; i < board.length; i++){
+			for (j = 0; j < board[0].length; j++){
+				validTiles.add(board[i][j]);
+			}
+		}
 
         Set<Tile> playerUnits = getPlayerUnitPositions(player, board);
         Set<Tile> enemyUnits = getEnemyUnitPositions(enemy, board);
@@ -377,19 +396,22 @@ public class Utility {
         int x, y;
         
         Set<Tile> validPlacements =  new HashSet<Tile>();
+		int xLength = GameState.getBoard().length;
+		int yLength = GameState.getBoard()[0].length;
 
         /* Add squares around player units to set. Return this minus occupied squares */
         for (Tile tile : playerUnits){
             x = tile.getTilex();
             y = tile.getTiley();
-            for (int i = -1 ; i <= 1 ; i++){
-                for (int j = -1 ; j <= 1 ; j++){
-                	if (x + i > 8 || y +j > 4 || x + i <0 || y +j<0)
-                		continue;
-                    validPlacements.add(board[x + i][y + j]);
-                }
-            }
-        }
+            i = -1; j = -1;
+			for (i = -1 ; i <= 1 ; i++){
+				for (j = -1 ; j <= 1 ; j++){
+					if (x + i > 8 || y +j > 4 || x + i <0 || y +j<0)
+						continue;
+					validPlacements.add(board[x+i][y+j]);
+				}
+			}
+		}
        
         validPlacements.removeAll(playerUnits);
         validPlacements.removeAll(enemyUnits);
@@ -397,12 +419,14 @@ public class Utility {
     }
     
     public static Set<Tile> getPlayerUnitPositions(Player player, Tile[][] board){
+
+		System.out.println("getting player unit positions");
     	
         Set<Tile> s = new HashSet<Tile>();
         
-        for (Unit unit : player.getUnits()){
+        for (Unit u : GameState.getCurrentPlayer().getUnits()){
             /* Add unit to set of player positions */
-            s.add(board[unit.getPosition().getTilex()][unit.getPosition().getTiley()]);
+            s.add(GameState.getBoard()[u.getPosition().getTilex()][u.getPosition().getTiley()]);
         }
         return s;
 
@@ -440,18 +464,28 @@ public class Utility {
 
 	public static void checkEndGame(Unit defender) {
 		//unit death
+        System.out.println("checking end game");
+        System.out.println(GameState.enemy.getHealth());
 		if(defender.getHealth() <= 0) {
 			BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.death);
 			try {Thread.sleep(3000);} catch (InterruptedException e) {e.printStackTrace();}
 			GameState.board[defender.getPosition().getTilex()][defender.getPosition().getTiley()].setOccupier(null); //remove unit from tiles
 			BasicCommands.deleteUnit(out, defender); //delete unit from board
+
+            /*
+             * Checks if unit is windshrike 
+             */
+            if (defender.getClass().equals(Windshrike.class)){
+                System.out.println("printing hand size " + GameState.enemy.cardsInHand);
+                GameState.enemy.drawCard();
+                System.out.println("printing hand size " + GameState.enemy.cardsInHand);
+                System.out.println("printing card name" + GameState.enemy.getCard(1).getCardname());
+            }
 			
 //		AI unit
 			if(GameState.getAiPlayer().getUnits().contains(defender)) {
 				GameState.getAiPlayer().removeUnit(defender); 
-				
-				//GameState.getAiPlayer().setHealth(0); //for testing purposes <= DOES THIS NEED TO GO???
-				
+								
 				if(GameState.getAiPlayer().getHealth() <= 0) {
 					BasicCommands.addPlayer1Notification(out, "Player 1 wins!", 20);
 					//game over:
@@ -526,6 +560,7 @@ public class Utility {
             if (newX > -1 && newX < board.length && board[newX][y].getOccupier() == null) {
                 validTiles.add(board[newX][y]);
             }
+            
             // if the nearby unit is a friendly unit, check the tile behind the friendly unit
             if (GameState.getCurrentPlayer().getUnits().contains(board[newX][y].getOccupier()) || board[newX][y].getOccupier() == null) {
                 newX = x - 2;
@@ -533,7 +568,7 @@ public class Utility {
                     validTiles.add(board[newX][y]);
                 }
             }
-
+           
             // check one ahead
             newX = x + 1;
             if (newX > -1 && newX < board.length && board[newX][y].getOccupier() == null) {
@@ -547,6 +582,7 @@ public class Utility {
                 }
             }
 
+
             // check one up
             int newY = y - 1;
             if (newY > -1 && newY < board[0].length && board[x][newY].getOccupier() == null) {
@@ -559,6 +595,7 @@ public class Utility {
                     validTiles.add(board[x][newY]);
                 }
             }
+
 
             // check one down
             newY = y + 1;

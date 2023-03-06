@@ -5,6 +5,7 @@ import game.logic.Gui;
 import game.logic.Utility;
 import structures.GameState;
 import structures.basic.*;
+
 import utils.BasicObjectBuilders;
 import utils.StaticConfFiles;
 
@@ -28,7 +29,6 @@ public class Sundrop extends SpellCard {
         if(!GameState.getCurrentPlayer().getUnits().contains(target)) return false;
 
         // Add health to the unit. Cap so the new value doesn't exceed the unit's max health
-        // TODO Cap so the new value doesn't exceed the unit's max health// will become easier once unit cards implemented
         target.setHealth(Math.min(target.getHealth() + 5, target.getMaxHealth()));
         Gui.playEffectAnimation(BasicObjectBuilders.loadEffect(StaticConfFiles.f1_buff),targetTile);
         return true;

@@ -1,10 +1,10 @@
 package structures.basic.SpecialUnits;
 
-import structures.GameState;
 import structures.basic.*;
 
 import java.util.HashSet;
 import java.util.Set;
+
 
 public class Windshrike extends Unit {
 

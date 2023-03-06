@@ -84,7 +84,7 @@ public class Minimax implements Runnable{
 		/*
 		 * start the whole thing and return an action 
 		 */
-		for (int moves = 0; moves < 2; moves++) {
+		for (int moves = 0; moves < 3; moves++) {
 			
 			ArrayList<AttackAction> acts = actions(gameState);
 			if (acts == null) {

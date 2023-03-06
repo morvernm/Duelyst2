@@ -2,6 +2,7 @@ package structures.basic.spellcards;
 
 import akka.actor.ActorRef;
 
+
 import structures.basic.Tile;
 import structures.basic.Unit;
 import utils.BasicObjectBuilders;
@@ -10,6 +11,7 @@ import game.logic.Gui;
 import game.logic.Utility;
 import structures.GameState;
 import structures.basic.*;
+import structures.basic.SpecialUnits.Pureblade;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -18,15 +20,20 @@ public class EntropicDecay extends SpellCard {
 
     @Override
     public boolean castSpell(Unit target, Tile targetTile) {
+
     	if(target.getId() == 100 || target.getId() == 101)
     		return false; // Players cannot target player avatars.
         if(GameState.getCurrentPlayer().getUnits().contains(target))
         	return false; // 'Friendly fire will not be tolerated!'
+        
+        this.handleSpellThief();
+        
         // Kill target
-
         target.setHealth(0);
         Gui.setUnitStats(target, target.getHealth(), target.getAttack());
         Gui.playEffectAnimation(BasicObjectBuilders.loadEffect(StaticConfFiles.f1_martyrdom), targetTile);
+        
+     
         
         Utility.checkEndGame(target);
         
@@ -61,7 +68,19 @@ public class EntropicDecay extends SpellCard {
         // Get tile positions and highlight them
         Set<Tile> positions = Utility.getSpellTargetPositions(targets);
         Gui.highlightTiles(out,positions,2);
+    }
 
-
+    /*
+     * Checks if unit has SpellThief, if so, applies the effect
+     */
+    public void handleSpellThief(){
+        Player enemy = GameState.getHumanPlayer();
+        for (Unit unit : enemy.getUnits()){
+            if (unit.getClass().equals(Pureblade.class)){
+                Pureblade p = (Pureblade)unit;
+                p.specialAbility();
+                return;
+            }
+        }
     }
 }

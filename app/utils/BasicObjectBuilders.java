@@ -38,6 +38,7 @@ public class BasicObjectBuilders {
 		try {
 			Card card = mapper.readValue(new File(configurationFile), classtype);
 			card.setId(id);
+			card.setModifier();
 			return card;
 		} catch (Exception e) {
 			e.printStackTrace();

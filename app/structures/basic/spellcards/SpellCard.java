@@ -8,4 +8,5 @@ public abstract class SpellCard extends Card implements Playable{
 
     public abstract void highlightTargets(ActorRef out); // highlight valid targets for a particular spellcard.
 
+    
 }

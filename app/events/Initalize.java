@@ -22,6 +22,7 @@ import structures.basic.SpecialUnits.Pyromancer;
 import structures.basic.Tile;
 import structures.basic.Unit;
 import structures.basic.UnitAnimationType;
+import structures.basic.SpecialUnits.Pureblade;
 import structures.basic.SpecialUnits.SilverguardKnight;
 import structures.basic.SpecialUnits.Windshrike;
 
@@ -54,7 +55,7 @@ public class Initalize implements EventProcessor{
 		GameState.setTotalUnits(); 
 
 		gameState.setHumanPlayer(humanPlayer);
-		gameState.setCurrentPlayer(gameState.getHumanPlayer());
+		gameState.setCurrentPlayer(humanPlayer);
 		gameState.gameInitalised = true;
 		gameState.emptyPreviousAction();
 
@@ -80,7 +81,11 @@ public class Initalize implements EventProcessor{
 		gameState.board[3][2].setOccupier(unit);
 		BasicCommands.drawUnit(out, unit, gameState.board[3][2]);
 
-		gameState.getHumanPlayer().setUnit(unit);
+		GameState.getHumanPlayer().setUnit(unit);
+		GameState.getHumanPlayer().createAvatar(unit);
+		for (Unit u : GameState.getHumanPlayer().getUnits()){
+			System.out.printf("Unit x %d and y  %d \n", unit.getPosition().getTilex(), unit.getPosition().getTiley());
+		}
 
 		GameState.modifiyTotalUnits(1);
 		
@@ -110,11 +115,20 @@ public class Initalize implements EventProcessor{
 		/*
 		 * Enemy avatar stuff
 		 */
+
+//		/*
+//		 *  ISSUE 27, Airdrop testing
+//		 */
+//
+//		Card ironcliff = BasicObjectBuilders.loadCard(StaticConfFiles.c_ironcliff_guardian, 6, Card.class);
+//		ironcliff.setManacost(1);
+//		GameState.getHumanPlayer().testcard(ironcliff);
+
 		
 		GameState.enemy = new AIPlayer();
+
 		
 		Unit enemyUnit = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 101, Unit.class);
-
 		
 		enemyUnit.setPositionByTile(gameState.board[5][2]); 
 		gameState.board[5][2].setOccupier(enemyUnit);
@@ -133,6 +147,44 @@ public class Initalize implements EventProcessor{
 		
 		unit.setHealth(humanPlayer.getHealth());
 		enemyUnit.setHealth(GameState.enemy.getHealth());
+		GameState.enemy.createAvatar(enemyUnit);
+
+//		/*
+//		 * ISSUE 17, SpellThief testing
+//		 */
+//
+//		Pureblade pureblade = (Pureblade)BasicObjectBuilders.loadUnit(StaticConfFiles.u_pureblade_enforcer, 1, Pureblade.class);
+//		pureblade.setPositionByTile(GameState.board[5][1]); 
+//		GameState.board[5][1].setOccupier(pureblade);
+//		
+//		BasicCommands.drawUnit(out, pureblade, GameState.board[5][1]);
+//		
+//		Gui.setUnitStats(pureblade, 1, 2);
+//		
+//		pureblade.setHealth(1);
+//		pureblade.setAttack(2);
+//		GameState.modifiyTotalUnits(1);
+//
+//		GameState.getHumanPlayer().setUnit(pureblade);
+//
+//		/*
+//		 * Windshrike testing
+//		 */
+//
+//		Windshrike windshrike = (Windshrike)BasicObjectBuilders.loadUnit(StaticConfFiles.u_windshrike, 34, Windshrike.class);
+//		windshrike.setPositionByTile(GameState.board[5][4]); 
+//		GameState.board[5][4].setOccupier(windshrike);
+//		
+//		BasicCommands.drawUnit(out, windshrike, GameState.board[5][4]);
+//		
+//		Gui.setUnitStats(windshrike, 1, 2);
+//		
+//		windshrike.setHealth(1);
+//		windshrike.setAttack(2);
+//		GameState.modifiyTotalUnits(1);
+//
+//		GameState.enemy.setUnit(windshrike);
+
 
 		/*
 		 * TEST
