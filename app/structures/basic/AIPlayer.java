@@ -14,6 +14,11 @@ public class AIPlayer extends Player{
 
     public AIPlayer() {
         super(20, 0, 2);
+        // Draw first three cards
+        for(int i = 0; i < 3; i++) {
+            drawCard();
+        }
+
     }
 
     @Override

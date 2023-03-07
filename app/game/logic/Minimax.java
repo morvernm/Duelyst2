@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
 import akka.stream.impl.fusing.Map;
+import events.CardClicked;
 import events.EndTurnClicked;
 import structures.GameState;
 import structures.basic.Card;
@@ -80,10 +81,11 @@ public class Minimax implements Runnable{
 	/*
 	 * get cards from AI player's hand
 	 */
-	private static void getPlayerHand() {
+	private static Set<Card> getPlayerHand() {
+		System.out.println("Getting player hand");
 		Set<Card> cards = new HashSet<>();
-		for(Card card: GameState.getCurrentPlayer().getHand()) {
-			if(GameState.getCurrentPlayer().getHand().length == 0) { //if hand is empty
+		for(Card card: GameState.getAIPlayer().getHand()) {
+			if(GameState.getAiPlayer().getHand().length == 0) { //if hand is empty
 				System.out.println("No cards to play");
 			}
 			else {
@@ -91,40 +93,44 @@ public class Minimax implements Runnable{
 			}
 		
 		}
-		evaluateCards(cards);
+//		evaluateCards(cards);
+		System.out.println("number of cards in set " + cards.size());
+		return cards; 
 		}
 	private static void minimax(GameState gameState) {
 		/*
 		 * start the whole thing and return an action 
 		 */
-		for (int moves = 0; moves < 2; moves++) {
-			
-			ArrayList<AttackAction> acts = actions(gameState);
-			if (acts == null) {
-				System.out.println("No more actions left on the board");
-				break;
-			}
-			
-			Set<AttackAction> actions = new HashSet<>(evaluateAttacks(acts, gameState));
-			AttackAction action = bestAttack(actions);
-			
-			if (action.unit.hasAttacked())
-				return;
-			if (Math.abs(action.unit.getPosition().getTilex() - action.tile.getTilex()) < 2 && Math.abs(action.unit.getPosition().getTiley() - action.tile.getTiley()) < 2) {
-				if (action.unit.hasAttacked())
-					continue;
-				System.out.println("Launching an adjacent attack");
-				Utility.adjacentAttack(action.unit, action.tile.getOccupier());
-			
-			} else {
-				if (action.unit.hasAttacked())		
-					continue;
-				System.out.println("Launching a distanced attack");
-				
-				Utility.distancedAttack(action.unit, action.tile.getOccupier(), gameState.getHumanPlayer());	
-				try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-			}
-		}
+//		for (int moves = 0; moves < 2; moves++) {
+//			
+//			ArrayList<AttackAction> acts = actions(gameState);
+//			if (acts == null) {
+//				System.out.println("No more actions left on the board");
+//				break;
+//			}
+//			
+//			Set<AttackAction> actions = new HashSet<>(evaluateAttacks(acts, gameState));
+//			AttackAction action = bestAttack(actions);
+//			
+//			if (action.unit.hasAttacked())
+//				return;
+//			if (Math.abs(action.unit.getPosition().getTilex() - action.tile.getTilex()) < 2 && Math.abs(action.unit.getPosition().getTiley() - action.tile.getTiley()) < 2) {
+//				if (action.unit.hasAttacked())
+//					continue;
+//				System.out.println("Launching an adjacent attack");
+//				Utility.adjacentAttack(action.unit, action.tile.getOccupier());
+//			
+//			} else {
+//				if (action.unit.hasAttacked())		
+//					continue;
+//				System.out.println("Launching a distanced attack");
+//				
+//				Utility.distancedAttack(action.unit, action.tile.getOccupier(), gameState.getHumanPlayer());	
+//				try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+//			}
+//		}
+		
+		System.out.println("MINIMAX CARDS");
 		miniMaxCards();
 		
 //		EndTurnClicked endTurn = new EndTurnClicked();
@@ -188,35 +194,93 @@ public class Minimax implements Runnable{
  * 
  */
 	
-	public static void evaluateCards(Set <Card> cards) {
+	public static Set<CardAction> evaluateCards(Set<Card> cards) {
+		System.out.println("evaluating cards");
 		Set <CardAction> playableCards = new HashSet<>();
-		if(playableCards.isEmpty()) { //if player has no cards in hand
+		if(cards.isEmpty()) { //if player has no cards in hand
 			System.out.println("No cards to play!");
-			return;
 		}
-		for (Card card: cards) {
-			CardAction AICard = new CardAction(card);
-			int highestAttack = card.getBigCard().getAttack();
-			playableCards.add(AICard);
-			if(card.getCardname() == "Rock Pulveriser") { //provoke card
-				AICard.value = 4;
+		try {
+			for (Card card: cards) {
+				System.out.println(card == null);
+				CardAction AICard = new CardAction(card);
+				int highestAttack = card.getBigCard().getAttack();
+				if(GameState.getAIPlayer().getMana() >= card.getManacost()) {
+					playableCards.add(AICard);
+					if(card.getCardname() == "Rock Pulveriser") { //provoke card
+						AICard.value = 4;
+						continue;
+					}
+					else if(card.getBigCard().getAttack() > highestAttack) { // prioritises Serpenti, as Serpenti has highest attack
+						AICard.value = 3;
+						continue;
+					}
+					else if(card.getCardname() != "Bloodshard Golem" || card.getCardname() != "Hailstone Golem") { //special cards
+						AICard.value = 2;
+						continue;
+					}else { //reg cards
+						AICard.value = 1;
+						continue;
+					}
+				}return playableCards;
+//				else {
+//					System.out.println("Not enough mana!");
+//					break;
+//				}
 			}
-			if(card.getBigCard().getAttack() > highestAttack) { // prioritises Serpenti, as Serpenti has highest attack
-				AICard.value = 3;
-			}
-			if(card.getCardname() != "Bloodshard Golem" || card.getCardname() != "Hailstone Golem") { //special cards
-				AICard.value = 2;
-			}else { //reg cards
-				AICard.value = 1;
-			}
-			bestCard(playableCards);
-				
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+//		for (Card card: cards) {
+//			System.out.println(card == null);
+//			CardAction AICard = new CardAction(card);
+//			int highestAttack = card.getBigCard().getAttack();
+//			if(GameState.getAIPlayer().getMana() >= card.getManacost()) {
+//				playableCards.add(AICard);
+//				if(card.getCardname() == "Rock Pulveriser") { //provoke card
+//					AICard.value = 4;
+//					continue;
+//				}
+//				else if(card.getBigCard().getAttack() > highestAttack) { // prioritises Serpenti, as Serpenti has highest attack
+//					AICard.value = 3;
+//					continue;
+//				}
+//				else if(card.getCardname() != "Bloodshard Golem" || card.getCardname() != "Hailstone Golem") { //special cards
+//					AICard.value = 2;
+//					continue;
+//				}else { //reg cards
+//					AICard.value = 1;
+//					continue;
+//				}
+//			}
+//			else {
+//				System.out.println("Not enough mana!");
+//				break;
+//			}		
 //			Set <Tile> validTiles = ;
 			//if validAttack tiles all- on board or validMoves all on board
 //			if(Utility.cardPlacements(card, GameState.getCurrentPlayer(), GameState.getHumanPlayer(), GameState.getBoard()) == Windshrike.specialAbility(GameState.getBoard())) {
 //				
 //			}
-		}
+			
+//		}
+	System.out.println("number of cards from evaluatecards " + playableCards.size());
+		return playableCards;
+	}
+	
+	public static Tile evaluateTiles(CardAction bestCard) {
+		Tile bestTile = null;
+		
+		Set<Tile> validSummonPlacement = Utility.cardPlacements(bestCard.getCard(), GameState.getAIPlayer(), GameState.getHumanPlayer(), GameState.getBoard());
+		for(Tile tile: validSummonPlacement) {
+//			int distanceToAvatar = Math.abs(tile.getTilex() - GameState.getHumanPlayer().)
+			int nearestX = tile.getTilex()+1;
+			int nearestY = tile.getTiley()+1;
+			if(GameState.getBoard()[tile.getTilex()+1][tile.getTiley()+1].getOccupier() != null) {
+//				bestCard.setTileValue(3);
+				bestTile = tile;
+			}
+		}return bestTile;
 	}
 	
 	/*
@@ -224,23 +288,39 @@ public class Minimax implements Runnable{
 	 */
 	
 	public static CardAction bestCard(Set <CardAction> AICards) {
+		System.out.println("pick best card");
 		CardAction bestCard = null;
 		int maxValue = -1;
 		for(CardAction card: AICards) {
 			if(card.value > maxValue) {
-				bestCard = card;
+				bestCard = card;	
 			}
 			
 		}
+		System.out.println("bestCardprint" + bestCard);
 		return bestCard; //return bestCard for AI to play
 	}
 	
-	//not sure if this should be separate or integrate w attack miniMax
 	public static void miniMaxCards() { 
-		getPlayerHand();
-	}
+		System.out.println("START MINIMAX CARDS");
+//		Set<Card> playerCards = getPlayerHand();
+		CardAction bestCard;
+//		try {
+			Set<CardAction> cardActions = evaluateCards(getPlayerHand());
+			System.out.println("Card actions size " + cardActions.size());
+			bestCard = bestCard(cardActions);
+			System.out.println("best card: " + bestCard);
+//			Tile destination = evaluateTiles(bestCard);
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			 
+//		}	
+				
+			}
+	//		Utility.placeUnit(out, bestCard.getCard(), GameState.getCurrentPlayer(), validSummonPlacement);
+}
 	 
 	
 	
 
-}
+//}

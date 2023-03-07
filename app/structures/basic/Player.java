@@ -26,6 +26,7 @@ public class Player {
 	protected int cardsInHand = 0;
 	protected Deck deck;
 	protected ArrayList<Unit> units; // store all units currently on board
+	protected Unit avatar;
 	
 	
 	public Player() {
@@ -117,11 +118,15 @@ public class Player {
 		GameState.getBoard()[3][2].setOccupier(unit);
 		BasicCommands.drawUnit(out, unit, GameState.getBoard()[3][2]);
 		GameState.getHumanPlayer().setUnit(unit);
+		avatar = unit;
 		GameState.modifiyTotalUnits(1);
 		Gui.setUnitStats(unit, GameState.getHumanPlayer().getHealth(), 2);
 		unit.setHealth(GameState.getHumanPlayer().getHealth());
 		unit.setAttack(2);
 		
+	}
+	public Unit getAvatar() {
+		return avatar;
 	}
 	 public Card[] getHand() {
 	    	return this.hand;
