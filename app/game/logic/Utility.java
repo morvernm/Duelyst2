@@ -349,6 +349,8 @@ public class Utility {
 		//Sets unit stats
         unit.setAttack(attack);
         unit.setHealth(health);
+        unit.setAttacked();
+        unit.setMoved();
 
 		GameState.modifiyTotalUnits(1);
 
@@ -482,7 +484,7 @@ public class Utility {
                 System.out.println("printing hand size " + GameState.enemy.cardsInHand);
                 System.out.println("printing card name" + GameState.enemy.getCard(1).getCardname());
             }
-			
+
 //		AI unit
 			if(GameState.getAiPlayer().getUnits().contains(defender)) {
 				GameState.getAiPlayer().removeUnit(defender); 

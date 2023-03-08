@@ -1,8 +1,14 @@
 package structures.basic;
 
 import game.logic.Gui;
+import structures.GameState;
+import utils.BasicObjectBuilders;
+import utils.StaticConfFiles;
 
 import java.util.NoSuchElementException;
+
+import akka.actor.ActorRef;
+import commands.BasicCommands;
 
 public class AIPlayer extends Player{
 
@@ -11,8 +17,10 @@ public class AIPlayer extends Player{
         // Draw first three cards
         for(int i = 0; i < 3; i++) {
             drawCard();
+
         }
     }
+
 
     @Override
     public void setMana(int mana){
@@ -37,14 +45,28 @@ public class AIPlayer extends Player{
             i++;
         }
         Card current = deck.drawTopCard();
+
         current.setPositionInHand(i + 1);
 
         hand[i] = current;
         cardsInHand++;
     }
 
-    public void removeFromHand(int position) { // remove a card from the hand at a given position
-        hand[position-1] = null; // Set position to null to remove card. Use range 1 - 6 to reflect front-end display logic.
-        cardsInHand--;
+//    public void removeFromHand(int position) { // remove a card from the hand at a given position
+//        hand[position-1] = null; // Set position to null to remove card. Use range 1 - 6 to reflect front-end display logic.
+//        cardsInHand--;
+//    }
+
+    public void createAvatar(ActorRef out) {
+		Unit enemyAvatar = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 101, Unit.class);
+		enemyAvatar.setPositionByTile(GameState.board[7][2]); 
+		GameState.board[7][2].setOccupier(enemyAvatar);
+		BasicCommands.drawUnit(out, enemyAvatar, GameState.board[7][2]);
+		Gui.setUnitStats(enemyAvatar, 20, 2);
+		enemyAvatar.setHealth(20);
+		enemyAvatar.setAttack(2);
+		GameState.modifiyTotalUnits(1);
+		GameState.enemy.setUnit(enemyAvatar);
     }
+
 }

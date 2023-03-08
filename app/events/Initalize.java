@@ -1,37 +1,13 @@
 package events;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-
 import com.fasterxml.jackson.databind.JsonNode;
-
 import akka.actor.ActorRef;
 import commands.BasicCommands;
-import demo.CheckMoveLogic;
-import demo.CommandDemo;
-import game.logic.Gui;
-import play.shaded.ahc.io.netty.util.internal.SystemPropertyUtil;
-import play.twirl.api.TemplateMagic;
 import structures.GameState;
 import structures.basic.AIPlayer;
-import structures.basic.Card;
 import structures.basic.Player;
-import structures.basic.SpecialUnits.FireSpitter;
-import structures.basic.SpecialUnits.Pyromancer;
-import structures.basic.Tile;
-import structures.basic.Unit;
-import structures.basic.UnitAnimationType;
-import structures.basic.SpecialUnits.Pureblade;
-import structures.basic.SpecialUnits.SilverguardKnight;
-import structures.basic.SpecialUnits.Windshrike;
-
 import utils.BasicObjectBuilders;
-import utils.StaticConfFiles;
 
-import commands.BasicCommands;
-import game.logic.Utility;
-import game.logic.Gui;
 
 /*
  * Indicates that both the core game loop in the browser is starting, meaning
@@ -73,26 +49,27 @@ public class Initalize implements EventProcessor{
 			}
 		}
 		
+		humanPlayer.createAvatar(out);
+		
 		/*
 		 * Place the Human Avatar on the board
 		 */
-		Unit unit = BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, 100, Unit.class);
-		unit.setPositionByTile(gameState.board[3][2]); 
-		gameState.board[3][2].setOccupier(unit);
-		BasicCommands.drawUnit(out, unit, gameState.board[3][2]);
 
-		GameState.getHumanPlayer().setUnit(unit);
-		GameState.getHumanPlayer().createAvatar(unit);
-		for (Unit u : GameState.getHumanPlayer().getUnits()){
-			System.out.printf("Unit x %d and y  %d \n", unit.getPosition().getTilex(), unit.getPosition().getTiley());
-		}
+//		Unit unit = BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, 100, Unit.class);
+//		unit.setPositionByTile(gameState.board[3][2]); 
+//		gameState.board[3][2].setOccupier(unit);
+//		BasicCommands.drawUnit(out, unit, gameState.board[3][2]);
+//
+//		GameState.getHumanPlayer().setUnit(unit);
+//		GameState.getHumanPlayer().createAvatar(unit);
+//		for (Unit u : GameState.getHumanPlayer().getUnits()){
+//			System.out.printf("Unit x %d and y  %d \n", unit.getPosition().getTilex(), unit.getPosition().getTiley());
+//		}
+//
+//		GameState.modifiyTotalUnits(1);
 
-		GameState.modifiyTotalUnits(1);
 		
-		Gui.setUnitStats(unit, gameState.getHumanPlayer().getHealth(), 2);
-		unit.setHealth(gameState.getHumanPlayer().getHealth());
-		unit.setAttack(2);
-			
+		
 
 		/*
 		 * TEST
@@ -112,8 +89,9 @@ public class Initalize implements EventProcessor{
 ////
 ////		GameState.modifiyTotalUnits(1);
 
+		
 		/*
-		 * Enemy avatar stuff
+		 * Create enemy player and avatar
 		 */
 
 //		/*
@@ -125,28 +103,29 @@ public class Initalize implements EventProcessor{
 //		GameState.getHumanPlayer().testcard(ironcliff);
 
 		
-		GameState.enemy = new AIPlayer();
 
-		
-		Unit enemyUnit = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 101, Unit.class);
-		
-		enemyUnit.setPositionByTile(gameState.board[5][2]); 
-		gameState.board[5][2].setOccupier(enemyUnit);
-		
-		BasicCommands.drawUnit(out, enemyUnit, gameState.board[5][2]);
-		
-		Gui.setUnitStats(enemyUnit, 20, 2);
-		
-		enemyUnit.setHealth(20);
-		enemyUnit.setAttack(2);
-		GameState.modifiyTotalUnits(1);
-
-
-		try {Thread.sleep(100);}catch (InterruptedException e){e.printStackTrace();}
-		
-		unit.setHealth(humanPlayer.getHealth());
-		enemyUnit.setHealth(GameState.enemy.getHealth());
-		GameState.enemy.createAvatar(enemyUnit);
+//		GameState.enemy = new AIPlayer();
+//
+//		
+//		Unit enemyUnit = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 101, Unit.class);
+//		
+//		enemyUnit.setPositionByTile(gameState.board[5][2]); 
+//		gameState.board[5][2].setOccupier(enemyUnit);
+//		
+//		BasicCommands.drawUnit(out, enemyUnit, gameState.board[5][2]);
+//		
+//		Gui.setUnitStats(enemyUnit, 20, 2);
+//		
+//		enemyUnit.setHealth(20);
+//		enemyUnit.setAttack(2);
+//		GameState.modifiyTotalUnits(1);
+//
+//
+//		try {Thread.sleep(100);}catch (InterruptedException e){e.printStackTrace();}
+//		
+//		unit.setHealth(humanPlayer.getHealth());
+//		enemyUnit.setHealth(GameState.enemy.getHealth());
+//		GameState.enemy.createAvatar(enemyUnit);
 
 //		/*
 //		 * ISSUE 17, SpellThief testing
@@ -185,12 +164,17 @@ public class Initalize implements EventProcessor{
 //		GameState.enemy.setUnit(windshrike);
 
 
-		GameState.getAIPlayer().setUnit(enemyUnit);
+//		GameState.getAIPlayer().setUnit(enemyUnit);
+
+		AIPlayer enemy = new AIPlayer();
+		GameState.enemy = enemy; //Set AI player as enemy
+		enemy.createAvatar(out);
+
 
 		/*
 		 * TEST
 		 */
-//		
+
 //		Unit unitTwo = (Pyromancer)BasicObjectBuilders.loadUnit(StaticConfFiles.u_pyromancer, 69, Pyromancer.class);
 //		unitTwo.setPositionByTile(gameState.board[5][3]); 
 //		

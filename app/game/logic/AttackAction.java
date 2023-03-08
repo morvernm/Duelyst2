@@ -15,5 +15,8 @@ public class AttackAction {
 		this.tile = tile;
 		this.value = -1;
 	}
+	public AttackAction() { //to allow for overriding constructor in child classes. 
+		
+	}
 
 }
