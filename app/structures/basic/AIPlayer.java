@@ -17,6 +17,7 @@ public class AIPlayer extends Player{
         // Draw first three cards
         for(int i = 0; i < 3; i++) {
             drawCard();
+            
         }
 
     }
@@ -44,6 +45,7 @@ public class AIPlayer extends Player{
             i++;
         }
         Card current = deck.drawTopCard();
+        current.setPositionInHand(i+1);
 
         hand[i] = current;
         cardsInHand++;

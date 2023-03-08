@@ -309,7 +309,9 @@ public class Utility {
         	unit = (Serpenti) BasicObjectBuilders.loadUnit(unit_conf, unit_id, Serpenti.class);
         } else if (card.getCardname().equals("Azurite Lion"))  {
         	unit = (AzuriteLion) BasicObjectBuilders.loadUnit(unit_conf, unit_id, AzuriteLion.class);
-        } else {
+        } else if(unit_id == 34 || unit_id == 24) {
+        	unit = (Windshrike)BasicObjectBuilders.loadUnit(unit_conf, unit_id, Windshrike.class);
+        }else {
             unit = BasicObjectBuilders.loadUnit(unit_conf, unit_id, Unit.class);
         }
 
@@ -333,6 +335,8 @@ public class Utility {
 		//Gui.setUnitStats(unit, health, attack);
         unit.setAttack(attack);
         unit.setHealth(health);
+        unit.hasMoved();
+        unit.hasAttacked();
 
 		GameState.modifiyTotalUnits(1);
 
@@ -445,7 +449,6 @@ public class Utility {
 			try {Thread.sleep(3000);} catch (InterruptedException e) {e.printStackTrace();}
 			GameState.board[defender.getPosition().getTilex()][defender.getPosition().getTiley()].setOccupier(null); //remove unit from tiles
 			BasicCommands.deleteUnit(out, defender); //delete unit from board
-			
 //		AI unit
 			if(GameState.getAiPlayer().getUnits().contains(defender)) {
 				GameState.getAiPlayer().removeUnit(defender); 

@@ -10,12 +10,10 @@ public class CardAction extends AttackAction{
 	public CardAction(Unit unit, Tile tile) {
 		super(unit, tile);
 	}
-//	public CardAction(Card card,int value) {
-//		this.card = card;
-//		this.value = value;
-//	}
 	public CardAction(Card card) {
 		this.card = card;
 	}
-
+	public Card getCard()  {
+		return this.card;
+	}
 }
