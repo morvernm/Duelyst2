@@ -115,7 +115,7 @@ public class CardClicked implements EventProcessor{
 		if (human == current){
 			if (human.getMana() >= card.getManacost()){
 				Player enemy = GameState.enemy;
-				Set<Tile> s = Utility.cardPlacements(card, human, enemy, GameState.board);
+				Set<Tile> s = Utility.cardPlacements(card, human, enemy, GameState.getBoard());
 				Gui.removeHighlightTiles(out, GameState.getBoard());
 				Gui.highlightTiles(out, s, 1);
 			} else {

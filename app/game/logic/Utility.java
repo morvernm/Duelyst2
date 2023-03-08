@@ -335,8 +335,8 @@ public class Utility {
 		//Gui.setUnitStats(unit, health, attack);
         unit.setAttack(attack);
         unit.setHealth(health);
-        unit.hasMoved();
-        unit.hasAttacked();
+        unit.setAttacked();
+        unit.setMoved();
 
 		GameState.modifiyTotalUnits(1);
 

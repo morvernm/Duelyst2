@@ -100,7 +100,7 @@ public class StaticConfFiles {
 				return u_rock_pulveriser;
 			case "Serpenti":
 				return u_serpenti;
-			case "Windshrike":
+			case "WindShrike":
 				return u_windshrike;
 		}
 		return null;
