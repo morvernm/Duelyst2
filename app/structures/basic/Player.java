@@ -114,9 +114,9 @@ public class Player {
 	
 	public void createAvatar(ActorRef out) {
 		Unit unit = BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, 100, Unit.class);
-		unit.setPositionByTile(GameState.getBoard()[3][2]); 
-		GameState.getBoard()[3][2].setOccupier(unit);
-		BasicCommands.drawUnit(out, unit, GameState.getBoard()[3][2]);
+		unit.setPositionByTile(GameState.getBoard()[1][2]); 
+		GameState.getBoard()[1][2].setOccupier(unit);
+		BasicCommands.drawUnit(out, unit, GameState.getBoard()[1][2]);
 		GameState.getHumanPlayer().setUnit(unit);
 		avatar = unit;
 		GameState.modifiyTotalUnits(1);

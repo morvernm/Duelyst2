@@ -52,9 +52,9 @@ public class AIPlayer extends Player{
     }
     public void createAvatar(ActorRef out) {
 		Unit enemyAvatar = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 101, Unit.class);
-		enemyAvatar.setPositionByTile(GameState.board[5][2]); 
-		GameState.board[5][2].setOccupier(enemyAvatar);
-		BasicCommands.drawUnit(out, enemyAvatar, GameState.board[5][2]);
+		enemyAvatar.setPositionByTile(GameState.board[7][2]); 
+		GameState.board[7][2].setOccupier(enemyAvatar);
+		BasicCommands.drawUnit(out, enemyAvatar, GameState.board[7][2]);
 		Gui.setUnitStats(enemyAvatar, 20, 2);
 		enemyAvatar.setHealth(20);
 		enemyAvatar.setAttack(2);
