@@ -1,14 +1,14 @@
 package structures.basic.spellcards;
 
 import akka.actor.ActorRef;
-import game.logic.Gui;
-import structures.basic.BigCard;
-import structures.basic.MiniCard;
+
 import structures.basic.Tile;
 import structures.basic.Unit;
 import structures.GameState;
 import structures.basic.Player;
 import structures.basic.SpecialUnits.*;
+
+import java.util.ArrayList;
 
 public class Staff extends SpellCard {
 
@@ -24,6 +24,7 @@ public class Staff extends SpellCard {
 
     }
 
+
     /*
      * Checks if unit has SpellThief by checking unit id, if so, applies the affect
      */
@@ -36,5 +37,11 @@ public class Staff extends SpellCard {
                 return;
             }
         }
+    }
+
+    @Override
+    public ArrayList<Unit> getTargets() {
+        return null;
+
     }
 }

@@ -53,6 +53,7 @@ public class Ykir extends SpellCard {
         Gui.highlightTiles(out, positions, 2);
 	}
 
+
 	public void handleSpellThief(){
         Player enemy = GameState.getHumanPlayer();
         for (Unit unit : enemy.getUnits()){
@@ -63,5 +64,21 @@ public class Ykir extends SpellCard {
             }
         }
     }
+
+	@Override
+	public ArrayList<Unit> getTargets() {
+		ArrayList<Unit> targets = new ArrayList<>();
+		//Unit avatar = null;
+
+		for (Unit unit : GameState.getCurrentPlayer().getUnits()) {
+			if (unit.getId() == 100 || unit.getId() == 101) {
+				targets.add(unit);
+			}
+		}
+		System.out.print("Ykir avatar null: ");
+//		System.out.println(avatar==null);
+//		targets.add(avatar);
+		return targets;
+	}
 
 }

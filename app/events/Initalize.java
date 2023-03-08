@@ -141,7 +141,6 @@ public class Initalize implements EventProcessor{
 		enemyUnit.setAttack(2);
 		GameState.modifiyTotalUnits(1);
 
-		GameState.enemy.setUnit(enemyUnit);
 
 		try {Thread.sleep(100);}catch (InterruptedException e){e.printStackTrace();}
 		
@@ -186,37 +185,40 @@ public class Initalize implements EventProcessor{
 //		GameState.enemy.setUnit(windshrike);
 
 
+		GameState.getAIPlayer().setUnit(enemyUnit);
+
 		/*
 		 * TEST
 		 */
-		
-		Unit unitTwo = (Pyromancer)BasicObjectBuilders.loadUnit(StaticConfFiles.u_pyromancer, 69, Pyromancer.class);
-		unitTwo.setPositionByTile(gameState.board[5][3]); 
-		
-		gameState.board[5][3].setOccupier(unitTwo);
-		BasicCommands.drawUnit(out, unitTwo, gameState.board[5][3]);
-		gameState.getAiPlayer().setUnit(unitTwo);
-		
-		Gui.setUnitStats(unitTwo, 3, 3);
-		
-		unitTwo.setHealth(4);
-		unitTwo.setAttack(3);
-		
-		GameState.modifiyTotalUnits(1);
-		
-		Unit unit3 = (SilverguardKnight)BasicObjectBuilders.loadUnit(StaticConfFiles.u_silverguard_knight, 70, SilverguardKnight.class);
-		unit3.setPositionByTile(gameState.board[5][1]); 
-		
-		gameState.board[5][1].setOccupier(unit3);
-		BasicCommands.drawUnit(out, unit3, gameState.board[5][1]);
-		gameState.getAiPlayer().setUnit(unit3);
-		
-		Gui.setUnitStats(unit3, 3,1);
-		
-		unit3.setHealth(3);
-		unit3.setAttack(1);
-		
-		GameState.modifiyTotalUnits(1);
+//		
+//		Unit unitTwo = (Pyromancer)BasicObjectBuilders.loadUnit(StaticConfFiles.u_pyromancer, 69, Pyromancer.class);
+//		unitTwo.setPositionByTile(gameState.board[5][3]); 
+//		
+//		gameState.board[5][3].setOccupier(unitTwo);
+//		BasicCommands.drawUnit(out, unitTwo, gameState.board[5][3]);
+//		gameState.getAiPlayer().setUnit(unitTwo);
+//		
+//		Gui.setUnitStats(unitTwo, 3, 3);
+//		
+//		unitTwo.setHealth(4);
+//		unitTwo.setAttack(3);
+//		
+//		GameState.modifiyTotalUnits(1);
+//		
+//		Unit unit3 = (SilverguardKnight)BasicObjectBuilders.loadUnit(StaticConfFiles.u_silverguard_knight, 70, SilverguardKnight.class);
+//		unit3.setPositionByTile(gameState.board[5][1]); 
+//		
+//		gameState.board[5][1].setOccupier(unit3);
+//		BasicCommands.drawUnit(out, unit3, gameState.board[5][1]);
+//		gameState.getAiPlayer().setUnit(unit3);
+//		
+//		Gui.setUnitStats(unit3, 3,1);
+//		
+//		unit3.setHealth(3);
+//		unit3.setAttack(1);
+//		
+//		GameState.modifiyTotalUnits(1);
+
 	}
 	
 	

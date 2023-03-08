@@ -75,15 +75,19 @@ public class Player {
 		return this.deck;
 	}
 
-	public void testcard(Card card){
-		int i = 0;
-		while(hand[i] != null && i < hand.length - 1) {
-			i++;
-		}
 
-		hand[i] = card;
-		cardsInHand++;
-		Gui.displayCard(card, i + 1);
+//	public void testcard(Card card){
+//		int i = 0;
+//		while(hand[i] != null && i < hand.length - 1) {
+//			i++;
+//		}
+//		hand[i] = card;
+//		cardsInHand++;
+//		Gui.displayCard(card, i + 1);
+//	}
+	
+	public Card[] getHand() {
+		return hand;
 	}
 
 	// draw a card from the deck and place it in the player's hand.
@@ -119,6 +123,10 @@ public class Player {
 	}
 	public void removeUnit(Unit unit) {
 		this.units.remove(unit);
+	}
+
+	public Boolean handIsEmpty() {
+		return cardsInHand == 0;
 	}
 	
 	public void createAvatar(Unit unit) {

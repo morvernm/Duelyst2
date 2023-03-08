@@ -330,6 +330,7 @@ public class Utility {
 
 
         unit.setPositionByTile(tile);
+        unit.setMaxHealth(unit.getHealth());
         tile.setOccupier(unit);
 		GameState.modifiyTotalUnits(1);
 		
@@ -690,9 +691,12 @@ public class Utility {
 
 	// Get positions of potential targets of a spell.
 	public static Set<Tile> getSpellTargetPositions(ArrayList<Unit> targets) {
+        if(targets == null || targets.isEmpty()) return null; // if list of targets is null, then return no positions
+        System.out.println(targets.size());
 		Set<Tile> positions = new HashSet<>();
 
 		for (Unit unit : targets) {
+            if(unit==null) {System.out.println("Unit is null"); continue;}
 			int unitx = unit.getPosition().getTilex();
 			int unity = unit.getPosition().getTiley();
 			positions.add(GameState.getBoard()[unitx][unity]);

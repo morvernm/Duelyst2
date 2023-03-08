@@ -8,6 +8,10 @@ public class AIPlayer extends Player{
 
     public AIPlayer() {
         super(20, 0, 2);
+        // Draw first three cards
+        for(int i = 0; i < 3; i++) {
+            drawCard();
+        }
     }
 
     @Override
@@ -33,8 +37,14 @@ public class AIPlayer extends Player{
             i++;
         }
         Card current = deck.drawTopCard();
+        current.setPositionInHand(i + 1);
 
         hand[i] = current;
         cardsInHand++;
+    }
+
+    public void removeFromHand(int position) { // remove a card from the hand at a given position
+        hand[position-1] = null; // Set position to null to remove card. Use range 1 - 6 to reflect front-end display logic.
+        cardsInHand--;
     }
 }

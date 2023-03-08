@@ -39,4 +39,16 @@ public class Truestrike extends SpellCard {
         Set<Tile> positions = Utility.getSpellTargetPositions(units);
         Gui.highlightTiles(out,positions,2);
     }
+
+    @Override
+    public ArrayList<Unit> getTargets() {
+        ArrayList<Unit> units;
+        if(GameState.getCurrentPlayer() == GameState.getAIPlayer()) {
+            units = GameState.getHumanPlayer().getUnits();
+        }
+        else {
+            units = GameState.getAIPlayer().getUnits();
+        }
+        return units;
+    }
 }
