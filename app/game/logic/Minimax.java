@@ -155,8 +155,10 @@ public class Minimax implements Runnable{
 
 		
 		// try the spells first
-		minimaxSpells(gameState);
 		miniMaxCards();
+		
+		minimaxSpells(gameState);
+		
 		try {
 
 			for (int moves = 0; moves < 3; moves++) {

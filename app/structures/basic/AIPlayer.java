@@ -51,11 +51,13 @@ public class AIPlayer extends Player{
         hand[i] = current;
         cardsInHand++;
     }
+    
+    
 
-//    public void removeFromHand(int position) { // remove a card from the hand at a given position
-//        hand[position-1] = null; // Set position to null to remove card. Use range 1 - 6 to reflect front-end display logic.
-//        cardsInHand--;
-//    }
+    public void removeFromHand(int position) { // remove a card from the hand at a given position
+        hand[position-1] = null; // Set position to null to remove card. Use range 1 - 6 to reflect front-end display logic.
+        cardsInHand--;
+    }
 
     public void createAvatar(ActorRef out) {
 		Unit enemyAvatar = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 101, Unit.class);

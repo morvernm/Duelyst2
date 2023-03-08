@@ -359,7 +359,9 @@ public class Utility {
 
 		int positionInHand = card.getPositionInHand();
 		player.removeFromHand(positionInHand);
-		BasicCommands.deleteCard(out, positionInHand);
+		
+		if (player.equals(GameState.getHumanPlayer()))
+			BasicCommands.deleteCard(out, positionInHand);
 		
         player.updateMana(-card.getManacost());
         CardClicked.currentlyHighlighted.remove(card);
