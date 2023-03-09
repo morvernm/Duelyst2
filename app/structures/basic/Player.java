@@ -52,25 +52,37 @@ public class Player {
 	}
 	public void setHealth(int health) {
 		this.health = health;
-		Gui.displayHumanHP(this);
+		Gui.displayHumanHP(this); // Update this change in health on the front end.
 	}
 	public int getMana() {
 		return mana;
 	}
 	public void setMana(int mana) {
 		this.mana = Math.min(mana, 9); // cap the max amount of mana a player can have at 9, as per GUI.
-		Gui.displayHumanMana(this);
+		Gui.displayHumanMana(this); // Update change in mana on front end
 	}
 	public void updateMana(int mana){
 		setMana(this.mana + mana);
 	}
 
-	// get a card at a specified position in a player's hand
+	/**
+	 * get a card from a specific position in the player's hand.
+	 * DOES NOT REMOVE IT FROM HAND.
+	 *
+	 * @param position - position in hand you want card from
+	 * @return Card
+	 */
 	public Card getCard(int position) {
 		if(!(position >= 1 && position <= 6)) throw new IllegalArgumentException("Card position must be between 1 - 6");
 		return hand[position - 1]; // use range 1 - 6 to reflect front-end display logic.
 	}
 
+	/**
+	 * Remove a card from a specific position in the hand
+	 * DOES NOT REMOVE IT FROM HAND.
+	 *
+	 * @param position position in hand of card you wish to remove.
+	 */
 	public void removeFromHand(int position) { // remove a card from the hand at a given position
 		hand[position-1] = null; // Set position to null to remove card. Use range 1 - 6 to reflect front-end display logic.
 		cardsInHand--;
@@ -81,22 +93,16 @@ public class Player {
 		return this.deck;
 	}
 
-
-//	public void testcard(Card card){
-//		int i = 0;
-//		while(hand[i] != null && i < hand.length - 1) {
-//			i++;
-//		}
-//		hand[i] = card;
-//		cardsInHand++;
-//		Gui.displayCard(card, i + 1);
-//	}
-	
 	public Card[] getHand() {
 		return hand;
 	}
 
-	// draw a card from the deck and place it in the player's hand.
+	/**
+	 *
+	 * Draw a card from the deck and place it in the player's hand, if there's space
+	 * and there's cards left in the deck.
+	 *
+	 */
 	public void drawCard() {
 		if (deck.isEmpty()) throw new NoSuchElementException("Deck is empty");
 		if (cardsInHand == 6) { // if no space in hand, card is lost

@@ -51,7 +51,13 @@ public class Minimax implements Runnable{
 	public void run() {
 		minimax(this.gameState);
 	}
-
+	
+	 /**
+     * Get all the possible actions that can be done with the spells the player currently has.
+     * Returns a list of spell actions associated with the cards required to play them.
+     * @param gameState
+     * @return HashMap<SpellCard, ArrayList<SpellAction>>
+     */
 	private static HashMap<SpellCard, ArrayList<SpellAction>> spellActions (GameState gameState){
 		HashMap<SpellCard,ArrayList<SpellAction>> actions = new HashMap<>();
 		Set<SpellCard> spellcards = new HashSet<>(); // used to store what spellcards the player has in their hand
@@ -89,10 +95,12 @@ public class Minimax implements Runnable{
 
 		return actions;
 	}
-	/*
-	 * Determines all available attack actions on the board and prepares them for evaluation
-	 * @param GameState
-	 */
+	
+	/**
+     * Determines all available attack actions on the board and prepares them for evaluation
+     * @param gameState
+     * @return ArrayList<AttackAction>
+     */
 	private static ArrayList<AttackAction> actions(GameState gameState){
 		
 		System.out.println("ACTIONS IN MINIMAX");
@@ -122,10 +130,10 @@ public class Minimax implements Runnable{
 		return actions;
 	}
 
-	/*
-	 * this method gets cards from AI player's hand
-	 * 
-	 */
+	/**
+     * this method gets cards from AI player's hand
+     * @return Set<Card>
+     */
 	private static Set<Card> getPlayerHand() {
 		System.out.println("Getting player hand");
 		Set<Card> cards = new HashSet<>();
@@ -142,7 +150,12 @@ public class Minimax implements Runnable{
 		return cards; 
 		}
 	
-
+	/**
+     * This method checks all the valid moves available to each AI unit and returns all available AI moves.
+     *
+     * @param gameState
+     * @return ArrayList<MoveAction>
+     */
 	public static ArrayList<MoveAction> moves(GameState gameState) {
 		System.out.println("MOVES IN MINIMAX");
 		ArrayList<MoveAction> moves = new ArrayList<>();
@@ -158,21 +171,12 @@ public class Minimax implements Runnable{
 				positions = Utility.determineValidMoves(gameState.getBoard(), unit);
 
 			}
-			
-//			Gui.highlightTiles(out, positions, 1);
-//			try {Thread.sleep(1500);} catch (InterruptedException e) {e.printStackTrace();}
-
 			for (Tile tile : positions) {
 				moves.add(new MoveAction(unit, tile));
 			}
-//			Gui.removeHighlightTiles(out, gameState.getBoard());
 		}
-		
-//		for (MoveAction move : moves)
-//			System.out.println("Mac actions x = " + move.moveToTile.getTilex() + " y = " + move.moveToTile.getTiley() + " by " + move.attacker);
-		
-		return moves;
 
+		return moves;
 	}
 
 
@@ -262,9 +266,10 @@ public class Minimax implements Runnable{
 	 *  2 - Attack with my avatar
 	 */
 
-	// Variant of minimax just for spells;
-	// perhaps could later be integrated to a more overarching logic that handles unit cards,
-	// attacks, spell cards etc.
+	 /**
+     * Variant of minimax algorithm specific to spells. Perform spells based on the best spell actions available.
+     * @param gameState
+     */
 	public static void minimaxSpells(GameState gameState) {
 
 		while (true) {
@@ -293,11 +298,13 @@ public class Minimax implements Runnable{
 		}
 	}
 	
-	/*
-	 * Goes over all available attack actions and assigns a score value to each 
-	 * The value will be used to judge how good the attack is
-	 * @param ArrayList<AttackActions>, GameState
-	 */
+	/**
+     * Goes over all available attack actions and assigns a score value to each
+     * The value will be used to judge how good the attack is
+     * @param a
+     * @param gameState
+     * @return Set<AttackAction>
+     */
 	private static Set<AttackAction> evaluateAttacks(ArrayList<AttackAction> a, GameState gameState) {
 		
 		System.out.println("EVALUATing attacks...");
@@ -322,7 +329,12 @@ public class Minimax implements Runnable{
 		}
 		return actions;
 	}
-
+	/**
+     * Rate all the available spell actions on scale of 1 (worst) - 10 (best)
+     *
+     * @param gameState
+     * @param actions - list of spell actions
+     */
 	private static void evaluateSpells(HashMap<SpellCard,ArrayList<SpellAction>> actions, GameState gameState) {
 
 		if(actions == null) return;
@@ -343,7 +355,13 @@ public class Minimax implements Runnable{
 		}
 	}
 
-	// Method to find best spell. Once done, remove spell card so it cannot be played again.
+	/**
+     * From available spell actions, pick best one based on assigned value.
+     *
+     * @param gameState
+     * @param actions - list of spell actions which have previously been given a 'usefulness' value
+     * @return SpellAction - best spell
+     */
 	private static SpellAction bestSpell(HashMap<SpellCard, ArrayList<SpellAction>> actions, GameState gameState) {
 		int maxValue = -1;
 		SpellAction bestSpell = null;
@@ -386,7 +404,15 @@ public class Minimax implements Runnable{
 		System.out.println("Action" + bestAttack.tile + " and " + bestAttack.unit + " value = " + bestAttack.value);		
 		return bestAttack;
 	}
-
+	/**
+     * This method evaluates all the moves by scoring them.
+     * It considers how far the enemy unit is, the enemy unit's health
+     * and if the enemy unit is enemy's avatar, which would be prioritised.
+     * The score is made by adding up distance, enemy health and +5 if the unit is not avatar.
+     * @param a
+     * @param gameState
+     * @return Set<MoveAction>
+     */
 	private static Set<MoveAction> evaluateMoves(ArrayList<MoveAction> a, GameState gameState) {
 		System.out.println("Evaluating moves...");
 		if (a == null) {
@@ -421,7 +447,12 @@ public class Minimax implements Runnable{
 		}
 		return moves;
 	}
-
+	/**
+     * This method picks the best move for unit to make from all the available moves.
+     * Best move is the one that has the lowest score.
+     * @param moves
+     * @return MoveAction
+     */
 
 	private static MoveAction bestMove(Set<MoveAction> moves) {
 		System.out.println("PICKING BEST MOVE");
@@ -538,6 +569,7 @@ public class Minimax implements Runnable{
 		return bestCard; //return bestCard for AI to play
 	}
 	
+	
 	public static void miniMaxCards() { 
 		System.out.println("START MINIMAX CARDS");
 		
@@ -559,11 +591,7 @@ public class Minimax implements Runnable{
 		}catch (NullPointerException e) {
 			
 		} 
-	}
-	
+	}   
 }
-	 
-	
-	
 
-//}
+

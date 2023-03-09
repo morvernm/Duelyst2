@@ -3,7 +3,7 @@ package game.logic;
 import structures.basic.Tile;
 import structures.basic.Unit;
 
-/*
+/**
  *  This class is used to match units that can attack with a potential target, represented by a tile on which
  *  an enemy unit is positioned. 
  *  Value is also used to store the evaluated score assigned to the specific action. 

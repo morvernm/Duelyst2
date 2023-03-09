@@ -11,11 +11,11 @@ import structures.basic.Unit;
 import structures.basic.UnitAnimationType;
 
 
-/*
+/**
  * This class will be used to display and update information on the screen
  * including updating tile highlights, stats and animations;
  *
- *  to highligh tiles on the screen
+ *  to highlight tiles on the screen
  *  Can be used for both movement and attacks
  *  mode 1 = movement and summon 
  *  mode 2 = attack 
@@ -32,8 +32,11 @@ public class Gui {
 	
 	
 	
-	/*
-	 * Highlighting moves and targers
+	/**
+	 * Highlighting moves and targets
+	 * @param out
+	 * @param tiles
+	 * @param mode
 	 */
 	public static void highlightTiles(ActorRef out, Set<Tile> tiles, int mode) {
 		
@@ -46,9 +49,10 @@ public class Gui {
 		}
 	}
 	
-	/*
+	/**
 	 * Removes the highlight of tiles aka. sets it to default value of 0
-	 * @param ActorRef, Tile[][]
+	 * @param out
+	 * @param board
 	 */
 	public static void removeHighlightTiles(ActorRef out, Tile[][] board) {
 
@@ -61,18 +65,20 @@ public class Gui {
 	}
 
 	
-	/*
+	/**
 	 * Performs the attack animation on the screen
-	 * @param Unit
+	 * @param unit
 	 */
 	public static void performAttack(Unit unit) {
 		BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.attack);
 		try {Thread.sleep(1500);} catch (InterruptedException e) {e.printStackTrace();}
 	}
 
-	/*
+	/**
 	 * Updates the stats of units on the screen
-	 * @param Unit, int, int
+	 * @param unit
+	 * @param health
+	 * @param attack
 	 */
 	public static void setUnitStats(Unit unit, int health, int attack) {
 		// setUnitHealth
@@ -90,17 +96,18 @@ public class Gui {
 		
 	}
 	
-	/*
+	/**
 	 * Outputs a message on the screen
-	 * @param String
+	 * @param message
 	 */
 	public static void printPlayerMessage(String message) {
 		BasicCommands.addPlayer1Notification(out, message, 5);
 	}
 	
-	/*
+	/**
 	 * Updates the stats of units on the screen
-	 * @param Unit, int
+	 * @param unit
+	 * @param health
 	 */
 	public static void setUnitStats(Unit unit, int health) {
 		// setUnitHealth
@@ -109,9 +116,10 @@ public class Gui {
 	}
 
 		
-	/*
+	/**
 	 * Displays card in the hand of the player on the screen
-	 * @param Card, int
+	 * @param card
+	 * @param position
 	 */
 	public static void displayCard(Card card, int position) {
 		BasicCommands.drawCard(out, card, position, 0);
