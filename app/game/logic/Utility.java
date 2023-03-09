@@ -45,11 +45,18 @@ public class Utility {
      *
      */
     private static ActorRef out;
+    
+    
 
     public Utility(ActorRef out) {
         Utility.out = out;
     }
-
+    
+    /*
+     * Determines and returns a set of tiles where a unit can attack 
+     * @param tile, set of tiles, player and tile[][]
+     * 
+     */
 	public static Set<Tile> determineTargets(Tile tile, Set<Tile> positions, Player enemy, Tile[][] board) {
 
         // Using Set so that the Tile Objects do not repeat for the last condition
@@ -91,6 +98,12 @@ public class Utility {
         return validAttacks;
     }
     
+	
+	/*
+	 * Checks if provoke unit is present on the board and around the tile on which 
+	 * an alleged enemy unit (target) is located
+	 * @param tile 
+	 */
     public static Set<Position> checkProvoker(Tile tile) {
     	
     	Set<Position> provoker = new HashSet<>();
@@ -110,7 +123,11 @@ public class Utility {
 		return provoker;
     }
     
-
+    /*
+     * Determines the neighbouring tiles on which enemy units that can be attacked are positioned.
+     * Returns only the tiles with units that are 1 tile away from the provided tile
+     * @param tile, player, tile[][]
+     */
     public static Set<Tile> getValidTargets(Tile tile, Player enemy, Tile[][] board) {
 
         Set<Tile> validAttacks = new HashSet<>();
@@ -122,8 +139,6 @@ public class Utility {
         	}
         	return validAttacks;
         }
-        	 
-
         for (Unit unit : enemy.getUnits()) {
             int unitx = unit.getPosition().getTilex();
             int unity = unit.getPosition().getTiley();
@@ -132,18 +147,14 @@ public class Utility {
                 validAttacks.add(board[unitx][unity]);
             }
         } 
-        
-//        for (Tile t : validAttacks) {
-//        	System.out.println("GVT -> x = " + tile.getTilex() + " x = " + tile.getTiley());
-//        }      
-        
         return validAttacks;
     }
 
     
    
     /*
-     * Attacking logic
+     * Performs the adjacent attack
+     * @param Unit, Unit
      */
 	public static void adjacentAttack(Unit attacker, Unit defender) {
 	
@@ -185,6 +196,14 @@ public class Utility {
 			}
 		}
 	}
+	
+	/*
+	 * Performes the distances attack by determining the best position to move to to perform the attack,
+	 * moves to that position and perfoms adjacenet attack.
+	 * Alternatively will only perform ranged attack if that ability is available
+	 * 
+	 *  @param Unit, Unit, Player
+	 */
 	
 	public static void distancedAttack(Unit attacker, Unit defender, Player enemy) {
         System.out.println("Distanced Attack Activated");
@@ -237,12 +256,9 @@ public class Utility {
                 }
 
             }
-
             // move unit to the closest tile
             if (closestTile != null) {
-
                 System.out.println("The closest tile is: x = " + closestTile.getTilex() + " and y = " + closestTile.getTiley() + " score " + minScore);
-
                 moveUnit(attacker, closestTile);
                 if (minScore < 2) {
                     try {
@@ -280,11 +296,9 @@ public class Utility {
             }
 
         }
-
         for (Tile tile : validTiles) {
             System.out.println("tile: x = " + tile.getTilex() + " and y = " + tile.getTiley());
         }
-
         return validTiles;
     }
 
@@ -328,18 +342,15 @@ public class Utility {
             }
         }
 
-
         unit.setPositionByTile(tile);
         unit.setMaxHealth(unit.getHealth());
         tile.setOccupier(unit);
 		GameState.modifiyTotalUnits(1);
 		
-
         // Plays annimations
 		EffectAnimation effect = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_summon);
         BasicCommands.playEffectAnimation(out, effect, tile);
 		BasicCommands.drawUnit(out, unit, tile);
-
 
 		BigCard bigCard = card.getBigCard();
 		int attack = bigCard.getAttack();
@@ -349,8 +360,12 @@ public class Utility {
 		//Sets unit stats
         unit.setAttack(attack);
         unit.setHealth(health);
+        
         unit.setAttacked();
         unit.setMoved();
+        
+        if (unit_id == 36 || unit_id == 26 || unit_id == 17 || unit_id == 7)
+        	((AttackTwice) unit).setAttackCount();
 
 		GameState.modifiyTotalUnits(1);
 
@@ -375,9 +390,7 @@ public class Utility {
     }
 
     public static Set<Tile> cardPlacements(Card card, Player player, Player enemy, Tile[][] board){
-//        if (card.getManacost() > player.getMana()){
-//             return null;
-//        }
+    	
     	System.out.println("cardPlacement Utility");
         Set<Tile> validTiles = new HashSet<Tile>();
 		int i , j;
@@ -526,6 +539,11 @@ public class Utility {
 
     }
     
+    /*
+     * Check if the unit is neighbouring an enemy provoke unit 
+     * and disables the movement of the unit if so
+     *  @param Unit
+     */
     public static boolean checkProvoked(Unit unit) {
 		for (Unit other : GameState.getOtherPlayer().getUnits()) {
 		        	

@@ -28,5 +28,9 @@ public abstract class AttackTwice extends Unit {
 		this.attacked = false;
 		this.attackCount = 0;
 	}
+	
+	public void setAttackCount() {
+		this.attackCount = 2;
+	}
 
 }

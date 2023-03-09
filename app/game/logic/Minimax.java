@@ -37,7 +37,10 @@ public class Minimax implements Runnable{
 		this.gameState = gameState;
 		this.message = message;
 	}
-
+	/*
+	 * Once the thread is started it runs the Minimax() method
+	 * @param
+	 */
 	@Override
 	public void run() {
 		minimax(this.gameState);
@@ -80,7 +83,10 @@ public class Minimax implements Runnable{
 
 		return actions;
 	}
-
+	/*
+	 * Determines all available attack actions on the board and prepares them for evaluation
+	 * @param GameState
+	 */
 	private static ArrayList<AttackAction> actions(GameState gameState){
 		
 		System.out.println("ACTIONS IN MINIMAX");
@@ -93,29 +99,19 @@ public class Minimax implements Runnable{
 			}
 			// get all valid positions where the unit can go
 			Set<Tile> positions = Utility.determineValidMoves(gameState.getBoard(), unit);
-//			Gui.highlightTiles(out, positions, 1);
-//			try {Thread.sleep(3000);} catch (InterruptedException e) {e.printStackTrace();}
+
 			
 			// get all valid attacks where the unit may attack
 			targets.addAll(Utility.determineTargets(gameState.getBoard()[unit.getPosition().getTilex()][unit.getPosition().getTiley()], positions, gameState.getHumanPlayer(), gameState.getBoard()));
-//			Gui.highlightTiles(out, targets, 2);
-//			try {Thread.sleep(3000);} catch (InterruptedException e) {e.printStackTrace();}	
-
 			
 			// Add tiles and units to actions by creating AttackAction objects
 			for (Tile tile : targets) {
 				actions.add(new AttackAction(unit,tile));
-			}	
-			
-			
-//			Gui.removeHighlightTiles(out, gameState.getBoard());
-			
+			}			
 		}
-		
-		
+
 		for (AttackAction action : actions)
 			System.out.println("Mac actions x = " + action.tile.getTilex() + " y = " + action.tile.getTiley() + " by " + action.unit);
-		
 
 		return actions;
 	}
@@ -141,11 +137,13 @@ public class Minimax implements Runnable{
 	
 
 	/*
-	 * collects and evaluates and available moves AI player can make on the board:
+	 * The hearth of the AI logic
+	 * collects and evaluates and available moves AI player can make on the board in that particular instance of the game:
 	 * 1. best card to play
 	 * 2. best attack 
 	 * 3. best move
-	 * 
+	 * Will repeat until no more available moves
+	 * @param GameState
 	 * 
 	 */
 	private static void minimax(GameState gameState) {
@@ -155,13 +153,12 @@ public class Minimax implements Runnable{
 
 		
 		// try the spells first
-		miniMaxCards();
 		
 		minimaxSpells(gameState);
+		miniMaxCards();
 		
 		try {
-
-			for (int moves = 0; moves < 3; moves++) {
+			for (int moves = 0; moves < 10; moves++) {
 				ArrayList<AttackAction> acts = actions(gameState);
 				if (acts == null) {
 					System.out.println("No more actions left on the board");
@@ -189,13 +186,9 @@ public class Minimax implements Runnable{
 				}
 		
 			}
-
-
 		} catch (NullPointerException exception) {
 			
 		} finally {
-			//try {Thread.sleep(3000);} catch (InterruptedException e) {e.printStackTrace();}	
-
 			EndTurnClicked endTurn = new EndTurnClicked();
 			endTurn.processEvent(out, gameState, message);
 		}
@@ -241,7 +234,11 @@ public class Minimax implements Runnable{
 			}
 		}
 	}
-
+	/*
+	 * Goes over all available attack actions and assigns a score value to each 
+	 * The value will be used to judge how good the attack is
+	 * @param ArrayList<AttackActions>, GameState
+	 */
 
 	private static Set<AttackAction> evaluateAttacks(ArrayList<AttackAction> a, GameState gameState) {
 		
@@ -310,10 +307,13 @@ public class Minimax implements Runnable{
 		for(SpellCard forRemoval: toRemove) {
 			actions.remove(forRemoval);
 		}
-
 		return bestSpell;
 	}
-
+	
+	/*
+	 * Picks the best attack out of all attack actions determined to be available on the board
+	 * @param Set<AttackActions>
+	 */
 	private static AttackAction bestAttack(Set<AttackAction> actions) {
 		System.out.println("PICKING BEST ATTACK");
 		Integer maxValue = -1;
@@ -329,30 +329,34 @@ public class Minimax implements Runnable{
 		return bestAttack;
 	}
 
-/*
- * This method evaluates each card in the AI player's hand
- * Values:
- * 4 - provoke card
- * 3 - high attack
- * 2 - other special ability card
- * 1 - reg card
- * 
- */
-	
+	/*
+	 * This method evaluates each card in the AI player's hand
+	 * Values:
+	 * 4 - provoke card
+	 * 3 - high attack
+	 * 2 - other special ability card
+	 * 1 - reg card
+	 * 
+	 */
 	public static Set<CardAction> evaluateCards(Set<Card> cards) {
 		System.out.println("evaluating cards");
 		Set <CardAction> playableCards = new HashSet<>();
+		
 		if(cards.isEmpty()) { //if player has no cards in hand
 			System.out.println("No cards to play!");
 		}
+		
 		int highestAttack = -1;
+		
 		Card bestAttack = null;
 			for (Card card: cards) {
 				if(card == null || card.getCardname().equals("Staff of Y'Kir'") || card.getCardname().equals("Entropic Decay")) {
 					continue;
 				}
-				System.out.println(card.getCardname());
+				System.out.println("Player's mana + " + GameState.getCurrentPlayer().getMana());
+				System.out.println(card.getCardname() + " plus mana + " + card.getManacost());
 				CardAction AICard = new CardAction(card);
+				
 				if(GameState.getAIPlayer().getMana() >= card.getManacost()) {
 					playableCards.add(AICard);
 					if(card.getBigCard().getAttack() > highestAttack) {
@@ -422,18 +426,23 @@ public class Minimax implements Runnable{
 	public static void miniMaxCards() { 
 		System.out.println("START MINIMAX CARDS");
 		CardAction bestCard;
-			Set<CardAction> cardActions = evaluateCards(getPlayerHand());
-			System.out.println("Evaluate Cards size" + cardActions.size());
-			bestCard = bestCard(cardActions);
+		Set<CardAction> cardActions = evaluateCards(getPlayerHand());
+		System.out.println("Evaluate Cards size" + cardActions.size());
+		bestCard = bestCard(cardActions);
+		try {
 			Tile destinationTile = evaluateTiles(bestCard);
-			
 			System.out.println("tile x : " + destinationTile.getTilex());
 			System.out.println("tile y : " + destinationTile.getTiley());
 			
 			System.out.println("avatar position x" + GameState.getHumanPlayer().getAvatar().getPosition().getTilex());
 			Utility.placeUnit(out, bestCard.getCard(), GameState.getAiPlayer(), destinationTile);
 			try {Thread.sleep(3000);} catch (InterruptedException e) {e.printStackTrace();}		
-			}
+			
+		}catch (NullPointerException e) {
+			
+		} 
+	}
+	
 }
 	 
 	
