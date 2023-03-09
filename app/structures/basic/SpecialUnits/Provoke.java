@@ -8,11 +8,22 @@ import structures.GameState;
 import structures.basic.Tile;
 import structures.basic.Unit;
 
+
+/**
+ * abstract class for the units with the special ability provoke
+ * 
+ */
+
 public abstract class Provoke extends Unit{
 	
 	private String name = null;
 	private Set<Tile> validAttacks;
 	
+	
+	/**
+	 * Returns the tile on which the provoke unit is positioned
+	 *	@param tile 
+	 */
 	public Set<Tile> attractAttack(Tile tile){
 		
 		/*
@@ -27,11 +38,14 @@ public abstract class Provoke extends Unit{
 
 		return validAttacks;
 	}
-	
+	/**
+	 * Disables the movement of a provoked unit
+	 * @param other
+	 */
 	public void disableUnit(Unit other) {
 		
 		System.out.println("Unit disabled");
-		//other.setMoved();
+		other.setMoved();
 	
 	}
 }

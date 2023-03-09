@@ -8,7 +8,6 @@ import java.util.Set;
 
 import akka.actor.ActorRef;
 
-//import akka.parboiled2.Position;
 import commands.BasicCommands;
 import events.CardClicked;
 import structures.GameState;
@@ -40,7 +39,7 @@ import utils.StaticConfFiles;
 
 public class Utility {
 	
-    /*
+    /**
      * This class is the utility class where methods with some main logic of the game will be provided
      *
      */
@@ -52,7 +51,7 @@ public class Utility {
         Utility.out = out;
     }
     
-    /*
+    /**
      * Determines and returns a set of tiles where a unit can attack 
      * @param tile, set of tiles, player and tile[][]
      * 
@@ -99,10 +98,11 @@ public class Utility {
     }
     
 	
-	/*
+	/**
 	 * Checks if provoke unit is present on the board and around the tile on which 
 	 * an alleged enemy unit (target) is located
-	 * @param tile 
+	 * @param tile
+	 * @return
 	 */
     public static Set<Position> checkProvoker(Tile tile) {
     	
@@ -123,16 +123,20 @@ public class Utility {
 		return provoker;
     }
     
-    /*
+    /**
      * Determines the neighbouring tiles on which enemy units that can be attacked are positioned.
      * Returns only the tiles with units that are 1 tile away from the provided tile
-     * @param tile, player, tile[][]
+     * @param tile
+     * @param enemy
+     * @param board
+     * @return
      */
     public static Set<Tile> getValidTargets(Tile tile, Player enemy, Tile[][] board) {
 
         Set<Tile> validAttacks = new HashSet<>();
         
         Set<Position> provoker = checkProvoker(tile);
+        
         if (!provoker.isEmpty()) {
         	for (Position pos : provoker) {
         		validAttacks.add(board[pos.getTilex()][pos.getTiley()]);
@@ -152,7 +156,7 @@ public class Utility {
 
     
    
-    /*
+    /**
      * Performs the adjacent attack
      * @param Unit, Unit
      */
@@ -197,7 +201,7 @@ public class Utility {
 		}
 	}
 	
-	/*
+	/**
 	 * Performes the distances attack by determining the best position to move to to perform the attack,
 	 * moves to that position and perfoms adjacenet attack.
 	 * Alternatively will only perform ranged attack if that ability is available
@@ -278,7 +282,7 @@ public class Utility {
         }
     }
 	
-	 /*
+	 /**
      * Gets the valid attack positions for distanced attacks (move first and then attack)
      * Determines from which positions a unit can be attacked
      * 
@@ -313,6 +317,10 @@ public class Utility {
         
         if (card.getCardname().equals("Silverguard Knight")) {
         	unit = (SilverguardKnight) BasicObjectBuilders.loadUnit(unit_conf, unit_id, SilverguardKnight.class);
+        } else if (card.getCardname().equals("Ironcliff Guardian")) {
+        	unit = (IroncliffGuardian) BasicObjectBuilders.loadUnit(unit_conf, unit_id, IroncliffGuardian.class);
+        } else if (card.getCardname().equals("Rock Pulveriser")) {
+        	unit = (RockPulveriser) BasicObjectBuilders.loadUnit(unit_conf, unit_id, RockPulveriser.class);
         } else if (card.getCardname().equals("Fire Spitter")) {
             unit = (FireSpitter) BasicObjectBuilders.loadUnit(unit_conf, unit_id, FireSpitter.class);
         } else if (card.getCardname().equals("Pyromancer")) {
@@ -530,8 +538,13 @@ public class Utility {
 
 	    if(!unit.hasMoved() && !unit.hasAttacked()) {
 	        GameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()].setOccupier(null); //clear unit from tile
-	
-	        BasicCommands.moveUnitToTile(out, unit, tile); //move unit to chosen tiles
+	        
+	        // Check if Y-movement will be necessary
+	        if (checkDiagonalMovement(unit, tile))
+	        	BasicCommands.moveUnitToTile(out, unit, tile, true);
+	        else 
+	        	BasicCommands.moveUnitToTile(out, unit, tile); //move unit to chosen tiles
+	        
 	        unit.setPositionByTile(tile); //change position of unit to new tiles
 	
 	        tile.setOccupier(unit); //set unit as occupier of tiles
@@ -545,7 +558,60 @@ public class Utility {
 
     }
     
-    /*
+    /**
+     * Check if there is an enemy unit directly infront of directly behind the unit
+     * If so will return true so that Y-movement is performed
+     * 
+     * @param unit
+     * @return boolean
+     */
+    
+    public static Boolean checkYmovement(Unit unit) {
+    	
+    	int unitx = unit.getPosition().getTilex();
+    	int unity = unit.getPosition().getTiley();
+    	
+    	if (GameState.getBoard()[unitx+1][unity].getOccupier() != null && GameState.getOtherPlayer().getUnits().contains(GameState.getBoard()[unitx+1][unity].getOccupier())) {
+    		return true;
+    	}
+    	if (GameState.getBoard()[unitx-1][unity].getOccupier() != null && GameState.getOtherPlayer().getUnits().contains(GameState.getBoard()[unitx-1][unity].getOccupier())) {
+    		return true;
+    	}
+    	
+    	return false;
+    	
+    }
+    
+    /**
+     * Check if the unit is to move diogonally
+     * and if so will call checkYmovement() to check if y-movement will be necessary
+     * @param unit
+     * @param tile
+     * @return boolean 
+     */
+    
+    public static boolean checkDiagonalMovement(Unit unit, Tile tile) {
+    	
+    	int unitx = unit.getPosition().getTilex();
+    	int unity = unit.getPosition().getTiley();
+    	
+    	int score = 0;
+    	
+    	score += Math.abs(unitx - tile.getTilex());
+    	score += Math.abs(unity - tile.getTiley());
+    	
+    	// if score = 2 then diogonal movement
+    	if (score == 2) {
+    		if(checkYmovement(unit))
+    			return true;
+    		else 
+    			return false;
+    	}
+    	return false;
+    	
+    }
+    
+    /**
      * Check if the unit is neighbouring an enemy provoke unit 
      * and disables the movement of the unit if so
      *  @param Unit
@@ -555,14 +621,13 @@ public class Utility {
 		        	
         	int unitx = unit.getPosition().getTilex();
     		int unity = unit.getPosition().getTiley();
-    	
-    		if (Math.abs(unitx - other.getPosition().getTilex()) < 2 && Math.abs(unity - other.getPosition().getTiley()) < 2) {
-    			if (other instanceof Provoke) {
-    				((Provoke) other).disableUnit(unit);
+    		
+    		if(other.getId() == 3 || other.getId() == 10 || other.getId() == 6 || other.getId() == 16 || other.getId() == 20 || other.getId() == 30) {
+    			if (Math.abs(unitx - other.getPosition().getTilex()) <= 1 && Math.abs(unity - other.getPosition().getTiley()) <= 1) {
     				System.out.println("Unit is provoked!");
     				return true;
-    			}	
-    		}	
+    			}
+    		}
         }
 		return false;
     }
@@ -571,10 +636,14 @@ public class Utility {
     public static Set<Tile> determineValidMoves(Tile[][] board, Unit unit) {
 
         Set<Tile> validTiles = new HashSet<>();
+        
+        if (checkProvoked(unit))
+        	return null;   
+
 
         if (unit.getClass().equals(Windshrike.class) && !unit.hasMoved() && !unit.hasAttacked()) {
             return ((Windshrike) unit).specialAbility(board);
-
+            
 
         } else if (!unit.hasMoved() && !unit.hasAttacked()) {
             int x = unit.getPosition().getTilex();

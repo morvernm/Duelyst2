@@ -22,7 +22,13 @@ import structures.basic.spellcards.EntropicDecay;
 import structures.basic.spellcards.SpellCard;
 import structures.basic.spellcards.Ykir;
 import structures.basic.SpecialUnits.Windshrike;
-
+/**
+ * This class contains all the logic behind the 'brain' of the AI player.
+ * It is based on the minimax algorithm however without the recursion. 
+ * The available actions are evaluated step by step and the best moves are played.
+ * This is repeated until there are no more available actions. 
+ *
+ */
 
 public class Minimax implements Runnable{
 	
@@ -286,12 +292,12 @@ public class Minimax implements Runnable{
 			}
 		}
 	}
+	
 	/*
 	 * Goes over all available attack actions and assigns a score value to each 
 	 * The value will be used to judge how good the attack is
 	 * @param ArrayList<AttackActions>, GameState
 	 */
-
 	private static Set<AttackAction> evaluateAttacks(ArrayList<AttackAction> a, GameState gameState) {
 		
 		System.out.println("EVALUATing attacks...");
@@ -534,19 +540,22 @@ public class Minimax implements Runnable{
 	
 	public static void miniMaxCards() { 
 		System.out.println("START MINIMAX CARDS");
-		CardAction bestCard;
-		Set<CardAction> cardActions = evaluateCards(getPlayerHand());
-		System.out.println("Evaluate Cards size" + cardActions.size());
-		bestCard = bestCard(cardActions);
+		
 		try {
-			Tile destinationTile = evaluateTiles(bestCard);
-			System.out.println("tile x : " + destinationTile.getTilex());
-			System.out.println("tile y : " + destinationTile.getTiley());
+			for (int i = 0; i < 2; i++){
+				CardAction bestCard;
+				Set<CardAction> cardActions = evaluateCards(getPlayerHand());
+				System.out.println("Evaluate Cards size" + cardActions.size());
+				bestCard = bestCard(cardActions);
 			
-			System.out.println("avatar position x" + GameState.getHumanPlayer().getAvatar().getPosition().getTilex());
-			Utility.placeUnit(out, bestCard.getCard(), GameState.getAiPlayer(), destinationTile);
-			try {Thread.sleep(3000);} catch (InterruptedException e) {e.printStackTrace();}		
-			
+				Tile destinationTile = evaluateTiles(bestCard);
+				System.out.println("tile x : " + destinationTile.getTilex());
+				System.out.println("tile y : " + destinationTile.getTiley());
+				
+				System.out.println("avatar position x" + GameState.getHumanPlayer().getAvatar().getPosition().getTilex());
+				Utility.placeUnit(out, bestCard.getCard(), GameState.getAiPlayer(), destinationTile);
+				try {Thread.sleep(3000);} catch (InterruptedException e) {e.printStackTrace();}		
+			}
 		}catch (NullPointerException e) {
 			
 		} 
