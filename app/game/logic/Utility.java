@@ -12,7 +12,7 @@ import akka.actor.ActorRef;
 import commands.BasicCommands;
 import events.CardClicked;
 import structures.GameState;
-
+import structures.basic.SpecialUnits.*;
 import structures.basic.Player;
 
 import structures.basic.SpecialUnits.Provoke;
@@ -317,6 +317,12 @@ public class Utility {
             unit = (FireSpitter) BasicObjectBuilders.loadUnit(unit_conf, unit_id, FireSpitter.class);
         } else if (card.getCardname().equals("Pyromancer")) {
             unit = (Pyromancer) BasicObjectBuilders.loadUnit(unit_conf, unit_id, Pyromancer.class);
+        } else if (card.getCardname().equals("Azure Herald")) {
+            unit = (AzureHerald) BasicObjectBuilders.loadUnit(unit_conf, unit_id, AzureHerald.class);
+            AzureHerald.specialAbility(GameState.getCurrentPlayer().getUnits().get(0));
+        } else if (card.getCardname().equals("Blaze Hound")){
+            unit = (BlazeHound) BasicObjectBuilders.loadUnit(unit_conf, unit_id, BlazeHound.class);
+            BlazeHound.specialAbility();
         } else if (card.getCardname().equals("Serpenti")) {
         	unit = (Serpenti) BasicObjectBuilders.loadUnit(unit_conf, unit_id, Serpenti.class);
         } else if (card.getCardname().equals("Azurite Lion"))  {
@@ -330,16 +336,16 @@ public class Utility {
             /*
             * Checks if unit is Azure Herald, if so, applies healing effect to player avatar
             */
-            if (unit_id == 5 || unit_id == 15){
-                int hp = 3 + GameState.getCurrentPlayer().getHealth();
-                if (hp >= 20){
-                    hp = 20;
-                    player.getAvatar().setHealth(hp);
-                }
-                else {
-                    player.getAvatar().setHealth(hp);
-                }
-            }
+//            if (unit_id == 5 || unit_id == 15){
+//                int hp = 3 + GameState.getCurrentPlayer().getHealth();
+//                if (hp >= 20){
+//                    hp = 20;
+//                    player.getAvatar().setHealth(hp);
+//                }
+//                else {
+//                    player.getAvatar().setHealth(hp);
+//                }
+//            }
         }
 
         unit.setPositionByTile(tile);
@@ -565,15 +571,11 @@ public class Utility {
     public static Set<Tile> determineValidMoves(Tile[][] board, Unit unit) {
 
         Set<Tile> validTiles = new HashSet<>();
-        /*
-         * Check for provoke units
-         */
-        if (checkProvoked(unit))
-        	return null;   
 
         if (unit.getClass().equals(Windshrike.class) && !unit.hasMoved() && !unit.hasAttacked()) {
             return ((Windshrike) unit).specialAbility(board);
-    
+
+
         } else if (!unit.hasMoved() && !unit.hasAttacked()) {
             int x = unit.getPosition().getTilex();
             int y = unit.getPosition().getTiley();
@@ -585,10 +587,13 @@ public class Utility {
             }
             
             // if the nearby unit is a friendly unit, check the tile behind the friendly unit
-            if (GameState.getCurrentPlayer().getUnits().contains(board[newX][y].getOccupier()) || board[newX][y].getOccupier() == null) {
-                newX = x - 2;
-                if (newX > -1 && newX < board.length && board[newX][y].getOccupier() == null) {
-                    validTiles.add(board[newX][y]);
+            int newerX = newX - 1;
+            if (newerX > -1 && newerX < board.length ) {
+                if (GameState.getCurrentPlayer().getUnits().contains(board[newX][y].getOccupier()) || board[newX][y].getOccupier() == null) {
+                    //newX = x - 2;
+                    if (board[newerX][y].getOccupier() == null) {
+                        validTiles.add(board[newerX][y]);
+                    }
                 }
             }
            
@@ -598,10 +603,13 @@ public class Utility {
                 validTiles.add(board[newX][y]);
             }
             // if one ahead is a friendly unit, check the tile ahead of the friendly unit
-            if (GameState.getCurrentPlayer().getUnits().contains(board[newX][y].getOccupier()) || board[newX][y].getOccupier() == null) {
-                newX = x + 2;
-                if (newX > -1 && newX < board.length && board[newX][y].getOccupier() == null) {
-                    validTiles.add(board[newX][y]);
+            newerX = newX + 1;
+            if (newerX > -1 && newerX < board.length) {
+                if (GameState.getCurrentPlayer().getUnits().contains(board[newX][y].getOccupier()) || board[newX][y].getOccupier() == null) {
+                    // newX = x + 2;
+                    if (board[newerX][y].getOccupier() == null) {
+                        validTiles.add(board[newerX][y]);
+                    }
                 }
             }
 
@@ -612,10 +620,13 @@ public class Utility {
                 validTiles.add(board[x][newY]);
             }
             // if one up a friendly unit, check two up
-            if (GameState.getCurrentPlayer().getUnits().contains(board[x][newY].getOccupier()) || board[x][newY].getOccupier() == null) {
-                newY = y - 2;
-                if (newY > -1 && newY < board[0].length && board[x][newY].getOccupier() == null) {
-                    validTiles.add(board[x][newY]);
+            int newerY = newY - 1;
+            if (newerY > -1 && newerY < board[0].length) {
+                if (GameState.getCurrentPlayer().getUnits().contains(board[x][newY].getOccupier()) || board[x][newY].getOccupier() == null) {
+                    //newY = y - 2;
+                    if (board[x][newerY].getOccupier() == null) {
+                        validTiles.add(board[x][newerY]);
+                    }
                 }
             }
 
@@ -626,10 +637,13 @@ public class Utility {
                 validTiles.add(board[x][newY]);
             }
             // if one up a friendly unit, check two up
-            if (GameState.getCurrentPlayer().getUnits().contains(board[x][newY].getOccupier()) || board[x][newY].getOccupier() == null) {
-                newY = y + 2;
-                if (newY > -1 && newY < board[0].length && board[x][newY].getOccupier() == null) {
-                    validTiles.add(board[x][newY]);
+            newerY = newY + 1;
+            if (newerY > -1 && newerY < board[0].length) {
+                if (GameState.getCurrentPlayer().getUnits().contains(board[x][newY].getOccupier()) || board[x][newY].getOccupier() == null) {
+                    //newY = y + 2;
+                    if (board[x][newerY].getOccupier() == null) {
+                        validTiles.add(board[x][newerY]);
+                    }
                 }
             }
 
@@ -672,6 +686,7 @@ public class Utility {
         }
         return validTiles;
     }
+
 
     public static void counterAttack(Unit attacker, Unit countAttacker) {
         int x = countAttacker.getPosition().getTilex();

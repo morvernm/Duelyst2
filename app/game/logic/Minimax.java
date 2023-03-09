@@ -14,8 +14,8 @@ import events.CardClicked;
 import events.EndTurnClicked;
 import structures.GameState;
 import structures.basic.Card;
-
 import structures.basic.SpecialUnits.Provoke;
+import structures.basic.Player;
 import structures.basic.Tile;
 import structures.basic.Unit;
 import structures.basic.spellcards.EntropicDecay;
@@ -91,7 +91,7 @@ public class Minimax implements Runnable{
 		
 		System.out.println("ACTIONS IN MINIMAX");
 		ArrayList<AttackAction> actions = new ArrayList<>();
-		
+
 		for(Unit unit : gameState.getAIPlayer().getUnits()) {
 			Set<Tile> targets = new HashSet<>();
 			if (unit.hasAttacked()){
@@ -115,6 +115,7 @@ public class Minimax implements Runnable{
 
 		return actions;
 	}
+
 	/*
 	 * this method gets cards from AI player's hand
 	 * 
@@ -136,6 +137,39 @@ public class Minimax implements Runnable{
 		}
 	
 
+	public static ArrayList<MoveAction> moves(GameState gameState) {
+		System.out.println("MOVES IN MINIMAX");
+		ArrayList<MoveAction> moves = new ArrayList<>();
+
+		for (Unit unit : gameState.getAIPlayer().getUnits()) {
+			Set<Tile> positions = new HashSet<>();
+			
+			//positions = Utility.determineValidMoves(gameState.getBoard(), unit); // Not sure this is needed as seems to be repeating
+					
+			if (unit.hasAttacked() && unit.hasMoved()) {
+				continue;
+			} else if (!unit.hasMoved() && !unit.hasAttacked()) {
+				positions = Utility.determineValidMoves(gameState.getBoard(), unit);
+
+			}
+			
+//			Gui.highlightTiles(out, positions, 1);
+//			try {Thread.sleep(1500);} catch (InterruptedException e) {e.printStackTrace();}
+
+			for (Tile tile : positions) {
+				moves.add(new MoveAction(unit, tile));
+			}
+//			Gui.removeHighlightTiles(out, gameState.getBoard());
+		}
+		
+//		for (MoveAction move : moves)
+//			System.out.println("Mac actions x = " + move.moveToTile.getTilex() + " y = " + move.moveToTile.getTiley() + " by " + move.attacker);
+		
+		return moves;
+
+	}
+
+
 	/*
 	 * The hearth of the AI logic
 	 * collects and evaluates and available moves AI player can make on the board in that particular instance of the game:
@@ -150,7 +184,6 @@ public class Minimax implements Runnable{
 		/*
 		 * start the whole thing and return an action 
 		 */
-
 		
 		// try the spells first
 		
@@ -158,7 +191,7 @@ public class Minimax implements Runnable{
 		miniMaxCards();
 		
 		try {
-			for (int moves = 0; moves < 10; moves++) {
+			for (;;) {
 				ArrayList<AttackAction> acts = actions(gameState);
 				if (acts == null) {
 					System.out.println("No more actions left on the board");
@@ -189,6 +222,25 @@ public class Minimax implements Runnable{
 		} catch (NullPointerException exception) {
 			
 		} finally {
+			try {
+				while(true) {
+					System.out.println("Let's move");
+					
+					ArrayList<MoveAction> possibleMoves = moves(gameState);
+				
+					try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+					
+					if (possibleMoves == null) {
+						System.out.println("No more moves left on the board");
+					}
+			
+					Set<MoveAction> movess = new HashSet<>(evaluateMoves(possibleMoves, gameState));
+					MoveAction bestMove = bestMove(movess);
+					Utility.moveUnit(bestMove.attacker, bestMove.moveToTile);
+				}
+			} catch (NullPointerException e) {
+			}
+		
 			EndTurnClicked endTurn = new EndTurnClicked();
 			endTurn.processEvent(out, gameState, message);
 		}
@@ -328,6 +380,63 @@ public class Minimax implements Runnable{
 		System.out.println("Action" + bestAttack.tile + " and " + bestAttack.unit + " value = " + bestAttack.value);		
 		return bestAttack;
 	}
+
+	private static Set<MoveAction> evaluateMoves(ArrayList<MoveAction> a, GameState gameState) {
+		System.out.println("Evaluating moves...");
+		if (a == null) {
+			return null;
+		}
+
+		Set<MoveAction> moves = new HashSet<>(a); // why i have done this? its poitnless and i might be stupid ..
+		
+		for (MoveAction move : moves) {
+			if (!move.attacker.hasMoved() && !move.attacker.hasAttacked()) { // you have already checked i think
+				//Set<Tile> tiles = Utility.determineValidMoves(gameState.board, move.attacker); // why again 
+				ArrayList<Unit> enemyUnits = gameState.getHumanPlayer().getUnits();
+
+				int minScore = Integer.MAX_VALUE;
+				
+				//for (Tile tile : tiles) {
+				for (Unit enemy : enemyUnits) {
+					int score = 0;
+					score += score + Math.abs(move.moveToTile.getTilex() - enemy.getPosition().getTilex());
+					score += score + Math.abs(move.moveToTile.getTiley() - enemy.getPosition().getTilex());
+					score += enemy.getHealth(); // total score considers the health of the unit too
+					if (!enemy.equals(gameState.getHumanPlayer().getUnits().get(0))) {
+						score = score + 5; // prioritise moving towards avatar
+					}
+					if (score < minScore && move.moveToTile.getOccupier() == null) {
+						move.value = score;
+					}
+				}
+				//}
+				System.out.println("Move" + move.moveToTile.getTilex() + " and y" + move.moveToTile.getTiley() + " and " + move.attacker + " value = " + move.value);
+			}
+		}
+		return moves;
+	}
+
+
+	private static MoveAction bestMove(Set<MoveAction> moves) {
+		System.out.println("PICKING BEST MOVE");
+		Integer maxValue = Integer.MAX_VALUE;
+		MoveAction bestMove = null;
+
+		for (MoveAction move : moves) {
+			if (move.value < maxValue) {
+				maxValue = move.value;
+				bestMove = move;
+			}
+		}
+		if (bestMove != null) {
+			System.out.println("Move" + bestMove.attacker + " value = " + bestMove.value);
+		} else {
+			System.out.println("No available moves");
+		}
+		return bestMove;
+
+	}
+	
 
 	/*
 	 * This method evaluates each card in the AI player's hand
