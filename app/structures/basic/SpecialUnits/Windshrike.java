@@ -5,11 +5,17 @@ import structures.basic.*;
 import java.util.HashSet;
 import java.util.Set;
 
-
+/**
+ * Windshrike class implementing Special Ability flying (move anywhere on the board)
+ */
 public class Windshrike extends Unit {
 
     private final String name = "Windshrike";
 
+    /**
+     * @param board
+     * @return Set<Tile>
+     */
     public static Set<Tile> specialAbility(Tile[][] board) {
         System.out.println("SPECIAL ABILITY IS CALLED");
 
