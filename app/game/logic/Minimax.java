@@ -48,6 +48,12 @@ public class Minimax implements Runnable {
         minimax(this.gameState);
     }
 
+    /**
+     * Get all the possible actions that can be done with the spells the player currently has.
+     * Returns a list of spell actions associated with the cards required to play them.
+     * @param gameState
+     * @return HashMap<SpellCard, ArrayList<SpellAction>>
+     */
     private static HashMap<SpellCard, ArrayList<SpellAction>> spellActions(GameState gameState) {
         HashMap<SpellCard, ArrayList<SpellAction>> actions = new HashMap<>();
         Set<SpellCard> spellcards = new HashSet<>(); // used to store what spellcards the player has in their hand
@@ -183,8 +189,6 @@ public class Minimax implements Runnable {
      * 3. best move
      * Will repeat until no more available moves
      * @param gameState
-     * @return
-     *
      */
     private static void minimax(GameState gameState) {
         /*
@@ -270,9 +274,10 @@ public class Minimax implements Runnable {
      *  2 - Attack with my avatar
      */
 
-    // Variant of minimax just for spells;
-    // perhaps could later be integrated to a more overarching logic that handles unit cards,
-    // attacks, spell cards etc.
+    /**
+     * Variant of minimax algorithm specific to spells. Perform spells based on the best spell actions available.
+     * @param gameState
+     */
     public static void minimaxSpells(GameState gameState) {
 
         while (true) {
@@ -333,6 +338,12 @@ public class Minimax implements Runnable {
         return actions;
     }
 
+    /**
+     * Rate all the available spell actions on scale of 1 (worst) - 10 (best)
+     *
+     * @param gameState
+     * @param actions - list of spell actions
+     */
     private static void evaluateSpells(HashMap<SpellCard, ArrayList<SpellAction>> actions, GameState gameState) {
 
         if (actions == null) return;
@@ -353,7 +364,13 @@ public class Minimax implements Runnable {
         }
     }
 
-    // Method to find best spell. Once done, remove spell card so it cannot be played again.
+    /**
+     * From available spell actions, pick best one based on assigned value.
+     *
+     * @param gameState
+     * @param actions - list of spell actions which have previously been given a 'usefulness' value
+     * @return SpellAction - best spell
+     */
     private static SpellAction bestSpell(HashMap<SpellCard, ArrayList<SpellAction>> actions, GameState gameState) {
         int maxValue = -1;
         SpellAction bestSpell = null;

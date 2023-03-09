@@ -10,6 +10,13 @@ import java.util.NoSuchElementException;
 import akka.actor.ActorRef;
 import commands.BasicCommands;
 
+/**
+ * Class used to represent AI player.
+ * Methods mostly come from player; overrides are made to prevent changes to GUI
+ * (E.g, don't remove card from human player's deck when AI draws a card).
+ *
+ */
+
 public class AIPlayer extends Player{
 
     public AIPlayer() {
@@ -32,7 +39,7 @@ public class AIPlayer extends Player{
         this.health = health;
         Gui.displayAIHP(this);
     }
-    @Override
+    @Override // see method in Player
     public void drawCard() {
         if (deck.isEmpty()) throw new NoSuchElementException("Deck is empty");
         if (cardsInHand == 6) { // if no space in hand, card is lost
@@ -53,7 +60,7 @@ public class AIPlayer extends Player{
     }
     
     
-
+    @Override // see method in Player
     public void removeFromHand(int position) { // remove a card from the hand at a given position
         hand[position-1] = null; // Set position to null to remove card. Use range 1 - 6 to reflect front-end display logic.
         cardsInHand--;
