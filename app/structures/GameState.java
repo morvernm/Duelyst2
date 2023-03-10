@@ -62,25 +62,23 @@ public class GameState {
 		return previousAction.pop();
 	}	
 	
+	/**
+	 * Saves the selection (any action) done by the player on to a stack 
+	 * to be used in the execution of the action when further selection by the 
+	 * player is made.
+	 * @param action
+	 * @return 
+	 */
 	public static void setPreviousAction(Playable action) {
 		previousAction.push(action);
 		//System.out.println(action.type);
 		System.out.println("pushed to stack" + action);
-//		if (action instanceof Unit){
-//			status = PreviousActionContainsUnit;
-//			return;
-//		}
-//		if (action instanceof SpellCard){
-//			status = PreviousActionContainsSpellCard;
-//			return;
-//		}
-//		if (action instanceof Card){
-//			status = PreviousActionContainsUnitCard;
-//			return;
-//		}
-//		return;
 	}
-
+	/**
+	 * Clears any actions saved on the stack
+	 * @param
+	 * @return
+	 */
 	public static void emptyPreviousAction(){
 		previousAction.clear();
 		status = PreviousActionEmpty;
@@ -136,8 +134,14 @@ public class GameState {
 	public void incrementTurn(){
 		turnNumber++;
 	}
-
-	// Hand control over between players
+	
+	/**
+	 * Switches the gamestate between players
+	 * and 
+	 * increments the turn count
+	 * @param
+	 * @return
+	 */
 	public void handOverControl() {
 		System.out.println(getCurrentPlayer() == getHumanPlayer());
 		if(getCurrentPlayer() == getHumanPlayer()){

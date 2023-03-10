@@ -30,8 +30,6 @@ public class Gui {
 		Gui.out = out;
 	}
 	
-	
-	
 	/**
 	 * Highlighting moves and targets
 	 * @param out
@@ -43,9 +41,10 @@ public class Gui {
 		if (tiles == null) {
 			return;
 		}
-		for (Tile tile : tiles) {			
+		for (Tile tile : tiles) {
+			//try {Thread.sleep(2);} catch (InterruptedException e) {e.printStackTrace();}
 			BasicCommands.drawTile(out, tile, mode);
-			try {Thread.sleep(3);} catch (InterruptedException e) {e.printStackTrace();}
+			try {Thread.sleep(2);} catch (InterruptedException e) {e.printStackTrace();}
 		}
 	}
 	

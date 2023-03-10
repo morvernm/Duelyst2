@@ -71,7 +71,7 @@ public class Utility {
                 return RangedAttack.specialAbility(board);
             }
         }
-
+        // this will be used when the unit is disabled as is right next to a provoke unit
         if (positions == null && !checkProvoker(tile).isEmpty()) {
             Set<Position> p = checkProvoker(tile);
             for (Position pos : p)
@@ -86,15 +86,17 @@ public class Utility {
 
             // Has moved but has not attacked - consider only the current position
         } else if (tile.getOccupier().hasMoved() && !tile.getOccupier().hasAttacked()) {
-            validAttacks = getValidTargets(tile, enemy, board);
+            validAttacks.addAll(getValidTargets(tile, enemy, board));
 
             // Has not moved nor attacked - consider all possible movements as well.
         } else if (!tile.getOccupier().hasMoved() && !tile.getOccupier().hasAttacked()) {
             System.out.println("has NOT moved NOR attacked");
-
+            	validAttacks.addAll(getValidTargets(tile, enemy, board));
             for (Tile position : positions) {
                 validAttacks.addAll(getValidTargets(position, enemy, board));
+                
             }
+            
         }
         return validAttacks;
     }
@@ -116,7 +118,7 @@ public class Utility {
             int tiley = tile.getTiley();
 
             if (Math.abs(tilex - unit.getPosition().getTilex()) < 2 && Math.abs(tiley - unit.getPosition().getTiley()) < 2) {
-                if (unit instanceof Provoke) {
+            	if(unit.getId() == 3 || unit.getId() == 10 || unit.getId() == 6 || unit.getId() == 16 || unit.getId() == 20 || unit.getId() == 30) {
                     System.out.println("Provoker in the house");
                     provoker.add(unit.getPosition());
                 }
@@ -133,7 +135,6 @@ public class Utility {
      * @param enemy
      * @param board
      * @return Set<Tile>
-
      */
     public static Set<Tile> getValidTargets(Tile tile, Player enemy, Tile[][] board) {
 
@@ -147,6 +148,7 @@ public class Utility {
             }
             return validAttacks;
         }
+        
         for (Unit unit : enemy.getUnits()) {
             int unitx = unit.getPosition().getTilex();
             int unity = unit.getPosition().getTiley();

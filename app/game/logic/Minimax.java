@@ -238,7 +238,7 @@ public class Minimax implements Runnable{
 					
 					ArrayList<MoveAction> possibleMoves = moves(gameState);
 				
-					try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+					try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
 					
 					if (possibleMoves == null) {
 						System.out.println("No more moves left on the board");
@@ -428,7 +428,6 @@ public class Minimax implements Runnable{
 
 				int minScore = Integer.MAX_VALUE;
 				
-				//for (Tile tile : tiles) {
 				for (Unit enemy : enemyUnits) {
 					int score = 0;
 					score += score + Math.abs(move.moveToTile.getTilex() - enemy.getPosition().getTilex());
@@ -441,8 +440,7 @@ public class Minimax implements Runnable{
 						move.value = score;
 					}
 				}
-				//}
-				System.out.println("Move" + move.moveToTile.getTilex() + " and y" + move.moveToTile.getTiley() + " and " + move.attacker + " value = " + move.value);
+				//System.out.println("Move" + move.moveToTile.getTilex() + " and y" + move.moveToTile.getTiley() + " and " + move.attacker + " value = " + move.value);
 			}
 		}
 		return moves;
@@ -499,7 +497,7 @@ public class Minimax implements Runnable{
 				if(card == null || card.getCardname().equals("Staff of Y'Kir'") || card.getCardname().equals("Entropic Decay")) {
 					continue;
 				}
-				System.out.println("Player's mana + " + GameState.getCurrentPlayer().getMana());
+				//System.out.println("Player's mana + " + GameState.getCurrentPlayer().getMana());
 				System.out.println(card.getCardname() + " plus mana + " + card.getManacost());
 				CardAction AICard = new CardAction(card);
 				
@@ -586,7 +584,7 @@ public class Minimax implements Runnable{
 				
 				System.out.println("avatar position x" + GameState.getHumanPlayer().getAvatar().getPosition().getTilex());
 				Utility.placeUnit(out, bestCard.getCard(), GameState.getAiPlayer(), destinationTile);
-				try {Thread.sleep(3000);} catch (InterruptedException e) {e.printStackTrace();}		
+				try {Thread.sleep(1500);} catch (InterruptedException e) {e.printStackTrace();}		
 			}
 		}catch (NullPointerException e) {
 			
