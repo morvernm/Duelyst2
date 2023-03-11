@@ -833,7 +833,11 @@ public class Utility {
         }
     }
 
-    // Get positions of potential targets of a spell.
+    /**
+     * Get the tile positions of targeted units.
+     * @param targets the units to get the tile positions of
+     * @return set of tiles upon which the respective targets are located.
+     */
     public static Set<Tile> getSpellTargetPositions(ArrayList<Unit> targets) {
         if (targets == null || targets.isEmpty()) return null; // if list of targets is null, then return no positions
         System.out.println(targets.size());
