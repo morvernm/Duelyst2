@@ -11,6 +11,9 @@ import utils.StaticConfFiles;
 import java.util.ArrayList;
 import java.util.Set;
 
+/**
+ * Human spellcard. Deal 2 damage to an enemy unit.
+ */
 public class Truestrike extends SpellCard {
 
 

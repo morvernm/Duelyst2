@@ -15,7 +15,12 @@ import structures.basic.SpecialUnits.Pureblade;
 
 import java.util.ArrayList;
 import java.util.Set;
-
+/**
+ *
+ * AI spell card. Reduces a non-avatar unit
+ * to 0 health
+ *
+ */
 public class EntropicDecay extends SpellCard {
 
     @Override
