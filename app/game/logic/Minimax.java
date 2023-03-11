@@ -224,7 +224,7 @@ public class Minimax implements Runnable{
 						continue;
 					System.out.println("Launching a distanced attack");
 					
-					Utility.distancedAttack(action.unit, action.tile.getOccupier(), gameState.getHumanPlayer());	
+					Utility.distancedAttack(action.unit, action.tile.getOccupier());
 					try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
 				}
 		
