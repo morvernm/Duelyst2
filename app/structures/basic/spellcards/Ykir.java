@@ -14,7 +14,11 @@ import structures.basic.Player;
 import java.util.ArrayList;
 import java.util.Set;
 
-
+/**
+ *
+ * AI spell card. Adds +2 attack to avatar
+ *
+ */
 public class Ykir extends SpellCard {
 
 	@Override

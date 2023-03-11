@@ -210,14 +210,14 @@ public class Utility {
 	}
 	
 	/**
-	 * Performs the distances attack by determining the best position to move to to perform the attack,
+	 * Performs the distances attack by determining the best position to move to perform the attack,
 	 * moves to that position and performs adjacenet attack.
 	 * Alternatively will only perform ranged attack if that ability is available
-	 * 
-	 *  @param Unit, Unit, Player
+	 * @param attacker
+     * @param defender
 	 */
 	
-	public static void distancedAttack(Unit attacker, Unit defender, Player enemy) {
+	public static void distancedAttack(Unit attacker, Unit defender) {
         System.out.println("Distanced Attack Activated");
 
         if (!attacker.hasAttacked() && attacker instanceof RangedAttack) {

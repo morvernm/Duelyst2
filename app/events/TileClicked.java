@@ -36,6 +36,12 @@ public class TileClicked implements EventProcessor{
 
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
+		
+		// to avoid events handling while the AI player is playing
+		if (GameState.getCurrentPlayer().equals(GameState.getAIPlayer()) ) {
+			return;
+		}
+		
 		int tilex = message.get("tilex").asInt();
 		int tiley = message.get("tiley").asInt();
 		
@@ -95,7 +101,7 @@ public class TileClicked implements EventProcessor{
 						Utility.adjacentAttack(unit, GameState.board[tilex][tiley].getOccupier());
 						
 					} else if (gameState.validAttacks.contains(GameState.board[tilex][tiley])) {
-						Utility.distancedAttack(unit, GameState.board[tilex][tiley].getOccupier(), gameState.enemy);
+						Utility.distancedAttack(unit, GameState.board[tilex][tiley].getOccupier());
 					} 
 					
 				}

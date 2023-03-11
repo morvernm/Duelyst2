@@ -12,6 +12,12 @@ import utils.StaticConfFiles;
 import java.util.ArrayList;
 import java.util.Set;
 
+/**
+ * Human spell card. Adds +5 health to a
+ * Unit. This cannot take
+ * a unit over its starting
+ * health value.
+ */
 public class Sundrop extends SpellCard {
 
     // highlight valid targets for this particular spell

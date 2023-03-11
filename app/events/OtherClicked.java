@@ -24,6 +24,11 @@ public class OtherClicked implements EventProcessor{
 
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
+		
+		// to avoid events handling while the AI player is playing
+		if (GameState.getCurrentPlayer().equals(GameState.getAIPlayer()) ) {
+			return;
+		}
 
 		CardClicked.clearHighlighted();
 		Gui.removeHighlightTiles(out, GameState.getBoard());

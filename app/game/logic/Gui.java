@@ -145,6 +145,11 @@ public class Gui {
 		BasicCommands.drawUnit(out, unit, tile);
 	}
 
+	/**
+	 * Highlights a card in the player's hand. Can be used to show a card is selected.
+	 * @param card the card being highlighted
+	 * @param position the position of the card in the player's hand (1 - 6).
+	 */
 	public static void highlightCard(Card card, int position) {
 		BasicCommands.drawCard(out, card, position,1);
 	}
@@ -153,10 +158,19 @@ public class Gui {
 		BasicCommands.setUnitHealth(out, unit, health);
 	}
 
+	/**
+	 * Display an effect animation on the GUI (e.g. spell effects).
+	 * @param effect the animation to be played.
+	 * @param tile the tile where the animation will be played on.
+	 */
 	public static void playEffectAnimation(EffectAnimation effect, Tile tile) {
 		BasicCommands.playEffectAnimation(out, effect, tile);
 	}
 
+	/**
+	 * Removes a card from the player's hand.
+	 * @param position the position of the card to be removed in the player's hand (1 - 6).
+	 */
 	public static void deleteCard(int position) {
 		BasicCommands.deleteCard(out, position);
 	}
