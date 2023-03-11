@@ -137,6 +137,11 @@ public class Player {
 		return cardsInHand == 0;
 	}
 	
+	/**
+	 * Creates the human avatar. Sets their health and attack stats. Sets their position on the board.
+	 * Displays the avatar and their stats on the board
+	 * @param out
+	 */
 	public void createAvatar(ActorRef out) {
 		Unit unit = BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, 100, Unit.class);
 		unit.setPositionByTile(GameState.getBoard()[1][2]); 
@@ -150,6 +155,10 @@ public class Player {
 		unit.setAttack(2);
 		
 	}
+/**
+ * 	Getter for the human avatar
+ * @return avatar
+ */
 	public Unit getAvatar() {
 		return avatar;
 	}

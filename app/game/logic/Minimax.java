@@ -131,7 +131,7 @@ public class Minimax implements Runnable{
 	}
 
 	/**
-     * this method gets cards from AI player's hand
+     * This method gets cards from AI player's hand
      * @return Set<Card>
      */
 	private static Set<Card> getPlayerHand() {
@@ -473,40 +473,40 @@ public class Minimax implements Runnable{
 	}
 	
 
-	/*
-	 * This method evaluates each card in the AI player's hand
+	/**
+	 * This method evaluates each card in the AI player's hand and checks if the AI has enough mana to play 
+	 * the card
 	 * Values:
 	 * 4 - provoke card
 	 * 3 - high attack
 	 * 2 - other special ability card
-	 * 1 - reg card
+	 * 1 - regular card
+	 * 
+	 * @param Set<Card>  		the AI player's cards
+	 * @return playableCards 	set of ranked and playable cards
 	 * 
 	 */
 	public static Set<CardAction> evaluateCards(Set<Card> cards) {
 		System.out.println("evaluating cards");
 		Set <CardAction> playableCards = new HashSet<>();
-		
 		if(cards.isEmpty()) { //if player has no cards in hand
 			System.out.println("No cards to play!");
 		}
-		
 		int highestAttack = -1;
-		
 		Card bestAttack = null;
+		
 			for (Card card: cards) {
 				if(card == null || card.getCardname().equals("Staff of Y'Kir'") || card.getCardname().equals("Entropic Decay")) {
 					continue;
 				}
-				//System.out.println("Player's mana + " + GameState.getCurrentPlayer().getMana());
 				System.out.println(card.getCardname() + " plus mana + " + card.getManacost());
 				CardAction AICard = new CardAction(card);
-				
 				if(GameState.getAIPlayer().getMana() >= card.getManacost()) {
 					playableCards.add(AICard);
 					if(card.getBigCard().getAttack() > highestAttack) {
 						bestAttack = card;
 					}
-					if(card.getCardname().equals("Rock Pulveriser")) { //provoke card change to .equals.
+					if(card.getCardname().equals("Rock Pulveriser")) { 
 						AICard.value = 4;
 						continue;
 					}
@@ -520,16 +520,20 @@ public class Minimax implements Runnable{
 					}else if(!card.getCardname().equals("Hailstone Golem")) {
 						AICard.value = 2;
 						continue;
-					}else { 												//reg cards
+					}else { 												//regular cards
 						AICard.value = 1;
 						continue;
 					}
 				}
 			}
-			System.out.println("number of cards from evaluatecards " + playableCards.size());
+//			System.out.println("number of cards from evaluatecards " + playableCards.size());
 			return playableCards;
 		}
-	
+	/**
+	 * Determines which tile will move the summonable unit closest to the opponent's avatar
+	 * @param bestCard		
+	 * @return bestTile		
+	 */
 	public static Tile evaluateTiles(CardAction bestCard) {
 		int minScore = Integer.MAX_VALUE;
 		Tile bestTile = null;
@@ -547,10 +551,11 @@ public class Minimax implements Runnable{
 		}return bestTile;
 	}
 	
-	/*
-	 * pick the optimal card to play
+	/**
+	 * Determines the optimal card to play according to the scores given to each card in evaluateCards()
+	 * @param AICards
+	 * @return bestCard
 	 */
-	
 	public static CardAction bestCard(Set <CardAction> AICards) {
 		System.out.println("pick best card");
 		CardAction bestCard = null;
@@ -567,7 +572,9 @@ public class Minimax implements Runnable{
 		return bestCard; //return bestCard for AI to play
 	}
 	
-	
+	/**
+	 * Minimax variant for selecting the best unit card to summon and summoning the selected unit to the board
+	 */
 	public static void miniMaxCards() { 
 		System.out.println("START MINIMAX CARDS");
 		

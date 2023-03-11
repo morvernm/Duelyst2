@@ -83,7 +83,7 @@ public class TileClicked implements EventProcessor{
 				}
 				
 			} else {
-				
+//				if player previously clicked on a Unit 
 				if (gameState.previousAction.peek() instanceof Unit) {
 
 					//get unit from stack
@@ -108,12 +108,9 @@ public class TileClicked implements EventProcessor{
 					Unit unit = (Unit) GameState.getPreviousAction(); //get unit from stack 
 					Utility.moveUnit(unit, gameState.board[tilex][tiley]);
 				}
+//				if player previously clicked on a Card
 				
-			} else if( GameState.previousAction.peek() instanceof Card) {
-	//			if (GameState.getCurrentPlayer() != GameState.getHumanPlayer()){
-	//				return;
-	//			}
-				
+			} else if( GameState.previousAction.peek() instanceof Card) {	
 				System.out.println("PLACE UNIT CARD ON BOARD");
 				
 				Card card = (Card) GameState.previousAction.peek();

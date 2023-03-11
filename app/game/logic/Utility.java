@@ -186,7 +186,7 @@ public class Utility {
 			
 			Gui.setUnitStats(defender, defender.getHealth(), defender.getAttack());
 			
-			attacker.setAttacked(); // commented out to test that unit dies
+			attacker.setAttacked(); 
 			
 			checkEndGame(defender);
 			counterAttack(attacker, defender);
@@ -491,7 +491,12 @@ public class Utility {
         return s;
     }
 
-
+/**
+ * This method will be called after a unit is attacked to check if the unit's health is <= 0 and therefore dead.
+ * This method ends the game if the killed unit is an avatar. 
+ * @param Unit  the Unit that was attacked
+ *
+ */
     public static void checkEndGame(Unit defender) {
         //unit death
         System.out.println("checking end game");
@@ -516,7 +521,7 @@ public class Utility {
                 System.out.println("printing card name" + GameState.enemy.getCard(1).getCardname());
             }
 
-//		AI unit
+//		If unit is an AI unit
             if (GameState.getAiPlayer().getUnits().contains(defender)) {
                 GameState.getAiPlayer().removeUnit(defender);
 
@@ -525,7 +530,7 @@ public class Utility {
                     //game over:
                 }
 
-//		Human unit
+//		If unit belongs to the human player 
             } else if (GameState.getHumanPlayer().getUnits().contains(defender)) {
                 GameState.getHumanPlayer().removeUnit(defender);
                 if (GameState.getHumanPlayer().getHealth() <= 0) {
@@ -535,7 +540,11 @@ public class Utility {
         }
     }
 
-
+/**
+ * This method moves units on the board 
+ * @param Unit 	the unit to move 
+ * @param Tile 	the destination tile
+ */
     public static void moveUnit(Unit unit, Tile tile) {
 	    if(!unit.hasMoved() && !unit.hasAttacked()) {
 	        GameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()].setOccupier(null); //clear unit from tile

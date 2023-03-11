@@ -65,7 +65,12 @@ public class AIPlayer extends Player{
         hand[position-1] = null; // Set position to null to remove card. Use range 1 - 6 to reflect front-end display logic.
         cardsInHand--;
     }
-
+    
+    /**
+	 * Creates the AI avatar. Sets their health and attack stats. Sets their position on the board.
+	 * Displays the avatar and their stats on the board
+	 * @param out
+	 */
     public void createAvatar(ActorRef out) {
 		Unit enemyAvatar = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 101, Unit.class);
 		enemyAvatar.setPositionByTile(GameState.board[7][2]); 
