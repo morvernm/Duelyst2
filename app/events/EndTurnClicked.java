@@ -23,7 +23,7 @@ public class EndTurnClicked implements EventProcessor{
 
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
-
+				
 		Gui.removeHighlightTiles(out, GameState.getBoard());
 		// Current player draws card, and loses all their unspent mana
 		gameState.getCurrentPlayer().drawCard();
