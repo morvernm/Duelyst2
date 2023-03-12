@@ -626,7 +626,8 @@ public class Utility {
     	
     	int unitx = unit.getPosition().getTilex();
     	int unity = unit.getPosition().getTiley();
-    	
+    	if ((unitx + 1) > 8 || (unitx -1)< 0)
+    		return false;
     	if (GameState.getBoard()[unitx+1][unity].getOccupier() != null && GameState.getOtherPlayer().getUnits().contains(GameState.getBoard()[unitx+1][unity].getOccupier())) {
     		return true;
     	}
