@@ -301,6 +301,7 @@ public class Utility {
      * Determines from which positions a unit can be attacked
      * @param unit
      * @return ArrayList<Tile>
+     * 
      */
     public static ArrayList<Tile> getValidAttackTiles(Unit unit) {
         ArrayList<Tile> validTiles = new ArrayList<>();
@@ -318,15 +319,22 @@ public class Utility {
         }
         return validTiles;
     }
-
+    /**
+     * This places a unit on the board, deciding which special unit class to instansite, if any
+     * and then sets various stats on the GUI and unit class.
+     * @param out
+     * @param card
+     * @param player
+     * @param tile
+     * @author Daniel
+     */
 
     public static void placeUnit(ActorRef out, Card card, Player player, Tile tile) {
-        System.out.println("placeUnit Utility");
-
-        /* Set unit id to number of total units on board + 1 */
         String unit_conf = StaticConfFiles.getUnitConf(card.getCardname());
         int unit_id = card.getId();
         Unit unit;
+
+
 
         if (card.getCardname().equals("Silverguard Knight")) {
         	unit = (SilverguardKnight) BasicObjectBuilders.loadUnit(unit_conf, unit_id, SilverguardKnight.class);
@@ -378,6 +386,10 @@ public class Utility {
         unit.setAttacked();
         unit.setMoved();
 
+        /*
+         Checks if unit has double attack modifier 
+        */
+
         if (unit_id == 36 || unit_id == 26 || unit_id == 17 || unit_id == 7)
             ((AttackTwice) unit).setAttackCount();
 
@@ -401,6 +413,17 @@ public class Utility {
             BasicCommands.setPlayer2Mana(out, player);
         }
     }
+
+    /**
+     *  This uses set logic to calculate and return the valid placements for a unit card
+     *  Handles logic for airdrop
+     * @param card
+     * @param player
+     * @param enemy
+     * @param board
+     * @return Set<Tile>
+     * @author Daniel
+     */
 
     public static Set<Tile> cardPlacements(Card card, Player player, Player enemy, Tile[][] board) {
 
@@ -427,8 +450,6 @@ public class Utility {
         int x, y;
 
         Set<Tile> validPlacements = new HashSet<Tile>();
-        int xLength = GameState.getBoard().length;
-        int yLength = GameState.getBoard()[0].length;
 
         /* Add squares around player units to set. Return this minus occupied squares */
         for (Tile tile : playerUnits) {
@@ -450,6 +471,14 @@ public class Utility {
         return validPlacements;
     }
 
+    /**
+     * returns a set of tiles which have player units on them
+     * @param player
+     * @param board
+     * @return Set<Tile> 
+     * @author Daniel
+     */
+
     public static Set<Tile> getPlayerUnitPositions(Player player, Tile[][] board) {
 
         System.out.println("getting player unit positions");
@@ -463,6 +492,13 @@ public class Utility {
         return s;
 
     }
+    /**
+     * Returns a set of tiles which contain enemy units
+     * @param enemy
+     * @param board
+     * @return Set<Tile>
+     * @author Daniel
+     */
 
     public static Set<Tile> getEnemyUnitPositions(Player enemy, Tile[][] board) {
         Set<Tile> s = new HashSet<Tile>();
@@ -473,6 +509,17 @@ public class Utility {
         }
         return s;
     }
+    /**
+     * checks if a player can play a card on a given tile. returns boolean value
+     * @param out
+     * @param card
+     * @param player
+     * @param enemy
+     * @param tile
+     * @param board
+     * @return boolean
+     * @author Daniel
+     */
 
     public static boolean validMove(ActorRef out, Card card, Player player, Player enemy, Tile tile, Tile[][] board) {
         if (card.getManacost() > player.getMana()) {
@@ -485,7 +532,14 @@ public class Utility {
         return false;
     }
 
-
+    /**
+     * this function returns valid card placements so it can be passed to the board for highlighting
+     * @param card
+     * @param player
+     * @param enemy
+     * @param board
+     * @return Set<Tile>
+     */
     public static Set<Tile> showValidMoves(Card card, Player player, Player enemy, Tile[][] board) {
         Set<Tile> s = cardPlacements(card, player, enemy, board);
         return s;
@@ -494,7 +548,6 @@ public class Utility {
 
     public static void checkEndGame(Unit defender) {
         //unit death
-        System.out.println("checking end game");
         System.out.println(GameState.enemy.getHealth());
         if (defender.getHealth() <= 0) {
             BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.death);
@@ -507,13 +560,10 @@ public class Utility {
             BasicCommands.deleteUnit(out, defender); //delete unit from board
 
             /*
-             * Checks if unit is windshrike
+             * Checks if unit is windshrike and applies the effect if so
              */
             if (defender.getClass().equals(Windshrike.class)) {
-                System.out.println("printing hand size " + GameState.enemy.cardsInHand);
                 GameState.enemy.drawCard();
-                System.out.println("printing hand size " + GameState.enemy.cardsInHand);
-                System.out.println("printing card name" + GameState.enemy.getCard(1).getCardname());
             }
 
 //		AI unit

@@ -38,13 +38,6 @@ public class GameState {
 	
 	private static int totalUnits;
 
-	private static int status;
-	private static final int PreviousActionEmpty = 0;
-	private static final int PreviousActionContainsUnit = 1;
-	private static final int PreviousActionContainsUnitCard = 2;
-	private static final int PreviousActionContainsSpellCard = 3;
-	
-
 	public static Player enemy;
 
 	public boolean gameInitalised = false;
@@ -81,12 +74,7 @@ public class GameState {
 	 */
 	public static void emptyPreviousAction(){
 		previousAction.clear();
-		status = PreviousActionEmpty;
 		System.out.println("emptyprev");
-	}
-
-	public static int getStatus(){
-		return status;
 	}
 
 	public static Object peekPreviousAction(){

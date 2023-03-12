@@ -57,7 +57,11 @@ public class Ykir extends SpellCard {
         Gui.highlightTiles(out, positions, 2);
 	}
 
-
+	/**
+	 * This function checks if a unit with SpellThief is on the board and handles
+	 * the logic for this.
+	 * @author Daniel
+	 */
 	public void handleSpellThief(){
         Player enemy = GameState.getHumanPlayer();
         for (Unit unit : enemy.getUnits()){
