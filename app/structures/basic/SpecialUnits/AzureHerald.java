@@ -4,6 +4,14 @@ import structures.GameState;
 
 import structures.basic.Unit;
 
+
+/**
+ * Class for the Azure Herald special unit class
+ * Extends the basic Unit class
+ * @author bozhidarayvazov
+ *
+ */
+
 public class AzureHerald extends Unit {
 
     private final String name = "Azure Herald";

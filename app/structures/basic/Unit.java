@@ -146,7 +146,10 @@ public class Unit implements Playable{
 	public int getHealth() {
 		return this.health;
 	}
-
+	/**
+	 * Sets the health of the two players and relates to the avatars
+	 * @param health
+	 */
 	public void setHealth(int health) {
 		
 		// Check if the unit is a player avatar. Adjust health of appropriate player accordingly if so.

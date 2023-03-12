@@ -146,7 +146,10 @@ public class GameState {
 	public static Player getAiPlayer() {
 		return enemy;
 	}
-	
+	/**
+	 * Get the player who is currently NOT on the board. 
+	 * @return
+	 */
 	public static Player getOtherPlayer() {
 		if (getCurrentPlayer().equals(humanPlayer)) {
 			return getAiPlayer();

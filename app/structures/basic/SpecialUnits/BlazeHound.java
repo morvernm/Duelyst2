@@ -6,6 +6,13 @@ import structures.basic.Unit;
 
 import java.util.Set;
 
+/**
+ * A class for the BlazeHound unit
+ * Extends the basic unit class
+ * @author bozhidarayvazov
+ *
+ */
+
 public class BlazeHound extends Unit {
 
     private final String name = "Blaze Hound";

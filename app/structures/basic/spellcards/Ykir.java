@@ -84,8 +84,6 @@ public class Ykir extends SpellCard {
 			}
 		}
 		System.out.print("Ykir avatar null: ");
-//		System.out.println(avatar==null);
-//		targets.add(avatar);
 		return targets;
 	}
 

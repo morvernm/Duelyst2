@@ -41,6 +41,7 @@ public class Utility {
 
     /**
      * This class is the utility class where methods with some main logic of the game will be provided
+     * Most of these methods are shared between the human and the AI player.
      */
     private static ActorRef out;
 
@@ -216,7 +217,6 @@ public class Utility {
 	 * @param attacker
      * @param defender
 	 */
-	
 	public static void distancedAttack(Unit attacker, Unit defender) {
         System.out.println("Distanced Attack Activated");
 
@@ -296,6 +296,7 @@ public class Utility {
             }
         }
     }
+	
 	/**
      * Gets the valid attack positions for distanced attacks (move first and then attack)
      * Determines from which positions a unit can be attacked
@@ -319,6 +320,7 @@ public class Utility {
         }
         return validTiles;
     }
+    
     /**
      * This places a unit on the board, deciding which special unit class to instansite, if any
      * and then sets various stats on the GUI and unit class.
@@ -328,13 +330,10 @@ public class Utility {
      * @param tile
      * @author Daniel
      */
-
     public static void placeUnit(ActorRef out, Card card, Player player, Tile tile) {
         String unit_conf = StaticConfFiles.getUnitConf(card.getCardname());
         int unit_id = card.getId();
         Unit unit;
-
-
 
         if (card.getCardname().equals("Silverguard Knight")) {
         	unit = (SilverguardKnight) BasicObjectBuilders.loadUnit(unit_conf, unit_id, SilverguardKnight.class);
@@ -424,7 +423,6 @@ public class Utility {
      * @return Set<Tile>
      * @author Daniel
      */
-
     public static Set<Tile> cardPlacements(Card card, Player player, Player enemy, Tile[][] board) {
 
         System.out.println("cardPlacement Utility");
@@ -478,7 +476,6 @@ public class Utility {
      * @return Set<Tile> 
      * @author Daniel
      */
-
     public static Set<Tile> getPlayerUnitPositions(Player player, Tile[][] board) {
 
         System.out.println("getting player unit positions");
@@ -492,6 +489,7 @@ public class Utility {
         return s;
 
     }
+    
     /**
      * Returns a set of tiles which contain enemy units
      * @param enemy
@@ -499,7 +497,6 @@ public class Utility {
      * @return Set<Tile>
      * @author Daniel
      */
-
     public static Set<Tile> getEnemyUnitPositions(Player enemy, Tile[][] board) {
         Set<Tile> s = new HashSet<Tile>();
         ArrayList<Unit> uList = enemy.getUnits();
@@ -509,6 +506,7 @@ public class Utility {
         }
         return s;
     }
+    
     /**
      * checks if a player can play a card on a given tile. returns boolean value
      * @param out
@@ -520,7 +518,6 @@ public class Utility {
      * @return boolean
      * @author Daniel
      */
-
     public static boolean validMove(ActorRef out, Card card, Player player, Player enemy, Tile tile, Tile[][] board) {
         if (card.getManacost() > player.getMana()) {
             return false;
@@ -545,12 +542,12 @@ public class Utility {
         return s;
     }
 
-/**
- * This method will be called after a unit is attacked to check if the unit's health is <= 0 and therefore dead.
- * This method ends the game if the killed unit is an avatar. 
- * @param Unit  the Unit that was attacked
- *
- */
+	/**
+	 * This method will be called after a unit is attacked to check if the unit's health is <= 0 and therefore dead.
+	 * This method ends the game if the killed unit is an avatar. 
+	 * @param Unit  the Unit that was attacked
+	 *
+	 */
     public static void checkEndGame(Unit defender) {
         //unit death
         System.out.println(GameState.enemy.getHealth());
@@ -590,11 +587,11 @@ public class Utility {
         }
     }
 
-/**
- * This method moves units on the board 
- * @param Unit 	the unit to move 
- * @param Tile 	the destination tile
- */
+	/**
+	 * This method moves units on the board 
+	 * @param Unit 	the unit to move 
+	 * @param Tile 	the destination tile
+	 */
     public static void moveUnit(Unit unit, Tile tile) {
 	    if(!unit.hasMoved() && !unit.hasAttacked()) {
 	        GameState.board[unit.getPosition().getTilex()][unit.getPosition().getTiley()].setOccupier(null); //clear unit from tile
@@ -913,7 +910,11 @@ public class Utility {
         }
         return positions;
     }
-
+    /**
+     * Converts the array of tile objects for the board to a set of tile objects
+     * @param board
+     * @return
+     */
     public static Set<Tile> boardToSet(Tile[][] board) {
         Set<Tile> s = new HashSet<Tile>();
         for (Tile[] a : board) {

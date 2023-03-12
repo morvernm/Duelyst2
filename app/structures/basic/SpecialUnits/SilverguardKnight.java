@@ -7,9 +7,8 @@ public class SilverguardKnight extends Provoke {
 	@SuppressWarnings("unused")
 	private String name = "SilverguardKnight";
 	
-	/*
-	 * 
-	 * WIll need to add more stuff for the other ability
+	/**
+	 * for special ability Avatar Damaged
 	 */
 	public void buffAttack() {
 		System.out.println("BUFFED");

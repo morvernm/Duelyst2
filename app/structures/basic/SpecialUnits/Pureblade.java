@@ -7,6 +7,13 @@ import structures.basic.*;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Class for the special ability unit Purablade Enforcer
+ * extends the basic unit class 
+ * @author bozhidarayvazov
+ *
+ */
+
 public class Pureblade extends Unit {
 
     private final String name = "Pureblade Enforcer";

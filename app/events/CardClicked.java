@@ -56,23 +56,6 @@ public class CardClicked implements EventProcessor{
 		//highlightCard(handPosition, gameState);
 		Gui.removeHighlightTiles(out, GameState.getBoard());
 		
-		// ensure there aren't any cards in the stack alredy
-//		if(!GameState.previousAction.isEmpty())
-//			GameState.previousAction.pop();
-//		
-//		/*
-//		 *  might need to amend the above to remove any otehr card trhat's in the stack
-//		 */
-//
-//		if(spellcards.get(gameState.getHumanPlayer().getCard(handPosition).getCardname()) != null) { // if currently selected card is a spellcard
-//			// Create an instance of the spellcard:
-//			currentSpellcard = spellcards.get(gameState.getHumanPlayer().getCard(handPosition).getCardname()) ;
-//
-//			// Highlight tiles
-//			currentSpellcard.highlightTargets(out);
-//
-//			GameState.setPreviousAction(currentSpellcard);
-
 		try{
 			Card card = highlightCard(handPosition, gameState);
 			checkCardType(out, card);
@@ -81,6 +64,12 @@ public class CardClicked implements EventProcessor{
 		}
 	}
 	
+	/**
+	 * Checks if the selected card is a unit card or a spell card, and 
+	 * redirects it to the appropriate method to be handled
+	 * @param out
+	 * @param card
+	 */
 
 	public void checkCardType(ActorRef out, Card card){
 		System.out.println("checkCardType CardClicked");
@@ -93,11 +82,7 @@ public class CardClicked implements EventProcessor{
 			//Gui.removeHighlightTiles(out, GameState.getBoard());
 			if (GameState.getCurrentPlayer().getMana() >= card.getManacost()) {
 				
-				//if(spellcards.get(GameState.getHumanPlayer().getCard(handPosition).getCardname()) != null) { // if currently selected card is a spellcard
-					
-				// Create an instance of the spellcard:
-				//currentSpellcard = spellcards.get(GameState.getHumanPlayer().getCard(handPosition).getCardname()) ;
-				// Highlight tiles
+				
 				
 				SpellCard currentSpellcard = (SpellCard)GameState.getHumanPlayer().getCard(handPosition);
 				
@@ -106,12 +91,17 @@ public class CardClicked implements EventProcessor{
 				//}
 			} else {
 				if (GameState.getCurrentPlayer().equals(GameState.getHumanPlayer())) {
-					BasicCommands.addPlayer1Notification(out, "Not enough mana, boi", 2);
+					BasicCommands.addPlayer1Notification(out, "Not enough mana!", 2);
 				} 
 			}
 		}
 	}
-
+	/**
+	 * Check if the selected card can be validly played
+	 * i.e. does the player has enought mana to play the card.
+	 * @param out
+	 * @param card
+	 */
 	public void checkValidity(ActorRef out, Card card){
 		System.out.println("checkValidity CardClicked");
 		Player human = GameState.getHumanPlayer();
@@ -130,6 +120,12 @@ public class CardClicked implements EventProcessor{
 			}
 		}
 	}
+	/**
+	 * highlight the selected card and push it to the stack
+	 * @param handPosition
+	 * @param gameState
+	 * @return
+	 */
 	
 	public Card highlightCard(int handPosition, GameState gameState) {
 		System.out.println("HighlightCard cardclicked");
@@ -146,7 +142,10 @@ public class CardClicked implements EventProcessor{
 	}
 
 
-	
+	/**
+	 * removes the highlight from any highligted cards, and
+	 * removes the previously selected card from the stack of previous moves.
+	 */
 	public static void clearHighlighted(){
 		System.out.println("clearHighLighted CardClicked");
 
@@ -161,7 +160,11 @@ public class CardClicked implements EventProcessor{
 		
 		
 	}
-
+	/**
+	 * push the selected card on to the stack of previous action 
+	 * for future reference.
+	 * @param card
+	 */
 
 	public static void pushToPreviousAction(Card card){
 		System.out.println("pushToPreviousAction CardClicked");
